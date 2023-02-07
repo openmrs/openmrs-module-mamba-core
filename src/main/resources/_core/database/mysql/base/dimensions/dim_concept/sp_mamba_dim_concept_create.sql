@@ -1,7 +1,3 @@
-USE analysis;
-
-DROP TABLE IF EXISTS  mamba_dim_concept;
-
 -- $BEGIN
 
 CREATE TABLE mamba_dim_concept (

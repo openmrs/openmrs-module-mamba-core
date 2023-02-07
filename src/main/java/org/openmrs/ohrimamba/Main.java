@@ -1,4 +1,4 @@
-package org.openmrs.ohri;
+package org.openmrs.ohrimamba;
 
 public class Main {
     public static void main(String[] args) {

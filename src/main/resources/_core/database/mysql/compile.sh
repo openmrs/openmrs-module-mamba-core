@@ -1,0 +1,1 @@
+../../compiler/linux/compile-mysql.sh -d analysis -s base/sp_makefile
