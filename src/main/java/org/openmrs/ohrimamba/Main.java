@@ -11,7 +11,7 @@ public class Main {
         ScriptRunner runner = new ScriptRunner();
 
         try {
-            runner.execute(compileScriptDirName);
+            runner.execute();
         } catch (TimeoutException | InterruptedException | ExecutionException | IOException e) {
             System.err.println("Error!");
             e.printStackTrace();

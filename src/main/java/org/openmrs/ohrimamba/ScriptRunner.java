@@ -12,7 +12,9 @@ import java.util.function.Consumer;
  */
 public class ScriptRunner {
 
-    public void execute(String compileScriptDirName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    public void execute() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+
+         String compileScriptDirName = "src/main/resources/_core/database/mysql";
 
         String homeDir = System.getProperty("user.home");
         String compileScriptFileName = "compile.sh";
