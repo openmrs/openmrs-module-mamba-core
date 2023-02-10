@@ -1,6 +1,9 @@
 package org.openmrs.ohrimamba;
 
+import org.openmrs.ohrimamba.util.FileOperationService;
+
 import java.io.*;
+import java.nio.file.Path;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
@@ -10,8 +13,15 @@ import java.util.function.Consumer;
  */
 public class ScriptRunner {
 
+    private final FileOperationService fileOperations;
+
+    public ScriptRunner() {
+        this.fileOperations = new FileOperationService();
+    }
+
+
     public void compileForMysql() throws IOException, InterruptedException, ExecutionException, TimeoutException {
-        String compileScriptFileDirectory = "";
+        String compileScriptFileDirectory = "_core/database/mysql";
         compileForMysql(compileScriptFileDirectory);
     }
 
@@ -20,18 +30,20 @@ public class ScriptRunner {
         compile(compileScriptFileDirectory);
     }
 
-    public void compileForMysql(String compileScriptDirName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    public void compileForMysql(String compileScriptFileDirectory) throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
         // String compileScriptDirName = "src/main/resources/_core/database/mysql";
-        //String homeDir = System.getProperty("user.home");
-        String compileScriptFileDirectory = "";
+        // String homeDir = System.getProperty("user.home");
         compile(compileScriptFileDirectory);
     }
 
-    private void compile(String compileScriptDirName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    private void compile(String compileScriptAbsDirName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+
+        File dirPath = fileOperations
+                .getParentDirOrItselfIfDirectory(compileScriptAbsDirName);
 
         ProcessBuilder builder = new ProcessBuilder();
-        builder.directory(new File(compileScriptDirName));
+        builder.directory(dirPath);
         builder.command("sh", "./compile.sh");
 
         Process process = builder.start();

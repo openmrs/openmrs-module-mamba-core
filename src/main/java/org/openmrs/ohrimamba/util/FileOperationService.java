@@ -1,23 +1,24 @@
 package org.openmrs.ohrimamba.util;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.WRITE;
+import static java.nio.file.StandardOpenOption.*;
 
 /**
  * @author smallGod
  * date: 28/07/2022
  */
-public class FileOperationService {
+public final class FileOperationService {
+
+    public FileOperationService() {
+    }
 
     /**
      * Create a File if it doesn't exist and return it.
@@ -105,6 +106,31 @@ public class FileOperationService {
     public Path getFileDirectoryPath(File file) throws IOException {
         if (file.exists()) return file.toPath();
         else throw new IOException("File does not exist");
+    }
+
+    public File getParentDirOrItselfIfDirectory(String absoluteFilePath) throws IOException {
+
+        File filePath = new File(absoluteFilePath);
+        if (filePath.exists()) {
+            if (filePath.isDirectory()) {
+                return filePath;
+            } else if (filePath.isFile()) {
+                return filePath.getParentFile();
+            }
+        }
+        throw new IOException("Invalid file or File does not exist");
+    }
+
+    public static String getDirectoryName(String filePath) {
+
+        File file = new File(filePath);
+        if (file.isDirectory()) {
+            return file.getName();
+        } else if (file.isFile()) {
+            return file.getParentFile().getName();
+        } else {
+            return "Invalid File Path";
+        }
     }
 
     private Path createFileHelper(String filePath) throws IOException {

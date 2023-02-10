@@ -22,11 +22,11 @@ public class ReadFileFromResources {
     }
 
     /**
-     * @param fileName file name from src/resources e.g. _core/database/mysql
+     * @param fileName file name from src/resources e.g. _core/database/mysql or _core/database/mysql/text.sql
      * @return
      * @throws IOException
      */
-    public File getFileFromInputStream(String fileName) throws IOException {
+    public File getResourcesFileFromInputStream(String fileName) throws IOException {
 
         InputStream inputStream = null;
 
