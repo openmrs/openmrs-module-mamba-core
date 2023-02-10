@@ -1,7 +1,3 @@
-USE analysis;
-
-DROP TABLE IF EXISTS dim_client;
-
 -- $BEGIN
 CREATE TABLE dim_client (
     id INT NOT NULL AUTO_INCREMENT,

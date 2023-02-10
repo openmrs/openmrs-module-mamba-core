@@ -1,14 +1,17 @@
 package org.openmrs.ohrimamba;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class Main {
     public static void main(String[] args) {
 
-        String compileScriptDirName = "src/main/resources/_core/database/mysql";
+//        String compileScriptDirName = "src/main/resources/_core/database/mysql";
         ScriptRunner runner = new ScriptRunner();
+
+
 
         try {
             runner.execute();

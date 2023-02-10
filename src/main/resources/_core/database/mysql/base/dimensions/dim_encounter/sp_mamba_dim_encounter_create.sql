@@ -1,7 +1,3 @@
-USE analysis;
-
-DROP TABLE IF EXISTS  mamba_dim_encounter;
-
 -- $BEGIN
 
 CREATE TABLE mamba_dim_encounter (

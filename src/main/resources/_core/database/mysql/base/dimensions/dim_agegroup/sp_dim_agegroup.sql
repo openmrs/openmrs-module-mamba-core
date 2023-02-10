@@ -1,5 +1,3 @@
-USE analysis;
-
 -- $BEGIN
 
 CALL sp_dim_agegroup_create();

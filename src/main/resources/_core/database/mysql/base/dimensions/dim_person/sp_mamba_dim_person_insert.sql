@@ -1,7 +1,3 @@
-USE analysis;
-
-TRUNCATE TABLE mamba_dim_person;
-
 -- $BEGIN
 
 INSERT INTO mamba_dim_person (

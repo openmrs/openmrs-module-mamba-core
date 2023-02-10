@@ -1,5 +1,3 @@
-USE analysis;
-
 -- $BEGIN
 
 -- Update the Concept datatypes

@@ -1,7 +1,5 @@
 package org.openmrs.ohrimamba;
 
-import org.openmrs.ohrimamba.util.ReadFileFromResources;
-
 import java.io.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
@@ -12,26 +10,34 @@ import java.util.function.Consumer;
  */
 public class ScriptRunner {
 
-    public void execute() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    public void compileForMysql() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        String compileScriptFileDirectory = "";
+        compileForMysql(compileScriptFileDirectory);
+    }
 
-         String compileScriptDirName = "src/main/resources/_core/database/mysql";
+    public void compileForPostgress() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        String compileScriptFileDirectory = "";
+        compile(compileScriptFileDirectory);
+    }
 
-        String homeDir = System.getProperty("user.home");
-        String compileScriptFileName = "compile.sh";
+    public void compileForMysql(String compileScriptDirName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
-        ReadFileFromResources readFile = new ReadFileFromResources();
-        //InputStream inputStream = readFile.getFileAsIOStream(compileScriptFileName);
+        // String compileScriptDirName = "src/main/resources/_core/database/mysql";
+        //String homeDir = System.getProperty("user.home");
+        String compileScriptFileDirectory = "";
+        compile(compileScriptFileDirectory);
+    }
+
+    private void compile(String compileScriptDirName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
         ProcessBuilder builder = new ProcessBuilder();
         builder.directory(new File(compileScriptDirName));
         builder.command("sh", "./compile.sh");
 
         Process process = builder.start();
-        StreamGobbler streamGobbler = new StreamGobbler(
-                process.getInputStream(), System.out::println);
+        StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
         Future<?> future = Executors.newSingleThreadExecutor().submit(streamGobbler);
         int exitCode = process.waitFor();
-        System.out.println("exited: " + exitCode);
         future.get(10, TimeUnit.SECONDS);
         //System.out.println("Successful: " + isSuccessful + ", process is alive: " + process.isAlive());
     }
