@@ -39,8 +39,14 @@ public class ScriptRunner {
 
     private void compile(String compileScriptAbsDirName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
-        File dirPath = fileOperations
-                .getParentDirOrItselfIfDirectory(compileScriptAbsDirName);
+        String absolutePath = fileOperations.getDefaultResourceDirectory().getAbsolutePath()
+                + File.separator + compileScriptAbsDirName;
+
+        System.out.println("path: " + absolutePath);
+
+        System.out.println("Res dir: " + this.getClass().getResource("/").getPath());
+
+        File dirPath = fileOperations.getParentDirectoryOrItselfIfDirectory(absolutePath);
 
         ProcessBuilder builder = new ProcessBuilder();
         builder.directory(dirPath);

@@ -108,7 +108,10 @@ public final class FileOperationService {
         else throw new IOException("File does not exist");
     }
 
-    public File getParentDirOrItselfIfDirectory(String absoluteFilePath) throws IOException {
+    public File getParentDirectoryOrItselfIfDirectory(String absoluteFilePath)
+            throws IOException {
+
+        System.out.println("path: " + absoluteFilePath);
 
         File filePath = new File(absoluteFilePath);
         if (filePath.exists()) {
@@ -121,16 +124,10 @@ public final class FileOperationService {
         throw new IOException("Invalid file or File does not exist");
     }
 
-    public static String getDirectoryName(String filePath) {
-
-        File file = new File(filePath);
-        if (file.isDirectory()) {
-            return file.getName();
-        } else if (file.isFile()) {
-            return file.getParentFile().getName();
-        } else {
-            return "Invalid File Path";
-        }
+    public File getDefaultResourceDirectory() {
+        return new File("src" + File.separator
+                + "main" + File.separator
+                + "resources" + File.separator);
     }
 
     private Path createFileHelper(String filePath) throws IOException {

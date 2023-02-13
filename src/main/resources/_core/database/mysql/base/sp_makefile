@@ -1,8 +1,11 @@
-
-#Prepare all the necessary stored procedures that will be invoked
+#############################################################################
+##### Prepare all the necessary stored procedures that will be invoked  #####
+#############################################################################
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_create.sql
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_insert.sql
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype.sql
 
-#A single stored procedure that invokes (CALLs) the above prepared stored procedures
+#############################################################################
+##### A single stored procedure that invokes (CALLs) the above prepared stored procedures
+#############################################################################
 sp_data_processing.sql
