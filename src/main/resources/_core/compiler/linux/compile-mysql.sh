@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Usage info
-show_help() {
+function show_help() {
 cat << EOF
 
 Usage: ${0##*/} [-h] [-d DATABASE] [-v VW_MAKEFILE] [-s SP_MAKEFILE]...
@@ -9,6 +9,7 @@ Reads file paths in the MAKE FILEs and for each file, uses the content to create
 put in the create_stored_procedures.sql file and views in a create_views.sql file.
 
     -h              display this help and exit
+    -t CONFIG_DIR   JSON configuration file
     -d DATABASE     the database the created stored procedures will run on.
     -v VW_MAKEFILE  file with a list of all files with views
     -s SP_MAKEFILE  file with a list of all files with stored procedures
@@ -21,7 +22,49 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
 EOF
 }
 
-create_directory_if_absent(){
+echo "ARG 1 : $1"
+echo "ARG 2 : $2"
+echo "ARG 3 : $3"
+echo "ARG 4 : $4"
+echo "ARG 5 : $5"
+echo "ARG 3 : $6"
+echo "ARG 4 : $7"
+echo "ARG 5 : $8"
+echo "ARG 3 : $9"
+echo "ARG 4 : ${10}"
+
+# Read in the JSON configuration metadata for Table flattening
+function read_config_metadata() {
+
+  echo "JSON DIR: $config_dir"
+
+  JSON_CONTENTS="{\"flat_report_metadata\":[
+  "
+
+  FIRST_FILE=true
+  for FILENAME in "$config_dir"/*.json; do
+    if [ "$FIRST_FILE" = false ]; then
+      JSON_CONTENTS="$JSON_CONTENTS,
+  "
+    fi
+    JSON_CONTENTS="$JSON_CONTENTS$(cat "$FILENAME")"
+    FIRST_FILE=false
+  done
+  JSON_CONTENTS="$JSON_CONTENTS]}"
+
+  SQL_CONTENTS="
+  -- \$BEGIN"$'
+
+  SET @report_data = \''$JSON_CONTENTS\'';
+
+  CALL sp_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');'"
+
+  -- \$END"
+
+  echo "$SQL_CONTENTS" > sp_mamba_dim_concept_metadata_insert.sql
+}
+
+function create_directory_if_absent(){
     DIR="$1"
 
     if [ ! -d "$DIR" ]; then
@@ -29,7 +72,7 @@ create_directory_if_absent(){
     fi
 }
 
-exit_if_file_absent(){
+function exit_if_file_absent(){
     FILE="$1"
     if [ ! -f "$FILE" ]; then
         echo "We couldn't find this file. Please correct and try again"
@@ -43,6 +86,7 @@ sp_out_file="create_stored_procedures.sql"
 vw_out_file="create_views.sql"
 makefile=""
 database=""
+config_dir=""
 views=""
 stored_procedures=""
 schema=""
@@ -51,11 +95,13 @@ OPTIND=1
 IFS='
 '
 
-while getopts ":h:d:v:s:k:o:c:" opt; do
+while getopts ":h:t:d:v:s:k:o:c:" opt; do
     case "${opt}" in
         h)
             show_help
             exit 0
+            ;;
+        t)  config_dir="$OPTARG"
             ;;
         d)  database="$OPTARG"
             ;;
@@ -123,6 +169,9 @@ elif [ "$objects_to_clear" == "views" ] || [ "$objects_to_clear" == "view" ] || 
     clear_message="clearing all views in $schema_name"
     clear_objects_sql="CALL dbo.sp_xf_system_drop_all_views_in_schema '$schema_name' "
 fi
+
+# Read in the JSON configuration metadata for Table flattening (passed argument #2)
+read_config_metadata
 
 if [ -n "$stored_procedures" ]
 then

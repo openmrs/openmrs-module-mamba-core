@@ -1,1 +1,1 @@
-compile-mysql.sh -d analysis -s sp_makefile
+compile-mysql.sh
