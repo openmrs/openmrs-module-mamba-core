@@ -22,21 +22,19 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
 EOF
 }
 
-echo "ARG 1 : $1"
-echo "ARG 2 : $2"
-echo "ARG 3 : $3"
-echo "ARG 4 : $4"
-echo "ARG 5 : $5"
-echo "ARG 3 : $6"
-echo "ARG 4 : $7"
-echo "ARG 5 : $8"
-echo "ARG 3 : $9"
-echo "ARG 4 : ${10}"
+echo "ARG 1  : $1"
+echo "ARG 2  : $2"
+echo "ARG 3  : $3"
+echo "ARG 4  : $4"
+echo "ARG 5  : $5"
+echo "ARG 6  : $6"
+echo "ARG 7  : $7"
+echo "ARG 8  : $8"
+echo "ARG 9  : $9"
+echo "ARG 10 : ${10}"
 
 # Read in the JSON configuration metadata for Table flattening
 function read_config_metadata() {
-
-  echo "JSON DIR: $config_dir"
 
   JSON_CONTENTS="{\"flat_report_metadata\":[
   "
