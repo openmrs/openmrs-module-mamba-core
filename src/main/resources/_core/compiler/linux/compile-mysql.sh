@@ -10,6 +10,7 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
 
     -h              display this help and exit
     -t CONFIG_DIR   JSON configuration file
+    -n DB_ENGINE    Database Vendor/Engine. One of: mysql|postgress|sqlserver|oracle
     -d DATABASE     the database the created stored procedures will run on.
     -v VW_MAKEFILE  file with a list of all files with views
     -s SP_MAKEFILE  file with a list of all files with stored procedures
@@ -85,6 +86,7 @@ vw_out_file="create_views.sql"
 makefile=""
 database=""
 config_dir=""
+db_engine=""
 views=""
 stored_procedures=""
 schema=""
@@ -93,13 +95,15 @@ OPTIND=1
 IFS='
 '
 
-while getopts ":h:t:d:v:s:k:o:c:" opt; do
+while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
     case "${opt}" in
         h)
             show_help
             exit 0
             ;;
         t)  config_dir="$OPTARG"
+            ;;
+        n)  db_engine="$OPTARG"
             ;;
         d)  database="$OPTARG"
             ;;
