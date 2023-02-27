@@ -10,7 +10,7 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
 
     -h              display this help and exit
     -t CONFIG_DIR   JSON configuration file
-    -n DB_ENGINE    Database Vendor/Engine. One of: mysql|postgress|sqlserver|oracle
+    -n DB_ENGINE    Database Vendor/Engine. One of: mysql|postgres|sqlserver|oracle
     -d DATABASE     the database the created stored procedures will run on.
     -v VW_MAKEFILE  file with a list of all files with views
     -s SP_MAKEFILE  file with a list of all files with stored procedures

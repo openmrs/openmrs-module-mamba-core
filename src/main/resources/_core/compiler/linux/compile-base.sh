@@ -15,11 +15,11 @@ while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
         h)  add_option "-h" "${OPTARG}" ;;
         t)  add_option "-t" "${OPTARG}" ;;
         n)  case "${OPTARG}" in
-                mysql|postgress|sqlserver|oracle)
+                mysql|postgres|sqlserver|oracle)
                     database_engine="${OPTARG}"
                     ;;
                 *)
-                    echo "Invalid database engine: ${OPTARG}" >&2
+                    echo "Database Engine/Vendor: ${OPTARG}" >&2 "not yet supported. Please Contact OHRI support"
                     exit 1
                     ;;
             esac
@@ -31,7 +31,7 @@ while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
         o)  add_option "-o" "${OPTARG}" ;;
         c)  add_option "-c" "${OPTARG}" ;;
         *)
-            echo "Invalid option: -$OPTARG. Use -n mysql|postgress|sqlserver|oracle." >&2
+            echo "Invalid option: -$OPTARG. Use -n mysql|postgres|sqlserver|oracle." >&2
             exit 1
             ;;
     esac
@@ -39,7 +39,7 @@ done
 
 # Validate required arguments
 if [[ -z "$database_engine" ]]; then
-    echo "Missing database engine. Use -n mysql|postgress|sqlserver|oracle." >&2
+    echo "Missing database engine. Use -n mysql|postgres|sqlserver|oracle." >&2
     exit 1
 fi
 
@@ -48,17 +48,17 @@ case "$database_engine" in
     mysql)
         ./compile-mysql.sh "${args[@]}"
         ;;
-    postgress)
-        ./compile-postgress.sh "${args[@]}"
-        ;;
-    sqlserver)
-        ./compile-sqlserver.sh "${args[@]}"
-        ;;
-    oracle)
-        ./compile-oracle.sh "${args[@]}"
-        ;;
+#    postgres)
+#        ./compile-postgres.sh "${args[@]}"
+#        ;;
+#    sqlserver)
+#        ./compile-sqlserver.sh "${args[@]}"
+#        ;;
+#    oracle)
+#        ./compile-oracle.sh "${args[@]}"
+#        ;;
     *)
-        echo "Unsupported Database Engine/Vendor: $database_engine" >&2
+        echo "Database Engine/Vendor: $database_engine" >&2 " not yet supported. Please Contact OHRI support"
         exit 1
         ;;
 esac

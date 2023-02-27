@@ -25,7 +25,7 @@ public class ScriptRunner {
         compileForMysql(compileScriptFileDirectory);
     }
 
-    public void compileForPostgress() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    public void compileForPostgres() throws IOException, InterruptedException, ExecutionException, TimeoutException {
         String compileScriptFileDirectory = "";
         compile(compileScriptFileDirectory);
     }
