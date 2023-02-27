@@ -38,7 +38,7 @@ dimensions/dim_encounter/sp_mamba_dim_encounter_update.sql
 dimensions/dim_encounter/sp_mamba_dim_encounter.sql
 
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_create.sql
-dimensions/dim_metadata/sp_mamba_dim_concept_metadata_insert.sql
+config/sp_mamba_dim_concept_metadata_insert.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_update.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql
 

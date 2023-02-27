@@ -60,7 +60,7 @@ function read_config_metadata() {
 
   -- \$END"
 
-  echo "$SQL_CONTENTS" > sp_mamba_dim_concept_metadata_insert.sql
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/base/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
 }
 
 function create_directory_if_absent(){
@@ -172,7 +172,7 @@ elif [ "$objects_to_clear" == "views" ] || [ "$objects_to_clear" == "view" ] || 
     clear_objects_sql="CALL dbo.sp_xf_system_drop_all_views_in_schema '$schema_name' "
 fi
 
-# Read in the JSON configuration metadata for Table flattening (passed argument #2)
+# Read in the JSON configuration metadata for Table flattening
 read_config_metadata
 
 if [ -n "$stored_procedures" ]

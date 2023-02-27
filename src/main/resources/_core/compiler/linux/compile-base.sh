@@ -17,6 +17,7 @@ while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
         n)  case "${OPTARG}" in
                 mysql|postgres|sqlserver|oracle)
                     database_engine="${OPTARG}"
+                    add_option "-n" "$database_engine"
                     ;;
                 *)
                     echo "Database Engine/Vendor: ${OPTARG}" >&2 "not yet supported. Please Contact OHRI support"
