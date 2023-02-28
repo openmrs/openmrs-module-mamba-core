@@ -1,6 +1,6 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS dbo.sp_xf_system_execute_etl//
+DROP PROCEDURE IF EXISTS dbo.sp_xf_system_execute_etl;
 
 CREATE PROCEDURE dbo.sp_xf_system_execute_etl()
 BEGIN

@@ -247,6 +247,8 @@ CREATE PROCEDURE $sp_name()
 BEGIN
 $sp_body
 END //
+
+DELIMITER ;
 "
         fi
 

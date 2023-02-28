@@ -10,8 +10,6 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
 
-    -- TRUNCATE TABLE metadata_table;
-
     SELECT JSON_EXTRACT(report_data, '$.flat_report_metadata') INTO @report_array;
     SELECT JSON_LENGTH(@report_array) INTO @report_array_len;
 

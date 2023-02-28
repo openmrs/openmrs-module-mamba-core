@@ -5,7 +5,14 @@
 ../stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 ../stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
 ../stored-procedures/sp_xf_system_drop_all_objects_in_schema.sql
+../stored-procedures/sp_xf_system_drop_all_tables_in_schema.sql
 ../stored-procedures/sp_xf_system_execute_etl.sql
+
+../stored-procedures/sp_flat_encounter_table_create.sql
+../stored-procedures/sp_flat_encounter_table_insert.sql
+../stored-procedures/sp_flat_encounter_table_insert_all.sql
+../stored-procedures/sp_multiselect_values_update.sql
+../stored-procedures/sp_extract_report_metadata.sql
 
 #############################################################################
 ##### Prepare all the necessary stored procedures that will be invoked  #####
@@ -58,6 +65,9 @@ dimensions/dim_client/sp_dim_client_create.sql
 dimensions/dim_client/sp_dim_client_insert.sql
 dimensions/dim_client/sp_dim_client_update.sql
 dimensions/dim_client/sp_dim_client.sql
+
+z/sp_mamba_z_encounter_obs.sql
+z/sp_mamba_z_tables.sql
 
 #############################################################################
 ##### A single stored procedure that invokes (CALLs) the above prepared stored procedures
