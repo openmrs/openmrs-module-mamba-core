@@ -42,7 +42,7 @@ BEGIN
 
     END REPEAT;
 
-END//
+END //
 
 DELIMITER ;
 

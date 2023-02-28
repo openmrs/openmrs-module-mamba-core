@@ -29,6 +29,6 @@ BEGIN
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;
 
-END//
+END //
 
 DELIMITER ;

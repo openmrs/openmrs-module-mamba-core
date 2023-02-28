@@ -63,6 +63,37 @@ function read_config_metadata() {
   echo "$SQL_CONTENTS" > "../../database/$db_engine/base/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
 }
 
+function make_buildfile_liquibase_compatible(){
+
+> "$cleaned_file"
+
+end_pattern="^[[:space:]]*(end|END)[[:space:]]*[/|//][[:space:]]*"
+delimiter_pattern="^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[;|//][[:space:]]*"
+
+while IFS= read -r line; do
+
+if [[ "$line" =~ $end_pattern ]]; then
+  echo "END" >> "$cleaned_file"
+  echo "/" >> "$cleaned_file"
+  continue
+fi
+
+if [[ "$line" =~ $delimiter_pattern ]]; then
+  continue
+fi
+
+  # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
+  if [[ $line == "CREATE PROCEDURE"* ]]; then
+    echo "/" >> "$cleaned_file"
+  fi
+
+  # Write the modified line to the output file
+  echo "$line" >> "$cleaned_file"
+
+done < "$file_to_clean"
+
+}
+
 function create_directory_if_absent(){
     DIR="$1"
 
@@ -86,6 +117,8 @@ vw_out_file="create_views.sql"
 makefile=""
 database=""
 config_dir=""
+cleaned_file=""
+file_to_clean=""
 db_engine=""
 views=""
 stored_procedures=""
@@ -185,7 +218,8 @@ then
     BUILD_DIR="$WORKING_DIR/build"
     create_directory_if_absent "$BUILD_DIR"
 
-    all_stored_procedures="USE $database;
+    # all_stored_procedures="USE $database;
+    all_stored_procedures="
 
 $clear_objects_sql
 "
@@ -257,6 +291,11 @@ DELIMITER ;
     done
 
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
+
+    ### Clean up build file to make it Liquibase compatible ###
+    file_to_clean="$BUILD_DIR/$sp_out_file"
+    cleaned_file="$BUILD_DIR/liquibase_$sp_out_file"
+    make_buildfile_liquibase_compatible
 fi
 
 if [ -n "$views" ]
@@ -269,7 +308,8 @@ then
     BUILD_DIR="$WORKING_DIR/build"
     create_directory_if_absent "$BUILD_DIR"
 
-    views_body="USE $database;
+    # views_body="USE $database;
+    views_body="
 
 $clear_objects_sql
 

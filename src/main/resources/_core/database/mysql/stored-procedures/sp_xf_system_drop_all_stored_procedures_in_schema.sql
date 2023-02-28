@@ -9,6 +9,6 @@ BEGIN
 
     DELETE FROM `mysql`.`proc` WHERE `type` = 'PROCEDURE' AND `db` = database_name; -- works in mysql before v.8
 
-END//
+END //
 
 DELIMITER ;

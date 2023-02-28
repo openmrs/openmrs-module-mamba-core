@@ -1,8 +1,8 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS dbo.sp_xf_system_execute_etl;
+DROP PROCEDURE IF EXISTS sp_xf_system_execute_etl;
 
-CREATE PROCEDURE dbo.sp_xf_system_execute_etl()
+CREATE PROCEDURE sp_xf_system_execute_etl()
 BEGIN
 
     DECLARE start_time bigint;
@@ -19,6 +19,6 @@ BEGIN
     -- Result
     select (@end_time - @start_time) / 1000;
 
-END//
+END //
 
 DELIMITER ;
