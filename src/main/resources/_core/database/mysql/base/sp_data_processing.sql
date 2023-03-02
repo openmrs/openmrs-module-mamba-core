@@ -26,4 +26,6 @@ CALL sp_dim_client;
 
 CALL sp_mamba_z_tables;
 
+CALL sp_flat_encounter_table_create_all;
+
 -- $END

@@ -9,6 +9,7 @@
 ../stored-procedures/sp_xf_system_execute_etl.sql
 
 ../stored-procedures/sp_flat_encounter_table_create.sql
+../stored-procedures/sp_flat_encounter_table_create_all.sql
 ../stored-procedures/sp_flat_encounter_table_insert.sql
 ../stored-procedures/sp_flat_encounter_table_insert_all.sql
 ../stored-procedures/sp_multiselect_values_update.sql
