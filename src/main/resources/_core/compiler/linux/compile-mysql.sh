@@ -65,32 +65,32 @@ function read_config_metadata() {
 
 function make_buildfile_liquibase_compatible(){
 
-> "$cleaned_file"
+  > "$cleaned_file"
 
-end_pattern="^[[:space:]]*(end|END)[[:space:]]*[/|//][[:space:]]*"
-delimiter_pattern="^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[;|//][[:space:]]*"
+  end_pattern="^[[:space:]]*(end|END)[[:space:]]*[/|//][[:space:]]*"
+  delimiter_pattern="^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[;|//][[:space:]]*"
 
-while IFS= read -r line; do
+  while IFS= read -r line; do
 
-if [[ "$line" =~ $end_pattern ]]; then
-  echo "END" >> "$cleaned_file"
-  echo "/" >> "$cleaned_file"
-  continue
-fi
+    if [[ "$line" =~ $end_pattern ]]; then
+      echo "END" >> "$cleaned_file"
+      echo "/" >> "$cleaned_file"
+      continue
+    fi
 
-if [[ "$line" =~ $delimiter_pattern ]]; then
-  continue
-fi
+    if [[ "$line" =~ $delimiter_pattern ]]; then
+      continue
+    fi
 
-  # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
-  if [[ $line == "CREATE PROCEDURE"* ]]; then
-    echo "/" >> "$cleaned_file"
-  fi
+    # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
+    if [[ $line == "CREATE PROCEDURE"* ]]; then
+      echo "/" >> "$cleaned_file"
+    fi
 
-  # Write the modified line to the output file
-  echo "$line" >> "$cleaned_file"
+    # Write the modified line to the output file
+    echo "$line" >> "$cleaned_file"
 
-done < "$file_to_clean"
+  done < "$file_to_clean"
 
 }
 

@@ -28,4 +28,6 @@ CALL sp_mamba_z_tables;
 
 CALL sp_flat_encounter_table_create_all;
 
+CALL sp_flat_encounter_table_insert_all;
+
 -- $END
