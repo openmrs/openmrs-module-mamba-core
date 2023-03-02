@@ -8,7 +8,7 @@ SELECT
     cn.concept_id AS external_concept_id,
     cn.name AS concept_name
 FROM
-    openmrs_dev.concept_name cn
+    concept_name cn
 WHERE
     cn.locale = 'en'
     AND cn.locale_preferred = 1;

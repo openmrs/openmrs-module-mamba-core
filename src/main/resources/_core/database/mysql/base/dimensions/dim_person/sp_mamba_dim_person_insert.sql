@@ -10,6 +10,6 @@ SELECT
     psn.birthdate AS birthdate,
     psn.gender AS gender
 FROM
-    openmrs_dev.person psn;
+    person psn;
 
 -- $END

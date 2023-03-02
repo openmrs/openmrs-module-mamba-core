@@ -8,7 +8,7 @@ SELECT
     et.encounter_type_id AS external_encounter_type_id,
     et.uuid AS encounter_type_uuid
 FROM
-    openmrs_dev.encounter_type et
+    encounter_type et
 WHERE
     et.retired = 0;
 

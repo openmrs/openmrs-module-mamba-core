@@ -8,7 +8,7 @@ SELECT
     dt.concept_datatype_id AS external_datatype_id,
     dt.name AS datatype_name
 FROM
-    openmrs_dev.concept_datatype dt
+    concept_datatype dt
 WHERE
     dt.retired = 0;
 

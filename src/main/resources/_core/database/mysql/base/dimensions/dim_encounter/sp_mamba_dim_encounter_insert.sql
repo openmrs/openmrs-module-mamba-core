@@ -8,6 +8,6 @@ SELECT
     e.encounter_id AS external_encounter_id,
     e.encounter_type AS external_encounter_type_id
 FROM
-    openmrs_dev.encounter e;
+    encounter e;
 
 -- $END

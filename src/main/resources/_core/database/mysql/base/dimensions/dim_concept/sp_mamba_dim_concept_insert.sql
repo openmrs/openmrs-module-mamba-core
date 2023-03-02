@@ -10,7 +10,7 @@ SELECT
     c.concept_id AS external_concept_id,
     c.datatype_id AS external_datatype_id
 FROM
-    openmrs_dev.concept c
+    concept c
 WHERE
     c.retired = 0;
 

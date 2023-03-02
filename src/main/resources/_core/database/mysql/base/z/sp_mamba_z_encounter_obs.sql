@@ -22,7 +22,7 @@ SELECT o.encounter_id         AS encounter_id,
        NULL                   AS obs_question_uuid,
        NULL                   AS obs_answer_uuid,
        NULL                   AS obs_value_coded_uuid
-FROM openmrs_dev.obs o
+FROM obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.external_encounter_id
          INNER JOIN mamba_dim_encounter_type et

@@ -16,6 +16,6 @@ SELECT
     pa.address1 AS address1,
     pa.address2 AS address2
 FROM
-    openmrs_dev.person_address pa;
+    person_address pa;
 
 -- $END
