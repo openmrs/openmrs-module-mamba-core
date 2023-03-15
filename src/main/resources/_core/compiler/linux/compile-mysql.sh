@@ -94,9 +94,55 @@ function make_buildfile_liquibase_compatible(){
 
 }
 
-function clearOutputFile() {
-  > sp_makefile_combined
-  > sp_data_processing.sql
+function consolidateSPsCallerFile() {
+
+  # Save the current directory
+  local currentDir=$(pwd)
+
+  # Get the base dir for the db engine we are working with
+  local dbEngineBaseDir=$(readlink -f "../../database/$db_engine")
+
+  # Search for core's p_data_processing.sql file in all subdirectories in the path: ${project.build.directory}/mamba-etl/_core/database/$db_engine
+  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_data_processing.sql -type f -print -quit)
+  local consolidatedFile=$(find "$dbEngineBaseDir" -name sp_makefile -type f -print -quit)
+
+  # Search for all files with the specified filename in the path: ${project.build.directory}/mamba-etl/_etl
+  # Then get its directory name/path, so we can find a file named sp_data_processing.sql which is in the same dir
+  local sp_make_folders=$(find "../../../_etl" -name sp_makefile -type f -exec dirname {} \; | sort -u)
+
+  # Loop through each folder, cd to that folder
+  local temp_folder_number=1
+  for folder in $sp_make_folders; do
+
+    cd "$folder"
+
+    printf "\n" >> "$consolidatedFile"
+
+    # Read the sp_makefile line by line skipping comments (#) and write the file and its dir structure to a new loc.
+    cat sp_makefile | grep -v "^#" | grep -v "^$" | while read -r line; do
+      echo $line
+      # Extract the file name and folder name from the line
+      # filename=$(basename "$line")
+      # foldername=$(dirname "$line")
+
+      # Output the file name and folder name to the console
+      #echo "File name: $filename"
+      #echo "Folder name: $foldername"
+
+      #Copy the file with its full path and folder structure to the temp folder
+      rsync --relative "$line" "$dbEngineBaseDir"/etl/$temp_folder_number
+
+      # copy the new file path to the consolidated file
+      echo "etl/$temp_folder_number/$line" >>"$consolidatedFile"
+
+    done
+
+     printf "\n" >> "$consolidatedFile"
+
+    temp_folder_number=$((temp_folder_number + 1))
+    cd "$currentDir"
+  done
+
 }
 
 function create_directory_if_absent(){
@@ -212,6 +258,9 @@ fi
 
 # Read in the JSON configuration metadata for Table flattening
 read_config_metadata
+
+# Consolidate all the make files into one file
+consolidateSPsCallerFile
 
 if [ -n "$stored_procedures" ]
 then
