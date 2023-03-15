@@ -60,7 +60,7 @@ function read_config_metadata() {
 
   -- \$END"
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/base/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
 }
 
 function make_buildfile_liquibase_compatible(){
@@ -92,6 +92,11 @@ function make_buildfile_liquibase_compatible(){
 
   done < "$file_to_clean"
 
+}
+
+function clearOutputFile() {
+  > sp_makefile_combined
+  > sp_data_processing.sql
 }
 
 function create_directory_if_absent(){
@@ -292,7 +297,7 @@ DELIMITER ;
 
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
-    ### Clean up build file to make it Liquibase compatible ###
+    ### SG - Clean up build file to make it Liquibase compatible ###
     file_to_clean="$BUILD_DIR/$sp_out_file"
     cleaned_file="$BUILD_DIR/liquibase_$sp_out_file"
     make_buildfile_liquibase_compatible
