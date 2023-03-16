@@ -1,5 +1,4 @@
 -- $BEGIN
-
 CALL sp_xf_system_drop_all_tables_in_schema('openmrs_working');
 
 CALL sp_mamba_dim_concept_datatype;
@@ -29,5 +28,4 @@ CALL sp_mamba_z_tables;
 CALL sp_flat_encounter_table_create_all;
 
 CALL sp_flat_encounter_table_insert_all;
-
 -- $END

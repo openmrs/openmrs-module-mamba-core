@@ -1,0 +1,3 @@
+This folder will contain a copy of any ETL scripts for a given implementation.
+ETL scripts are temporarily copied over from the ohri-mamba implemtnation to this folder
+for easier access when compiling...
