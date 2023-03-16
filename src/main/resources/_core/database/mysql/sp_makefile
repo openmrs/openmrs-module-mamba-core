@@ -1,5 +1,5 @@
 #############################################################################
-####### System Procuedures to do some cleaning up before funning ETL  #######
+################## System Utility Functions and SPs #########################
 #############################################################################
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
@@ -16,7 +16,7 @@ stored-procedures/sp_multiselect_values_update.sql
 stored-procedures/sp_extract_report_metadata.sql
 
 #############################################################################
-##### Prepare all the necessary stored procedures that will be invoked  #####
+####### Prepare all the necessary flattening SPs that will be invoked #######
 #############################################################################
 
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_create.sql
@@ -71,6 +71,6 @@ z/sp_mamba_z_encounter_obs.sql
 z/sp_mamba_z_tables.sql
 
 #############################################################################
-##### A single stored procedure that invokes (CALLs) the above prepared stored procedures
+### A single SP that invokes (CALLs) the above prepared stored procedures ###
 #############################################################################
-sp_data_processing.sql
+sp_data_processing_flatten.sql
