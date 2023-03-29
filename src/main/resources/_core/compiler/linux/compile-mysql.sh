@@ -74,7 +74,7 @@ function make_buildfile_liquibase_compatible(){
 
     if [[ "$line" =~ $end_pattern ]]; then
       echo "END" >> "$cleaned_file"
-      echo "/" >> "$cleaned_file"
+      echo "~" >> "$cleaned_file"
       continue
     fi
 
@@ -84,7 +84,7 @@ function make_buildfile_liquibase_compatible(){
 
     # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
     if [[ $line == "CREATE PROCEDURE"* ]]; then
-      echo "/" >> "$cleaned_file"
+      echo "~" >> "$cleaned_file"
     fi
 
     # Write the modified line to the output file
