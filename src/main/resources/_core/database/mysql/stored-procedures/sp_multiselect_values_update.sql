@@ -3,10 +3,10 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS `sp_multiselect_values_update`;
 
 CREATE PROCEDURE `sp_multiselect_values_update`(
-        IN table_to_update NVARCHAR(100),
-        IN column_names NVARCHAR(20000),
-        IN value_yes NVARCHAR(100),
-        IN value_no NVARCHAR(100)
+        IN table_to_update VARCHAR(100),
+        IN column_names VARCHAR(20000),
+        IN value_yes VARCHAR(100),
+        IN value_no VARCHAR(100)
 )
 BEGIN
 

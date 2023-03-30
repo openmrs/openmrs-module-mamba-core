@@ -73,8 +73,8 @@ function make_buildfile_liquibase_compatible(){
   while IFS= read -r line; do
 
     if [[ "$line" =~ $end_pattern ]]; then
-      echo "END" >> "$cleaned_file"
-      echo "~" >> "$cleaned_file"
+      echo "END~" >> "$cleaned_file"
+#      echo "~" >> "$cleaned_file"
       continue
     fi
 

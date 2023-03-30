@@ -5,7 +5,7 @@ CREATE TABLE mamba_dim_concept (
     uuid CHAR(38) NOT NULL,
     external_concept_id int,
     external_datatype_id int, -- make it a FK
-    datatype NVARCHAR(255) NULL,
+    datatype VARCHAR(255) NULL,
     PRIMARY KEY (concept_id)
 );
 

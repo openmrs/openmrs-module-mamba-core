@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert;
 
 CREATE PROCEDURE sp_flat_encounter_table_insert(
-    IN flat_encounter_table_name NVARCHAR(255)
+    IN flat_encounter_table_name VARCHAR(255)
 )
 BEGIN
 

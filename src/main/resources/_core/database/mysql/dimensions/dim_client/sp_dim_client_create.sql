@@ -4,10 +4,10 @@ CREATE TABLE dim_client (
     client_id INT,
     date_of_birth DATE NULL,
     age INT,
-    sex NVARCHAR(255) NULL,
-    county NVARCHAR(255) NULL,
-    sub_county NVARCHAR(255) NULL,
-    ward NVARCHAR(255) NULL,
+    sex VARCHAR(255) NULL,
+    county VARCHAR(255) NULL,
+    sub_county VARCHAR(255) NULL,
+    ward VARCHAR(255) NULL,
     PRIMARY KEY (id)
 );
 -- $END
