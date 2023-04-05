@@ -3,10 +3,10 @@
 
 CREATE TABLE mamba_z_encounter_obs
 (
-    obs_question_uuid    CHAR(38),
-    obs_answer_uuid      CHAR(38),
-    obs_value_coded_uuid CHAR(38),
-    encounter_type_uuid  CHAR(38)
+    obs_question_uuid    CHAR(38) CHARACTER SET UTF8MB4,
+    obs_answer_uuid      CHAR(38) CHARACTER SET UTF8MB4,
+    obs_value_coded_uuid CHAR(38) CHARACTER SET UTF8MB4,
+    encounter_type_uuid  CHAR(38) CHARACTER SET UTF8MB4
 )
 SELECT o.encounter_id         AS encounter_id,
        o.person_id            AS person_id,

@@ -6,7 +6,7 @@ DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert_all;
 CREATE PROCEDURE sp_flat_encounter_table_insert_all()
 BEGIN
 
-    DECLARE tbl_name NVARCHAR(50);
+    DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
 
     DECLARE done INT DEFAULT FALSE;
 

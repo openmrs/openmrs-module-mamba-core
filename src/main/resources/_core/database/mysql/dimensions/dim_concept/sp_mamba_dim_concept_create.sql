@@ -2,10 +2,10 @@
 
 CREATE TABLE mamba_dim_concept (
     concept_id int NOT NULL AUTO_INCREMENT,
-    uuid CHAR(38) NOT NULL,
+    uuid CHAR(38) CHARACTER SET UTF8MB4 NOT NULL,
     external_concept_id int,
     external_datatype_id int, -- make it a FK
-    datatype NVARCHAR(255) NULL,
+    datatype CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (concept_id)
 );
 

@@ -10,8 +10,8 @@ BEGIN
 	DECLARE @yyyyddmm_formatting_code INT = 112
 	DECLARE @coefficient_for_converting_to_years INT = 10000
 
-	SET @earliest_date_as_yyyyddmm = CONVERT ( CHAR(8), @earliest_date, @yyyyddmm_formatting_code)
-	SET @latest_date_as_yyyyddmm = CONVERT ( CHAR(8), @latest_date, @yyyyddmm_formatting_code)
+	SET @earliest_date_as_yyyyddmm = CONVERT ( CHAR(8) CHARACTER SET UTF8MB4, @earliest_date, @yyyyddmm_formatting_code)
+	SET @latest_date_as_yyyyddmm = CONVERT ( CHAR(8) CHARACTER SET UTF8MB4, @latest_date, @yyyyddmm_formatting_code)
 	
 	SET @age = (@latest_date_as_yyyyddmm - @earliest_date_as_yyyyddmm) / @coefficient_for_converting_to_years
 	

@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create;
 
 CREATE PROCEDURE sp_flat_encounter_table_create(
-    IN flat_encounter_table_name NVARCHAR(255)
+    IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 

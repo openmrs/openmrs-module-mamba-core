@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_views_in_schema;
 
 CREATE PROCEDURE sp_xf_system_drop_all_views_in_schema(
-    IN database_name NVARCHAR(255)
+    IN database_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
