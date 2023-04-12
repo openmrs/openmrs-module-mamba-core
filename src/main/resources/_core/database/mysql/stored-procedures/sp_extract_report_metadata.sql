@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_extract_report_metadata;
 
 CREATE PROCEDURE sp_extract_report_metadata(
-    IN report_data MEDIUMTEXT,
+    IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4,
     IN metadata_table CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN

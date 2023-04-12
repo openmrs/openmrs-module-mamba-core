@@ -37,6 +37,12 @@ create index mamba_z_encounter_obs_encounter_id_type_uuid_person_id_index
 create index mamba_z_encounter_obs_encounter_type_uuid_index
     on mamba_z_encounter_obs (encounter_type_uuid);
 
+create index mamba_z_encounter_obs_question_concept_id_index
+    on mamba_z_encounter_obs (obs_question_concept_id);
+
+create index mamba_z_encounter_obs_value_coded_index
+    on mamba_z_encounter_obs (obs_value_coded);
+
 -- update obs question UUIDs
 UPDATE mamba_z_encounter_obs z
     INNER JOIN mamba_dim_concept c
