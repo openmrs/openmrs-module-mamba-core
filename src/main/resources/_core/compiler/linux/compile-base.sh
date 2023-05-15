@@ -84,7 +84,7 @@ function readCoreMakeFile() {
 
 function readAllMakeFiles() {
 
-  # Search for all files with the specified filename in the path: ${project.build.directory}/mamba-etl/_etl
+  # Search for all files with the specified filename (sp_makefile) in the path: ${project.build.directory}/mamba-etl/_etl
   files=$(find "../../../_etl" -name sp_makefile -type f)
 
   # Loop through each file found and append its contents to the output file
