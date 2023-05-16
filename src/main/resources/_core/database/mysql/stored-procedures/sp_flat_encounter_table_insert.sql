@@ -11,20 +11,20 @@ BEGIN
     SET @tbl_name = flat_encounter_table_name;
 
     SET @old_sql = (SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
-                          FROM INFORMATION_SCHEMA.COLUMNS
-                          WHERE TABLE_NAME = @tbl_name
-                            AND TABLE_SCHEMA = Database());
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = @tbl_name
+                      AND TABLE_SCHEMA = Database());
 
-    SELECT
-      GROUP_CONCAT(DISTINCT
-        CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ', fn_get_obs_value_column(concept_datatype), ' END) ', column_label)
-      ORDER BY concept_metadata_id ASC)
+    SELECT GROUP_CONCAT(DISTINCT
+                        CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
+                               fn_get_obs_value_column(concept_datatype), ' END) ', column_label)
+                        ORDER BY concept_metadata_id ASC)
     INTO @column_labels
     FROM mamba_dim_concept_metadata
-         WHERE flat_table_name = @tbl_name;
+    WHERE flat_table_name = @tbl_name;
 
     SET @insert_stmt = CONCAT(
-            'INSERT INTO `', @tbl_name ,'` SELECT eo.encounter_id, eo.person_id, ', @column_labels, '
+            'INSERT INTO `', @tbl_name, '` SELECT eo.encounter_id, eo.person_id, ', @column_labels, '
             FROM mamba_z_encounter_obs eo
                 INNER JOIN mamba_dim_concept_metadata cm
                 ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)

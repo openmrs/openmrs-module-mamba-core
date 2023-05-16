@@ -1,13 +1,9 @@
 -- $BEGIN
 
-INSERT INTO mamba_dim_encounter (
-     external_encounter_id,
-     external_encounter_type_id
-)
-SELECT
-    e.encounter_id AS external_encounter_id,
-    e.encounter_type AS external_encounter_type_id
-FROM
-    encounter e;
+INSERT INTO mamba_dim_encounter (external_encounter_id,
+                                 external_encounter_type_id)
+SELECT e.encounter_id   AS external_encounter_id,
+       e.encounter_type AS external_encounter_type_id
+FROM encounter e;
 
 -- $END

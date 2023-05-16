@@ -11,7 +11,7 @@ BEGIN
     -- Fix start time in microseconds
     SET @start_time = (UNIX_TIMESTAMP(NOW()) * 1000000 + MICROSECOND(NOW(6)));
 
-    call sp_data_processing();
+    call sp_data_processing_etl();
 
     -- Fix end time in microseconds
     SET @end_time = (UNIX_TIMESTAMP(NOW()) * 1000000 + MICROSECOND(NOW(6)));
