@@ -9,8 +9,11 @@ BEGIN
 
     DECLARE tables_count INT;
 
-    SELECT COUNT(1) INTO tables_count FROM information_schema.tables
-    WHERE TABLE_TYPE = 'VIEW' AND TABLE_SCHEMA = database_name;
+    SELECT COUNT(1)
+    INTO tables_count
+    FROM information_schema.tables
+    WHERE TABLE_TYPE = 'VIEW'
+      AND TABLE_SCHEMA = database_name;
 
     IF tables_count > 0 THEN
 
