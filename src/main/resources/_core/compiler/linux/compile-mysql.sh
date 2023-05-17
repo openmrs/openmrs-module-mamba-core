@@ -87,6 +87,11 @@ function make_buildfile_liquibase_compatible(){
       echo "~" >> "$cleaned_file"
     fi
 
+     # Add the character '/' on a new line before the statement 'CREATE FUNCTION...'
+    if [[ $line == "CREATE FUNCTION"* ]]; then
+      echo "~" >> "$cleaned_file"
+    fi
+
     # Write the modified line to the output file
     echo "$line" >> "$cleaned_file"
 
