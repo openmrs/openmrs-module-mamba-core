@@ -15,11 +15,18 @@ BEGIN
     SELECT GROUP_CONCAT(column_label SEPARATOR ' TEXT, ')
     INTO @column_labels
     FROM mamba_dim_concept_metadata
-    WHERE flat_table_name = flat_encounter_table_name;
+    WHERE flat_table_name = flat_encounter_table_name
+      AND concept_datatype IS NOT NULL;
 
-    SET @create_table = CONCAT(
-            'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT, ', @column_labels,
-            ' TEXT);');
+    IF @column_labels IS NULL THEN
+        SET @create_table = CONCAT(
+                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT);');
+    ELSE
+        SET @create_table = CONCAT(
+                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT, ', @column_labels,
+                ' TEXT);');
+    END IF;
+
 
     PREPARE deletetb FROM @drop_table;
     PREPARE createtb FROM @create_table;
