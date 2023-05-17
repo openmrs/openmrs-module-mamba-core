@@ -282,9 +282,8 @@ then
 
     # all_stored_procedures="USE $database;
     all_stored_procedures="
-
-$clear_objects_sql
-"
+        $clear_objects_sql
+    "
 
     if [ ! -n "$database" ]
     then
@@ -320,20 +319,18 @@ $clear_objects_sql
         then
               sp_body=`cat $WORKING_DIR/$file_path`
               sp_create_statement="
-
 -- ---------------------------------------------------------------------------------------------
--- $sp_name
---
+-- ----------------------  $sp_name  ----------------------------
+-- ---------------------------------------------------------------------------------------------
 
 $sp_body
 
 "
         else
             sp_create_statement="
-
 -- ---------------------------------------------------------------------------------------------
--- $sp_name
---
+-- ----------------------  $sp_name  ----------------------------
+-- ---------------------------------------------------------------------------------------------
 
 DELIMITER //
 
@@ -352,6 +349,11 @@ DELIMITER ;
         $sp_create_statement"
     done
 
+    ### replace any place holders in the script e.g.$target_database
+    ### all_stored_procedures="${all_stored_procedures//'$target_database'/'$database'}" commented out since we are not using it now
+    ### all_stored_procedures="${all_stored_procedures//\$target_database/'$database'}" even this works!!
+
+    ### write built contents (final SQL file contents) to the build output file
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
     ### SG - Clean up build file to make it Liquibase compatible ###
