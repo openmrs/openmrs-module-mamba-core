@@ -15,7 +15,8 @@ BEGIN
     SELECT GROUP_CONCAT(column_label SEPARATOR ' TEXT, ')
     INTO @column_labels
     FROM mamba_dim_concept_metadata
-    WHERE flat_table_name = flat_encounter_table_name;
+    WHERE flat_table_name = flat_encounter_table_name
+      AND concept_datatype IS NOT NULL;
 
     SET @create_table = CONCAT(
             'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT, ', @column_labels,
