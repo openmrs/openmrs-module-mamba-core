@@ -10,7 +10,7 @@ CREATE TABLE mamba_z_encounter_obs
     obs_value_numeric       DOUBLE                              NULL,
     obs_value_coded         INT                                 NULL,
     obs_value_datetime      DATETIME                            NULL,
-    obs_value_complex       VARCHAR(1000) CHARACTER SET UTF8MB4 NULL,
+    obs_value_complex       CHAR(1000) CHARACTER SET UTF8MB4 NULL,
     obs_value_drug          INT                                 NULL,
     obs_question_uuid       CHAR(38) CHARACTER SET UTF8MB4,
     obs_answer_uuid         CHAR(38) CHARACTER SET UTF8MB4,
