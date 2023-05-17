@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP FUNCTION IF EXISTS fn_get_obs_value_column;
 
-CREATE FUNCTION fn_get_obs_value_column(conceptDatatype varchar(20)) returns varchar(20)
+CREATE FUNCTION fn_get_obs_value_column(conceptDatatype CHAR(20)) returns CHAR(20)
     DETERMINISTIC
 BEGIN
      DECLARE obsValueColumn VARCHAR(20);
