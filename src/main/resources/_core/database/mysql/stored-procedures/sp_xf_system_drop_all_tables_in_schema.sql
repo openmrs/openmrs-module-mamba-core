@@ -2,27 +2,28 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_tables_in_schema;
 
-CREATE PROCEDURE sp_xf_system_drop_all_tables_in_schema(
-    IN database_name CHAR(255) CHARACTER SET UTF8MB4
-)
+-- CREATE PROCEDURE sp_xf_system_drop_all_tables_in_schema(IN database_name CHAR(255) CHARACTER SET UTF8MB4)
+CREATE PROCEDURE sp_xf_system_drop_all_tables_in_schema()
 BEGIN
 
     DECLARE tables_count INT;
+
+    SET @database_name = (SELECT DATABASE());
 
     SELECT COUNT(1)
     INTO tables_count
     FROM information_schema.tables
     WHERE TABLE_TYPE = 'BASE TABLE'
-      AND TABLE_SCHEMA = database_name;
+      AND TABLE_SCHEMA = @database_name;
 
     IF tables_count > 0 THEN
 
         SET session group_concat_max_len = 20000;
 
-        SET @tbls = (SELECT GROUP_CONCAT(database_name, '.', TABLE_NAME SEPARATOR ', ')
+        SET @tbls = (SELECT GROUP_CONCAT(@database_name, '.', TABLE_NAME SEPARATOR ', ')
                      FROM information_schema.tables
                      WHERE TABLE_TYPE = 'BASE TABLE'
-                       AND TABLE_SCHEMA = database_name
+                       AND TABLE_SCHEMA = @database_name
                        AND TABLE_NAME REGEXP '^(mamba_|dim_|fact_|flat_)');
 
         IF (@tbls IS NOT NULL) THEN
