@@ -8,4 +8,7 @@ CREATE TABLE mamba_dim_concept_name
     PRIMARY KEY (concept_name_id)
 );
 
+CREATE INDEX mamba_dim_concept_name_external_concept_id_index
+    ON mamba_dim_concept_name (external_concept_id);
+
 -- $END

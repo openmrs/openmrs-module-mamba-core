@@ -8,8 +8,7 @@ CREATE TABLE mamba_dim_concept_datatype
     PRIMARY KEY (concept_datatype_id)
 );
 
-create index mamba_dim_concept_datatype_external_datatype_id_index
-    on mamba_dim_concept_datatype (external_datatype_id);
-
+CREATE INDEX mamba_dim_concept_datatype_external_datatype_id_index
+    ON mamba_dim_concept_datatype (external_datatype_id);
 
 -- $END

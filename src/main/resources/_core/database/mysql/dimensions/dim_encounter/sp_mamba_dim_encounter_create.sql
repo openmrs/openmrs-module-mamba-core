@@ -9,4 +9,13 @@ CREATE TABLE mamba_dim_encounter
     PRIMARY KEY (encounter_id)
 );
 
+CREATE INDEX mamba_dim_encounter_ext_encounter_id_index
+    ON mamba_dim_encounter (external_encounter_id);
+
+CREATE INDEX mamba_dim_encounter_type_ext_encounter_id_index
+    ON mamba_dim_encounter (external_encounter_type_id);
+
+CREATE INDEX mamba_dim_encounter_encounter_type_uuid_index
+    ON mamba_dim_encounter (encounter_type_uuid);
+
 -- $END

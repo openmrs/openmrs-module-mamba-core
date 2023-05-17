@@ -1,5 +1,5 @@
 -- $BEGIN
-CREATE TABLE dim_client
+CREATE TABLE mamba_dim_client
 (
     id            INT                             NOT NULL AUTO_INCREMENT,
     client_id     INT,
@@ -11,4 +11,8 @@ CREATE TABLE dim_client
     ward          CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (id)
 );
+
+create index mamba_dim_client_client_id_index
+    on mamba_dim_client (client_id);
+
 -- $END

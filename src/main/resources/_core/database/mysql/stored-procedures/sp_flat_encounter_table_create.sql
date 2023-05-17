@@ -27,15 +27,27 @@ BEGIN
                 ' TEXT);');
     END IF;
 
+    SET @create_enc_id_index =
+            CONCAT('CREATE INDEX mamba_flat_encounter_id ON `', flat_encounter_table_name, '` (encounter_id);');
+
+    SET @create_client_id_index =
+            CONCAT('CREATE INDEX mamba_flat_client_id ON `', flat_encounter_table_name, '` (client_id);');
+
 
     PREPARE deletetb FROM @drop_table;
     PREPARE createtb FROM @create_table;
+    PREPARE createencididx FROM @create_enc_id_index;
+    PREPARE createclientididx FROM @create_client_id_index;
 
     EXECUTE deletetb;
     EXECUTE createtb;
+    EXECUTE createencididx;
+    EXECUTE createclientididx;
 
     DEALLOCATE PREPARE deletetb;
     DEALLOCATE PREPARE createtb;
+    DEALLOCATE PREPARE createencididx;
+    DEALLOCATE PREPARE createclientididx;
 
 END //
 

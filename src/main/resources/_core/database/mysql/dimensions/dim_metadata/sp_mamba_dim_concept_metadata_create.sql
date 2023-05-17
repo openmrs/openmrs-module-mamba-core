@@ -15,8 +15,17 @@ CREATE TABLE mamba_dim_concept_metadata
     PRIMARY KEY (concept_metadata_id)
 );
 
-create index mamba_dim_concept_metadata_concept_uuid_index
-    on mamba_dim_concept_metadata (concept_uuid);
+CREATE INDEX mamba_dim_concept_metadata_concept_uuid_index
+    ON mamba_dim_concept_metadata (concept_uuid);
+
+CREATE INDEX mamba_dim_concept_metadata_encounter_type_uuid_index
+    ON mamba_dim_concept_metadata (encounter_type_uuid);
+
+CREATE INDEX mamba_dim_concept_metadata_concept_answer_obs_index
+    ON mamba_dim_concept_metadata (concept_answer_obs);
+
+CREATE INDEX mamba_dim_concept_metadata_flat_table_name_index
+    ON mamba_dim_concept_metadata (flat_table_name);
 
 -- ALTER TABLE `mamba_dim_concept_metadata`
 --     ADD COLUMN `encounter_type_id` INT NULL AFTER `output_table_name`,

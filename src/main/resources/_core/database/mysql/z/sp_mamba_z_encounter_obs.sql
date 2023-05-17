@@ -3,7 +3,6 @@
 CREATE TABLE mamba_z_encounter_obs
 (
     obs_question_uuid    CHAR(38) CHARACTER SET UTF8MB4,
---    obs_answer_uuid      CHAR(38) CHARACTER SET UTF8MB4,
     obs_value_coded_uuid CHAR(38) CHARACTER SET UTF8MB4,
     encounter_type_uuid  CHAR(38) CHARACTER SET UTF8MB4
 )
@@ -19,7 +18,6 @@ SELECT o.encounter_id         AS encounter_id,
        o.value_drug           AS obs_value_drug,
        et.encounter_type_uuid AS encounter_type_uuid,
        NULL                   AS obs_question_uuid,
---       NULL                   AS obs_answer_uuid,
        NULL                   AS obs_value_coded_uuid
 FROM obs o
          INNER JOIN mamba_dim_encounter e
@@ -32,6 +30,12 @@ WHERE et.encounter_type_uuid
 
 CREATE INDEX mamba_z_encounter_obs_encounter_id_type_uuid_person_id_index
     ON mamba_z_encounter_obs (encounter_id, encounter_type_uuid, person_id);
+
+CREATE INDEX mamba_z_encounter_obs_encounter_id_person_id_index
+    ON mamba_z_encounter_obs (encounter_id, person_id);
+
+CREATE INDEX mamba_z_encounter_obs_encounter_id_index
+    ON mamba_z_encounter_obs (encounter_id);
 
 CREATE INDEX mamba_z_encounter_obs_encounter_type_uuid_index
     ON mamba_z_encounter_obs (encounter_type_uuid);

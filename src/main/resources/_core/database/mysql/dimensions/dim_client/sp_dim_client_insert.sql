@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO dim_client (client_id,
+INSERT INTO mamba_dim_client (client_id,
                         date_of_birth,
                         age,
                         sex,

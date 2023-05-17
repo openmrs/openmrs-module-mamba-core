@@ -8,7 +8,8 @@ CREATE TABLE mamba_dim_person
     gender             CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (person_id)
 );
-create index mamba_dim_person_external_person_id_index
-    on mamba_dim_person (external_person_id);
+
+CREATE INDEX mamba_dim_person_external_person_id_index
+    ON mamba_dim_person (external_person_id);
 
 -- $END

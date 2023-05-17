@@ -11,7 +11,11 @@ CREATE TABLE mamba_dim_person_address
     address2                   CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (person_address_id)
 );
-create index mamba_dim_person_address_external_person_id_index
-    on mamba_dim_person_address (external_person_id);
+
+CREATE INDEX mamba_dim_person_address_external_person_id_index
+    ON mamba_dim_person_address (external_person_id);
+
+CREATE INDEX mamba_dim_person_address_external_person_address_id_index
+    ON mamba_dim_person_address (external_person_address_id);
 
 -- $END

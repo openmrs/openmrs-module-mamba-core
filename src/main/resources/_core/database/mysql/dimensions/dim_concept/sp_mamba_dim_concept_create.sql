@@ -16,4 +16,7 @@ CREATE INDEX mamba_dim_concept_external_concept_id_index
 CREATE INDEX mamba_dim_concept_external_datatype_id_index
     ON mamba_dim_concept (external_datatype_id);
 
+CREATE INDEX mamba_dim_concept_uuid_index
+    ON mamba_dim_concept (uuid);
+
 -- $END

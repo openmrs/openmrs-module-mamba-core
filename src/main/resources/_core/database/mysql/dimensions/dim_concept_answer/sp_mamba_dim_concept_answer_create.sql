@@ -9,4 +9,10 @@ CREATE TABLE mamba_dim_concept_answer
     PRIMARY KEY (concept_answer_id)
 );
 
+create index mamba_dim_concept_answer_concept_id_index
+    on mamba_dim_concept_answer (concept_id);
+
+create index mamba_dim_concept_answer_concept_index
+    on mamba_dim_concept_answer (answer_concept);
+
 -- $END
