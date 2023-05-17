@@ -3,6 +3,7 @@
 #############################################################################
 
 functions/fn_get_obs_value_column.sql
+functions/fn_calculate_agegroup.sql
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
@@ -16,6 +17,7 @@ stored-procedures/sp_flat_encounter_table_insert.sql
 stored-procedures/sp_flat_encounter_table_insert_all.sql
 stored-procedures/sp_multiselect_values_update.sql
 stored-procedures/sp_extract_report_metadata.sql
+stored-procedures/sp_load_agegroup.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
