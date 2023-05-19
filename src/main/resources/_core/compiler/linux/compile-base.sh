@@ -41,7 +41,7 @@ while getopts ":h:t:n:d:v:s:k:o:b:c:" opt; do
     elif [[ $recompile_scripts == "1" ]]; then
       echo "=================== Recompile flag -b is set to 1, engine will rebuild the scripts. Don't forget to change the Liquibase ChangeSet ID if deploying module"
     else
-      echo "=================== ERROR: The MambaETL Recompile flag -b in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>"
+      echo "=================== ERROR: The MambaETL Recompile flag '-b' in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>"
       exit 1
     fi
     #add_option "-b" "${OPTARG}" We don't need to forward this argument
@@ -54,9 +54,15 @@ while getopts ":h:t:n:d:v:s:k:o:b:c:" opt; do
   esac
 done
 
+ # Check if Re-compile flag is given
+if [[ -z "$recompile_scripts" ]]; then
+  echo "=================== ERROR: Missing Re-compile flag '-b'. The MambaETL Recompile flag -b in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>" >&2
+  exit 1
+fi
+
 # Validate required arguments
 if [[ -z "$database_engine" ]]; then
-  echo "Missing database engine. Use -n mysql|postgres|sqlserver|oracle." >&2
+  echo "=================== ERROR: Missing database engine. Use -n mysql|postgres|sqlserver|oracle." >&2
   exit 1
 fi
 
