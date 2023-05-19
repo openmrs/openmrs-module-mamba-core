@@ -16,6 +16,7 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
     -s SP_MAKEFILE  file with a list of all files with stored procedures
     -k SCHEMA       schema in which the views and or stored procedures will be put
     -o OUTPUT_FILE  the file where the compiled output will be put
+    -b BUILD_FLAG   (1 or 0) - If set to 1, engine will recompile scripts, if 0 - do nothing
     -c all          clear all schema objects before run
     -c sp           clear all stored procedures before run
     -c views        clear all views before run
@@ -33,6 +34,8 @@ echo "ARG 7  : $7"
 echo "ARG 8  : $8"
 echo "ARG 9  : $9"
 echo "ARG 10 : ${10}"
+echo "ARG 11 : ${11}"
+echo "ARG 12 : ${12}"
 
 # Read in the JSON configuration metadata for Table flattening
 function read_config_metadata() {

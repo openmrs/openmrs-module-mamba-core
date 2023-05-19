@@ -2,6 +2,7 @@
 
 # Initialize variables
 database_engine=""
+recompile_scripts=""
 args=()
 
 # Function to handle options
@@ -10,7 +11,7 @@ add_option() {
 }
 
 # Parse arguments
-while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
+while getopts ":h:t:n:d:v:s:k:o:b:c:" opt; do
   case "${opt}" in
   h) add_option "-h" "${OPTARG}" ;;
   t) add_option "-t" "${OPTARG}" ;;
@@ -31,6 +32,20 @@ while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
   s) add_option "-s" "${OPTARG}" ;;
   k) add_option "-k" "${OPTARG}" ;;
   o) add_option "-o" "${OPTARG}" ;;
+  b)
+    # Check the re-compile/build flag if 1 to re-compile
+    recompile_scripts="${OPTARG}"
+    if [[ $recompile_scripts == "0" ]]; then
+      echo "=================== Recompile flag -b is set to 0, engine will NOT rebuild the scripts ==================="
+      exit 0
+    elif [[ $recompile_scripts == "1" ]]; then
+      echo "=================== Recompile flag -b is set to 1, engine will rebuild the scripts. Don't forget to change the Liquibase ChangeSet ID if deploying module"
+    else
+      echo "=================== ERROR: The MambaETL Recompile flag '-b' in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>"
+      exit 1
+    fi
+    #add_option "-b" "${OPTARG}" We don't need to forward this argument
+    ;;
   c) add_option "-c" "${OPTARG}" ;;
   *)
     echo "Invalid option: -$OPTARG. Use -n mysql|postgres|sqlserver|oracle." >&2
@@ -39,9 +54,15 @@ while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
   esac
 done
 
+ # Check if Re-compile flag is given
+if [[ -z "$recompile_scripts" ]]; then
+  echo "=================== ERROR: Missing Re-compile flag '-b'. The MambaETL Recompile flag -b in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>" >&2
+  exit 1
+fi
+
 # Validate required arguments
 if [[ -z "$database_engine" ]]; then
-  echo "Missing database engine. Use -n mysql|postgres|sqlserver|oracle." >&2
+  echo "=================== ERROR: Missing database engine. Use -n mysql|postgres|sqlserver|oracle." >&2
   exit 1
 fi
 
