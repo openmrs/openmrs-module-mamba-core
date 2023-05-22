@@ -3,10 +3,10 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS `sp_multiselect_values_update`;
 
 CREATE PROCEDURE `sp_multiselect_values_update`(
-        IN table_to_update VARCHAR(100),
-        IN column_names VARCHAR(20000),
-        IN value_yes VARCHAR(100),
-        IN value_no VARCHAR(100)
+    IN table_to_update CHAR(100) CHARACTER SET UTF8MB4,
+    IN column_names TEXT CHARACTER SET UTF8MB4,
+    IN value_yes CHAR(100) CHARACTER SET UTF8MB4,
+    IN value_no CHAR(100) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -28,8 +28,9 @@ BEGIN
 
         -- UPDATE fact_hts SET @column_label=IF(@column_label IS NULL OR '', new_value_if_false, new_value_if_true);
 
-         SET @update_sql = CONCAT(
-             'UPDATE ', table_to_update ,' SET ', @column_label ,'= IF(', @column_label ,' IS NOT NULL, ''',value_yes,''', ''',value_no,''');');
+        SET @update_sql = CONCAT(
+                'UPDATE ', table_to_update, ' SET ', @column_label, '= IF(', @column_label, ' IS NOT NULL, ''',
+                value_yes, ''', ''', value_no, ''');');
         PREPARE stmt FROM @update_sql;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -38,9 +39,8 @@ BEGIN
             SET @table_columns = substring(@table_columns, @comma_pos + 1);
             SET @comma_pos = locate(',', @table_columns);
         END IF;
-        UNTIL @end_loop = 1
-
-    END REPEAT;
+    UNTIL @end_loop = 1
+        END REPEAT;
 
 END //
 

@@ -1,9 +1,10 @@
 -- $BEGIN
 
-CREATE TABLE mamba_dim_concept_datatype (
-    concept_datatype_id int NOT NULL AUTO_INCREMENT,
+CREATE TABLE mamba_dim_concept_datatype
+(
+    concept_datatype_id  int                             NOT NULL AUTO_INCREMENT,
     external_datatype_id int,
-    datatype_name VARCHAR(255) NULL,
+    datatype_name        CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (concept_datatype_id)
 );
 

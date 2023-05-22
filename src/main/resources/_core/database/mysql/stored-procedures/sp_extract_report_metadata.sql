@@ -3,8 +3,8 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_extract_report_metadata;
 
 CREATE PROCEDURE sp_extract_report_metadata(
-    IN report_data MEDIUMTEXT,
-    IN metadata_table VARCHAR(255)
+    IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4,
+    IN metadata_table CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -33,10 +33,10 @@ BEGIN
 
                     SET @tbl_name = '';
                     INSERT INTO mamba_dim_concept_metadata(report_name,
-                                                            flat_table_name,
-                                                            encounter_type_uuid,
-                                                            column_label,
-                                                            concept_uuid)
+                                                           flat_table_name,
+                                                           encounter_type_uuid,
+                                                           column_label,
+                                                           concept_uuid)
                     VALUES (JSON_UNQUOTE(@report_name),
                             JSON_UNQUOTE(@flat_table_name),
                             JSON_UNQUOTE(@encounter_type),

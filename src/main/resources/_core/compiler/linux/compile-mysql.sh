@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Usage info
 function show_help() {
@@ -11,11 +11,12 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
     -h              display this help and exit
     -t CONFIG_DIR   JSON configuration file
     -n DB_ENGINE    Database Vendor/Engine. One of: mysql|postgres|sqlserver|oracle
-    -d DATABASE     the database the created stored procedures will run on.
+    -d DATABASE     the Target/Analysis Database the created stored procedures will run on.
     -v VW_MAKEFILE  file with a list of all files with views
     -s SP_MAKEFILE  file with a list of all files with stored procedures
     -k SCHEMA       schema in which the views and or stored procedures will be put
     -o OUTPUT_FILE  the file where the compiled output will be put
+    -b BUILD_FLAG   (1 or 0) - If set to 1, engine will recompile scripts, if 0 - do nothing
     -c all          clear all schema objects before run
     -c sp           clear all stored procedures before run
     -c views        clear all views before run
@@ -33,6 +34,8 @@ echo "ARG 7  : $7"
 echo "ARG 8  : $8"
 echo "ARG 9  : $9"
 echo "ARG 10 : ${10}"
+echo "ARG 11 : ${11}"
+echo "ARG 12 : ${12}"
 
 # Read in the JSON configuration metadata for Table flattening
 function read_config_metadata() {
@@ -84,6 +87,11 @@ function make_buildfile_liquibase_compatible(){
 
     # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
     if [[ $line == "CREATE PROCEDURE"* ]]; then
+      echo "~" >> "$cleaned_file"
+    fi
+
+     # Add the character '/' on a new line before the statement 'CREATE FUNCTION...'
+    if [[ $line == "CREATE FUNCTION"* ]]; then
       echo "~" >> "$cleaned_file"
     fi
 
@@ -174,7 +182,7 @@ BUILD_DIR=""
 sp_out_file="create_stored_procedures.sql"
 vw_out_file="create_views.sql"
 makefile=""
-database=""
+analysis_database=""
 config_dir=""
 cleaned_file=""
 file_to_clean=""
@@ -197,7 +205,7 @@ while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
             ;;
         n)  db_engine="$OPTARG"
             ;;
-        d)  database="$OPTARG"
+        d)  analysis_database="$OPTARG"
             ;;
         v)  views="$OPTARG"
             ;;
@@ -280,13 +288,12 @@ then
     BUILD_DIR="$WORKING_DIR/build"
     create_directory_if_absent "$BUILD_DIR"
 
-    # all_stored_procedures="USE $database;
+    # all_stored_procedures="USE $analysis_database;
     all_stored_procedures="
+        $clear_objects_sql
+    "
 
-$clear_objects_sql
-"
-
-    if [ ! -n "$database" ]
+    if [ ! -n "$analysis_database" ]
     then
         all_stored_procedures=""
     fi
@@ -320,20 +327,18 @@ $clear_objects_sql
         then
               sp_body=`cat $WORKING_DIR/$file_path`
               sp_create_statement="
-
 -- ---------------------------------------------------------------------------------------------
--- $sp_name
---
+-- ----------------------  $sp_name  ----------------------------
+-- ---------------------------------------------------------------------------------------------
 
 $sp_body
 
 "
         else
             sp_create_statement="
-
 -- ---------------------------------------------------------------------------------------------
--- $sp_name
---
+-- ----------------------  $sp_name  ----------------------------
+-- ---------------------------------------------------------------------------------------------
 
 DELIMITER //
 
@@ -352,6 +357,11 @@ DELIMITER ;
         $sp_create_statement"
     done
 
+    ### SG - replace any place holders in the script e.g.$target_database
+    ### all_stored_procedures="${all_stored_procedures//'$target_database'/'$analysis_database'}" commented out since we are not using it now
+    ### all_stored_procedures="${all_stored_procedures//\$target_database/'$analysis_database'}" even this works!!
+
+    ### write built contents (final SQL file contents) to the build output file
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
     ### SG - Clean up build file to make it Liquibase compatible ###
@@ -370,13 +380,13 @@ then
     BUILD_DIR="$WORKING_DIR/build"
     create_directory_if_absent "$BUILD_DIR"
 
-    # views_body="USE $database;
+    # views_body="USE $analysis_database;
     views_body="
 
 $clear_objects_sql
 
 "
-    if [ ! -n "$database" ]
+    if [ ! -n "$analysis_database" ]
     then
         views_body=""
     fi

@@ -1,5 +1,6 @@
 -- $BEGIN
-CALL sp_xf_system_drop_all_tables_in_schema('alive');
+-- CALL sp_xf_system_drop_all_tables_in_schema($target_database);
+CALL sp_xf_system_drop_all_tables_in_schema();
 
 CALL sp_mamba_dim_concept_datatype;
 
