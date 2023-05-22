@@ -1,9 +1,9 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_create;
 
-CREATE PROCEDURE sp_flat_encounter_table_create(
-    IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
+CREATE PROCEDURE sp_mamba_flat_encounter_table_create(
+    IN flat_encounter_table_name VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
 
@@ -20,10 +20,10 @@ BEGIN
 
     IF @column_labels IS NULL THEN
         SET @create_table = CONCAT(
-                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT);');
+                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL);');
     ELSE
         SET @create_table = CONCAT(
-                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT, ', @column_labels,
+                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, ', @column_labels,
                 ' TEXT);');
     END IF;
 

@@ -1,11 +1,13 @@
 -- $BEGIN
 
-INSERT INTO mamba_z_encounter_obs (encounter_id, person_id, obs_datetime, obs_question_concept_id, obs_value_text,
+INSERT INTO mamba_z_encounter_obs (encounter_id, person_id, encounter_datetime, obs_datetime, obs_question_concept_id,
+                                   obs_value_text,
                                    obs_value_numeric, obs_value_coded, obs_value_datetime, obs_value_complex,
                                    obs_value_drug, encounter_type_uuid, obs_question_uuid, obs_answer_uuid,
                                    obs_value_coded_uuid)
 SELECT o.encounter_id         AS encounter_id,
        o.person_id            AS person_id,
+       e.encounter_datetime   AS encounter_datetime,
        o.obs_datetime         AS obs_datetime,
        o.concept_id           AS obs_question_concept_id,
        o.value_text           AS obs_value_text,

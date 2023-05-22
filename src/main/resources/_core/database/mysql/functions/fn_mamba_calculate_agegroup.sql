@@ -1,8 +1,8 @@
 DELIMITER //
 
-DROP FUNCTION IF EXISTS fn_calculate_agegroup;
+DROP FUNCTION IF EXISTS fn_mamba_calculate_agegroup;
 
-CREATE FUNCTION fn_calculate_agegroup(age INT) RETURNS VARCHAR(15)
+CREATE FUNCTION fn_mamba_calculate_agegroup(age INT) RETURNS VARCHAR(15)
     DETERMINISTIC
 BEGIN
     DECLARE agegroup VARCHAR(15);

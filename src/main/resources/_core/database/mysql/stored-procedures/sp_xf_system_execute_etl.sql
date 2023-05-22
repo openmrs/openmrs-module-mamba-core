@@ -46,7 +46,7 @@ BEGIN
     SET start_date_time = NOW();
     SET @start_time = (UNIX_TIMESTAMP(NOW()) * 1000000 + MICROSECOND(NOW(6)));
 
-    CALL sp_data_processing_etl();
+    CALL sp_mamba_data_processing_etl();
 
     -- Fix end time in microseconds
     SET end_date_time = NOW();

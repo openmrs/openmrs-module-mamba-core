@@ -22,11 +22,11 @@ CALL sp_mamba_dim_person_name;
 
 CALL sp_mamba_dim_person_address;
 
-CALL sp_dim_client;
+CALL sp_mamba_dim_client;
 
-CALL sp_mamba_z_tables;
+CALL sp_mamba_z_encounter_obs;
 
-CALL sp_flat_encounter_table_create_all;
+CALL sp_mamba_flat_encounter_table_create_all;
 
-CALL sp_flat_encounter_table_insert_all;
+CALL sp_mamba_flat_encounter_table_insert_all;
 -- $END

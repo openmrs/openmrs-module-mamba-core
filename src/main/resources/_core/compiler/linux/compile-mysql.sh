@@ -59,7 +59,7 @@ function read_config_metadata() {
 
   SET @report_data = \''$JSON_CONTENTS\'';
 
-  CALL sp_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');'"
+  CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');'"
 
   -- \$END"
 
@@ -111,11 +111,11 @@ function consolidateSPsCallerFile() {
   local dbEngineBaseDir=$(readlink -f "../../database/$db_engine")
 
   # Search for core's p_data_processing.sql file in all subdirectories in the path: ${project.build.directory}/mamba-etl/_core/database/$db_engine
-  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_data_processing_flatten.sql -type f -print -quit)
+  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_mamba_data_processing_flatten.sql -type f -print -quit)
   local consolidatedFile=$(find "$dbEngineBaseDir" -name sp_makefile -type f -print -quit)
 
   # Search for all files with the specified filename in the path: ${project.build.directory}/mamba-etl/_etl
-  # Then get its directory name/path, so we can find a file named sp_data_processing_flatten.sql which is in the same dir
+  # Then get its directory name/path, so we can find a file named sp_mamba_data_processing_flatten.sql which is in the same dir
   local sp_make_folders=$(find "../../../_etl" -name sp_makefile -type f -exec dirname {} \; | sort -u)
 
   local newLine="\n"
