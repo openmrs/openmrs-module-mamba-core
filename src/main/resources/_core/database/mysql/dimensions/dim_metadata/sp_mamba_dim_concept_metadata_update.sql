@@ -8,10 +8,11 @@ UPDATE mamba_dim_concept_metadata md
     ON c.concept_id = cn.concept_id
 SET md.concept_datatype = c.datatype,
     md.concept_id       = c.concept_id,
-    md.concept_name = cn.concept_name
+    md.concept_name     = cn.name
 WHERE md.id > 0
   AND cn.locale = md.concepts_locale
-  AND cn.locale_preferred = 1;
+  AND IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED');
+-- Use locale preferred or Fully specified name
 
 -- Update to True if this field is an obs answer to an obs Question
 UPDATE mamba_dim_concept_metadata md

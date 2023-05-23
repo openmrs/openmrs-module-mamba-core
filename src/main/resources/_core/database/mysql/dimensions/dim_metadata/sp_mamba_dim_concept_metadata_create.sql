@@ -10,7 +10,7 @@ CREATE TABLE mamba_dim_concept_metadata
     column_number       INT,
     column_label        VARCHAR(50)  NOT NULL,
     concept_datatype    VARCHAR(255) NULL,
-    concept_answer_obs  TINYINT   NOT NULL,
+    concept_answer_obs  TINYINT      NOT NULL DEFAULT 0,
     report_name         VARCHAR(255) NOT NULL,
     flat_table_name     VARCHAR(255) NULL,
     encounter_type_uuid CHAR(38)     NOT NULL,

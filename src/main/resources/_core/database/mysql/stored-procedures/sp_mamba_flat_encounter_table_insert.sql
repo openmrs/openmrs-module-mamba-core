@@ -18,7 +18,7 @@ BEGIN
     SELECT GROUP_CONCAT(DISTINCT
                         CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
                                fn_mamba_get_obs_value_column(concept_datatype), ' END) ', column_label)
-                        ORDER BY concept_metadata_id ASC)
+                        ORDER BY id ASC)
     INTO @column_labels
     FROM mamba_dim_concept_metadata
     WHERE flat_table_name = @tbl_name;

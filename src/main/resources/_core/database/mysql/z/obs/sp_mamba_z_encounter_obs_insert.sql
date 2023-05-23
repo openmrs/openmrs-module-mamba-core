@@ -32,6 +32,7 @@ SELECT o.encounter_id,
        NULL             AS obs_value_coded_uuid
 FROM obs o
          INNER JOIN mamba_dim_encounter e
-                    ON o.encounter_id = e.encounter_id;
+                    ON o.encounter_id = e.encounter_id
+WHERE o.encounter_id IS NOT NULL;
 
 -- $END
