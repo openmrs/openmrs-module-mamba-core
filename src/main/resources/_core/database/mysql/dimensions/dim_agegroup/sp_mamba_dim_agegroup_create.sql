@@ -1,11 +1,14 @@
 -- $BEGIN
 
-CREATE TABLE dim_agegroup
+CREATE TABLE mamba_dim_agegroup
 (
-    dim_age_id      INT AUTO_INCREMENT PRIMARY KEY,
-    age             INT                            NULL,
-    datim_agegroup  CHAR(50) CHARACTER SET UTF8MB4 NULL,
-    normal_agegroup CHAR(50) CHARACTER SET UTF8MB4 NULL
-);
+    id              INT         NOT NULL AUTO_INCREMENT,
+    age             INT         NULL,
+    datim_agegroup  VARCHAR(50) NULL,
+    normal_agegroup VARCHAR(50) NULL,
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
 
 -- $END

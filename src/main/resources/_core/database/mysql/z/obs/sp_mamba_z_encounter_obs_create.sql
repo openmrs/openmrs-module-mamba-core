@@ -2,6 +2,7 @@
 
 CREATE TABLE mamba_z_encounter_obs
 (
+    id                      INT           NOT NULL AUTO_INCREMENT,
     encounter_id            INT           NULL,
     person_id               INT           NOT NULL,
     encounter_datetime      DATETIME      NOT NULL,
@@ -16,7 +17,9 @@ CREATE TABLE mamba_z_encounter_obs
     obs_question_uuid       CHAR(38),
     obs_answer_uuid         CHAR(38),
     obs_value_coded_uuid    CHAR(38),
-    encounter_type_uuid     CHAR(38)
+    encounter_type_uuid     CHAR(38),
+
+    PRIMARY KEY (id)
 )
     CHARSET = UTF8MB4;
 

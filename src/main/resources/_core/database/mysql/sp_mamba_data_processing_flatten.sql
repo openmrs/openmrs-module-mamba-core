@@ -10,11 +10,11 @@ CALL sp_mamba_dim_concept_name;
 
 CALL sp_mamba_dim_concept;
 
+CALL sp_mamba_dim_concept_metadata;
+
 CALL sp_mamba_dim_encounter_type;
 
 CALL sp_mamba_dim_encounter;
-
-CALL sp_mamba_dim_concept_metadata;
 
 CALL sp_mamba_dim_person;
 
@@ -22,7 +22,7 @@ CALL sp_mamba_dim_person_name;
 
 CALL sp_mamba_dim_person_address;
 
-CALL sp_mamba_dim_client;
+CALL sp_mamba_dim_agegroup;
 
 CALL sp_mamba_z_encounter_obs;
 

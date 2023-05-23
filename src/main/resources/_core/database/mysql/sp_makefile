@@ -9,7 +9,7 @@ stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_objects_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_tables_in_schema.sql
-stored-procedures/sp_xf_system_execute_etl.sql
+stored-procedures/sp_mamba_etl_execute.sql
 
 stored-procedures/sp_mamba_flat_encounter_table_create.sql
 stored-procedures/sp_mamba_flat_encounter_table_create_all.sql
@@ -66,10 +66,10 @@ dimensions/dim_person_address/sp_mamba_dim_person_address_create.sql
 dimensions/dim_person_address/sp_mamba_dim_person_address_insert.sql
 dimensions/dim_person_address/sp_mamba_dim_person_address.sql
 
-dimensions/dim_client/sp_mamba_dim_client_create.sql
-dimensions/dim_client/sp_mamba_dim_client_insert.sql
-dimensions/dim_client/sp_mamba_dim_client_update.sql
-dimensions/dim_client/sp_mamba_dim_client.sql
+dimensions/dim_agegroup/sp_mamba_dim_agegroup_create.sql
+dimensions/dim_agegroup/sp_mamba_dim_agegroup_insert.sql
+dimensions/dim_agegroup/sp_mamba_dim_agegroup_update.sql
+dimensions/dim_agegroup/sp_mamba_dim_agegroup.sql
 
 z/obs/sp_mamba_z_encounter_obs_create.sql
 z/obs/sp_mamba_z_encounter_obs_insert.sql
