@@ -18,6 +18,8 @@ CREATE TABLE mamba_z_encounter_obs
     obs_answer_uuid         CHAR(38),
     obs_value_coded_uuid    CHAR(38),
     encounter_type_uuid     CHAR(38),
+    status                  VARCHAR(16)   NOT NULL,
+    voided                  TINYINT       NOT NULL,
 
     PRIMARY KEY (id)
 )
@@ -40,5 +42,11 @@ CREATE INDEX mamba_z_encounter_obs_value_coded_uuid_index
 
 CREATE INDEX mamba_z_encounter_obs_question_uuid_index
     ON mamba_z_encounter_obs (obs_question_uuid);
+
+CREATE INDEX mamba_z_encounter_obs_status_index
+    ON mamba_z_encounter_obs (status);
+
+CREATE INDEX mamba_z_encounter_obs_voided_index
+    ON mamba_z_encounter_obs (voided);
 
 -- $END

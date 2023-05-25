@@ -2,6 +2,10 @@
 -- CALL sp_xf_system_drop_all_tables_in_schema($target_database);
 CALL sp_xf_system_drop_all_tables_in_schema();
 
+CALL sp_mamba_dim_location;
+
+CALL sp_mamba_dim_patient_identifier_type;
+
 CALL sp_mamba_dim_concept_datatype;
 
 CALL sp_mamba_dim_concept_answer;
@@ -21,6 +25,8 @@ CALL sp_mamba_dim_person;
 CALL sp_mamba_dim_person_name;
 
 CALL sp_mamba_dim_person_address;
+
+CALL sp_mamba_dim_patient_identifier;
 
 CALL sp_mamba_dim_agegroup;
 

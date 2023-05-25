@@ -23,6 +23,16 @@ stored-procedures/sp_mamba_load_agegroup.sql
 ####### Prepare all the necessary flattening SPs that will be invoked #######
 #############################################################################
 
+dimensions/dim_location/sp_mamba_dim_location_create.sql
+dimensions/dim_location/sp_mamba_dim_location_insert.sql
+dimensions/dim_location/sp_mamba_dim_location_update.sql
+dimensions/dim_location/sp_mamba_dim_location.sql
+
+dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_create.sql
+dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_insert.sql
+dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_update.sql
+dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type.sql
+
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_create.sql
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_insert.sql
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype.sql
@@ -57,6 +67,11 @@ dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql
 dimensions/dim_person/sp_mamba_dim_person_create.sql
 dimensions/dim_person/sp_mamba_dim_person_insert.sql
 dimensions/dim_person/sp_mamba_dim_person.sql
+
+dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_create.sql
+dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_insert.sql
+dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_update.sql
+dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier.sql
 
 dimensions/dim_person_name/sp_mamba_dim_person_name_create.sql
 dimensions/dim_person_name/sp_mamba_dim_person_name_insert.sql

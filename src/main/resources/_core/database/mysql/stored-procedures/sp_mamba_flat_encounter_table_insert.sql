@@ -24,7 +24,8 @@ BEGIN
     WHERE flat_table_name = @tbl_name;
 
     SET @insert_stmt = CONCAT(
-            'INSERT INTO `', @tbl_name, '` SELECT eo.encounter_id, eo.person_id, eo.encounter_datetime, ', @column_labels, '
+            'INSERT INTO `', @tbl_name, '` SELECT eo.encounter_id, eo.person_id, eo.encounter_datetime, ',
+            @column_labels, '
             FROM mamba_z_encounter_obs eo
                 INNER JOIN mamba_dim_concept_metadata cm
                 ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)

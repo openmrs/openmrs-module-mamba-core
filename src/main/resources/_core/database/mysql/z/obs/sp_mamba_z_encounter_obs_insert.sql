@@ -14,7 +14,9 @@ INSERT INTO mamba_z_encounter_obs (encounter_id,
                                    obs_value_drug,
                                    obs_question_uuid,
                                    obs_answer_uuid,
-                                   obs_value_coded_uuid)
+                                   obs_value_coded_uuid,
+                                   status,
+                                   voided)
 SELECT o.encounter_id,
        o.person_id,
        o.obs_datetime,
@@ -29,7 +31,9 @@ SELECT o.encounter_id,
        o.value_drug     AS obs_value_drug,
        NULL             AS obs_question_uuid,
        NULL             AS obs_answer_uuid,
-       NULL             AS obs_value_coded_uuid
+       NULL             AS obs_value_coded_uuid,
+       o.status,
+       o.voided
 FROM obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.encounter_id
