@@ -1,8 +1,8 @@
 DELIMITER //
 
-DROP FUNCTION IF EXISTS fn_get_obs_value_column;
+DROP FUNCTION IF EXISTS fn_mamba_get_obs_value_column;
 
-CREATE FUNCTION fn_get_obs_value_column(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
+CREATE FUNCTION fn_mamba_get_obs_value_column(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
     DETERMINISTIC
 BEGIN
     DECLARE obsValueColumn VARCHAR(20);

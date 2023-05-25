@@ -2,14 +2,15 @@
 
 CREATE TABLE mamba_dim_concept_datatype
 (
-    concept_datatype_id  int                             NOT NULL AUTO_INCREMENT,
-    external_datatype_id int,
-    datatype_name        CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (concept_datatype_id)
-);
+    id                  INT          NOT NULL AUTO_INCREMENT,
+    concept_datatype_id INT          NOT NULL,
+    datatype_name       VARCHAR(255) NOT NULL,
 
-create index mamba_dim_concept_datatype_external_datatype_id_index
-    on mamba_dim_concept_datatype (external_datatype_id);
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
 
+CREATE INDEX mamba_dim_concept_datatype_concept_datatype_id_index
+    ON mamba_dim_concept_datatype (concept_datatype_id);
 
 -- $END

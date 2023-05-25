@@ -1,9 +1,9 @@
 -- Flatten all Encounters given in Config folder
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert_all;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_create_all;
 
-CREATE PROCEDURE sp_flat_encounter_table_insert_all()
+CREATE PROCEDURE sp_mamba_flat_encounter_table_create_all()
 BEGIN
 
     DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
@@ -24,7 +24,7 @@ BEGIN
             LEAVE computations_loop;
         END IF;
 
-        CALL sp_flat_encounter_table_insert(tbl_name);
+        CALL sp_mamba_flat_encounter_table_create(tbl_name);
 
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;

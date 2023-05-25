@@ -1,10 +1,10 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS sp_extract_report_metadata;
+DROP PROCEDURE IF EXISTS sp_mamba_extract_report_metadata;
 
-CREATE PROCEDURE sp_extract_report_metadata(
+CREATE PROCEDURE sp_mamba_extract_report_metadata(
     IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4,
-    IN metadata_table CHAR(255) CHARACTER SET UTF8MB4
+    IN metadata_table VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
 
@@ -21,6 +21,7 @@ BEGIN
             SELECT JSON_EXTRACT(@report, '$.report_name') INTO @report_name;
             SELECT JSON_EXTRACT(@report, '$.flat_table_name') INTO @flat_table_name;
             SELECT JSON_EXTRACT(@report, '$.encounter_type_uuid') INTO @encounter_type;
+            SELECT JSON_EXTRACT(@report, '$.concepts_locale') INTO @concepts_locale;
             SELECT JSON_EXTRACT(@report, '$.table_columns') INTO @column_array;
 
             SELECT JSON_KEYS(@column_array) INTO @column_keys_array;
@@ -36,12 +37,14 @@ BEGIN
                                                            flat_table_name,
                                                            encounter_type_uuid,
                                                            column_label,
-                                                           concept_uuid)
+                                                           concept_uuid,
+                                                           concepts_locale)
                     VALUES (JSON_UNQUOTE(@report_name),
                             JSON_UNQUOTE(@flat_table_name),
                             JSON_UNQUOTE(@encounter_type),
                             JSON_UNQUOTE(@field_name),
-                            JSON_UNQUOTE(@concept_uuid));
+                            JSON_UNQUOTE(@concept_uuid),
+                            JSON_UNQUOTE(@concepts_locale));
 
                     SET @col_count = @col_count + 1;
                 END WHILE;

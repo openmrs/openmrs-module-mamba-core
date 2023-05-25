@@ -2,21 +2,34 @@
 
 CREATE TABLE mamba_dim_concept_metadata
 (
-    concept_metadata_id INT                             NOT NULL AUTO_INCREMENT,
+    id                  INT          NOT NULL AUTO_INCREMENT,
+    concept_id          INT          NULL,
+    concept_uuid        CHAR(38)     NOT NULL,
+    concept_name        VARCHAR(255) NULL,
+    concepts_locale     VARCHAR(20)  NOT NULL,
     column_number       INT,
-    column_label        CHAR(50) CHARACTER SET UTF8MB4  NOT NULL,
-    concept_uuid        CHAR(38) CHARACTER SET UTF8MB4  NOT NULL,
-    concept_datatype    CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    concept_answer_obs  TINYINT(1)                      NOT NULL DEFAULT 0,
-    report_name         CHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
-    flat_table_name     CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    encounter_type_uuid CHAR(38) CHARACTER SET UTF8MB4  NOT NULL,
+    column_label        VARCHAR(50)  NOT NULL,
+    concept_datatype    VARCHAR(255) NULL,
+    concept_answer_obs  TINYINT      NOT NULL DEFAULT 0,
+    report_name         VARCHAR(255) NOT NULL,
+    flat_table_name     VARCHAR(255) NULL,
+    encounter_type_uuid CHAR(38)     NOT NULL,
 
-    PRIMARY KEY (concept_metadata_id)
-);
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
 
-create index mamba_dim_concept_metadata_concept_uuid_index
-    on mamba_dim_concept_metadata (concept_uuid);
+CREATE INDEX mamba_dim_concept_metadata_concept_id_index
+    ON mamba_dim_concept_metadata (concept_id);
+
+CREATE INDEX mamba_dim_concept_metadata_concept_uuid_index
+    ON mamba_dim_concept_metadata (concept_uuid);
+
+CREATE INDEX mamba_dim_concept_metadata_encounter_type_uuid_index
+    ON mamba_dim_concept_metadata (encounter_type_uuid);
+
+CREATE INDEX mamba_dim_concept_metadata_concepts_locale_index
+    ON mamba_dim_concept_metadata (concepts_locale);
 
 -- ALTER TABLE `mamba_dim_concept_metadata`
 --     ADD COLUMN `encounter_type_id` INT NULL AFTER `output_table_name`,
