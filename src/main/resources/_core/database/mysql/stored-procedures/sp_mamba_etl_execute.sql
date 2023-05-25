@@ -1,8 +1,8 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS sp_xf_system_execute_etl;
+DROP PROCEDURE IF EXISTS sp_mamba_etl_execute;
 
-CREATE PROCEDURE sp_xf_system_execute_etl()
+CREATE PROCEDURE sp_mamba_etl_execute()
 BEGIN
     DECLARE error_message VARCHAR(255) DEFAULT 'OK';
     DECLARE error_code CHAR(5) DEFAULT '00000';
@@ -46,7 +46,7 @@ BEGIN
     SET start_date_time = NOW();
     SET @start_time = (UNIX_TIMESTAMP(NOW()) * 1000000 + MICROSECOND(NOW(6)));
 
-    CALL sp_data_processing_etl();
+    CALL sp_mamba_data_processing_etl();
 
     -- Fix end time in microseconds
     SET end_date_time = NOW();
