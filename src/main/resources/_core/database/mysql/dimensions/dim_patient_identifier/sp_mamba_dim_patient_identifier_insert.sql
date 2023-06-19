@@ -6,6 +6,7 @@ INSERT INTO mamba_dim_patient_identifier (patient_id,
                                           preferred,
                                           location_id,
                                           date_created,
+                                          uuid,
                                           voided)
 SELECT patient_id,
        identifier,
@@ -13,6 +14,7 @@ SELECT patient_id,
        preferred,
        location_id,
        date_created,
+       uuid,
        voided
 FROM patient_identifier;
 
