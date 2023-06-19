@@ -6,6 +6,7 @@ CREATE TABLE mamba_dim_patient_identifier_type
     patient_identifier_type_id INT         NOT NULL,
     name                       VARCHAR(50) NOT NULL,
     description                TEXT        NULL,
+    uuid                       CHAR(38)    NOT NULL,
 
     PRIMARY KEY (id)
 )
@@ -16,5 +17,8 @@ CREATE INDEX mamba_dim_patient_identifier_type_id_index
 
 CREATE INDEX mamba_dim_patient_identifier_type_name_index
     ON mamba_dim_patient_identifier_type (name);
+
+CREATE INDEX mamba_dim_patient_identifier_type_uuid_index
+    ON mamba_dim_patient_identifier_type (uuid);
 
 -- $END
