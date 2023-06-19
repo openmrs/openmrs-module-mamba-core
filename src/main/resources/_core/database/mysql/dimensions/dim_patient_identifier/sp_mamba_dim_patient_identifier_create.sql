@@ -10,6 +10,7 @@ CREATE TABLE mamba_dim_patient_identifier
     preferred             TINYINT     NOT NULL,
     location_id           INT         NULL,
     date_created          DATETIME    NOT NULL,
+    uuid                  CHAR(38)    NOT NULL,
     voided                TINYINT     NOT NULL,
 
     PRIMARY KEY (id)
@@ -27,5 +28,8 @@ CREATE INDEX mamba_dim_patient_identifier_identifier_index
 
 CREATE INDEX mamba_dim_patient_identifier_identifier_type_index
     ON mamba_dim_patient_identifier (identifier_type);
+
+CREATE INDEX mamba_dim_patient_identifier_uuid_index
+    ON mamba_dim_patient_identifier (uuid);
 
 -- $END

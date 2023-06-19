@@ -10,9 +10,10 @@ INSERT INTO mamba_dim_person
         deathdate_estimated,
         gender,
         date_created,
-        voided,
         person_name_short,
-        person_name_long
+        person_name_long,
+        uuid,
+        voided
     )
 
     SELECT psn.person_id,
@@ -23,10 +24,11 @@ INSERT INTO mamba_dim_person
            psn.deathdate_estimated,
            psn.gender,
            psn.date_created,
-           psn.voided,
            CONCAT_WS(' ',prefix,given_name,middle_name,family_name) AS person_name_short,
            CONCAT_WS(' ', prefix,given_name, middle_name,family_name_prefix, family_name,family_name2,family_name_suffix, degree)
-            AS person_name_long
+            AS person_name_long,
+            psn.uuid,
+            psn.voided
     FROM person psn
      INNER JOIN  person_name pn
          on psn.person_id = pn.person_id;
