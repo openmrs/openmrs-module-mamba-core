@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+    <!-- Base Module Properties -->
+    <id>${project.parent.artifactId}</id>
+    <name>${project.parent.name}</name>
+    <version>${project.parent.version}</version>
+    <package>org.openmrs.module.ohrimambacore</package>
+    <author>Arthur D. Mugume [OHRI]</author>
+    <description>${project.parent.description}</description>
+    <activator>org.openmrs.module.ohrimambacore.OhriMambaCoreActivator</activator>
+    <require_version>${openmrsPlatformVersion}</require_version>
+
+    <!-- Required Privileges  -->
+    <privilege>
+        <name>Serve Mamba ETL Reports via a Service layer</name>
+        <description>Serve Mamba ETL Reports via a Service layer</description>
+    </privilege>
+
+    <require_modules>
+        <require_module>org.openmrs.module.webservices.rest</require_module>
+    </require_modules>
+
+    <aware_of_modules>
+        <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+    </aware_of_modules>
+
+    <messages>
+        <lang>en</lang>
+        <file>messages.properties</file>
+    </messages>
+
+    <messages>
+        <lang>fr</lang>
+        <file>messages_fr.properties</file>
+    </messages>
+
+    <messages>
+        <lang>es</lang>
+        <file>messages_es.properties</file>
+    </messages>
+
+</module>
+
