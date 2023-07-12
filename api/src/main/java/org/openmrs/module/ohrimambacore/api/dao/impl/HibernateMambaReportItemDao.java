@@ -30,7 +30,7 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
 
         SQLQuery query = sessionFactory.getCurrentSession()
                 .createSQLQuery("CALL sp_mamba_generate_report(:report_id)");
-        query.setParameter("report_id", "mambaReportId");
+        query.setParameter("report_id", criteria.getReportId());
 
         // Set pagination parameters
         int pageNumber = 1; // Page number (starting from 1)

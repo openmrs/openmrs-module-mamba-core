@@ -14,9 +14,9 @@ BEGIN
     FROM mamba_dim_report_metadata
     WHERE report_id = @report_identifier;
 
-    SET @compute_obs_procedure_sql = CONCAT('CALL ', @procedure_name, '();');
+    SET @generate_report = CONCAT('CALL ', @procedure_name, '();');
 
-    PREPARE prepared_statement FROM @compute_obs_procedure_sql;
+    PREPARE prepared_statement FROM @generate_report;
     EXECUTE prepared_statement;
     DEALLOCATE PREPARE prepared_statement;
 END;

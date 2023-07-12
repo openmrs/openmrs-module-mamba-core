@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/mambareport", supportedClass = MambaReportItem.class, supportedOpenmrsVersions = {"2.0 - 2.*"})
+@Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report", supportedClass = MambaReportItem.class, supportedOpenmrsVersions = {"2.0 - 2.*"})
 public class MambaReportResource extends BaseDelegatingReadableResource<MambaReportItem> {
 
     @Override
