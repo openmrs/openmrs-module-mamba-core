@@ -12,7 +12,14 @@
 
     <artifactId>ohrimamba-core-api</artifactId>
     <packaging>jar</packaging>
-    <name>OHRI Mamba Core [API module]  - JAR</name>
+    <name>OHRI Mamba Core [API module] - JAR</name>
     <description>OHRI Mamba Core [API module] - Extensible core functions for the OHRI Mamba ETL</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

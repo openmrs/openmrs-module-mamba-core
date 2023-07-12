@@ -51,13 +51,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.openmrs.module</groupId>
-                <artifactId>legacyui-omod</artifactId>
-                <version>${legacyUIomodVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.openmrs.api</groupId>
                 <artifactId>openmrs-api</artifactId>
                 <version>${openmrsPlatformVersion}</version>
@@ -118,6 +111,13 @@
                 <type>jar</type>
                 <scope>test</scope>
             </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jacksonVersion}</version>
+            </dependency>
+
 
         </dependencies>
 
@@ -202,11 +202,11 @@
         <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
         <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <legacyUIomodVersion>1.8.2</legacyUIomodVersion>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
-        <openmrsPlatformVersion>2.3.1</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.0.0</openmrsPlatformVersion>
         <webservicesRestVersion>2.21.0</webservicesRestVersion>
+        <jacksonVersion>2.15.2</jacksonVersion>
     </properties>
 
     <build>

@@ -3,14 +3,14 @@
 <module configVersion="1.2">
 
     <!-- Base Module Properties -->
-    <id>${project.parent.artifactId}</id>
-    <name>${project.parent.name}</name>
-    <version>${project.parent.version}</version>
+    <id>ohrimamba-core</id>
+    <name>OHRI Mamba Core</name>
+    <version>1.0.0-SNAPSHOT</version>
     <package>org.openmrs.module.ohrimambacore</package>
     <author>Arthur D. Mugume [OHRI]</author>
-    <description>${project.parent.description}</description>
+    <description>Description here</description>
     <activator>org.openmrs.module.ohrimambacore.OhriMambaCoreActivator</activator>
-    <require_version>${openmrsPlatformVersion}</require_version>
+    <require_version>2.0.0</require_version>
 
     <!-- Required Privileges  -->
     <privilege>
@@ -21,10 +21,6 @@
     <require_modules>
         <require_module>org.openmrs.module.webservices.rest</require_module>
     </require_modules>
-
-    <aware_of_modules>
-        <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
-    </aware_of_modules>
 
     <messages>
         <lang>en</lang>
