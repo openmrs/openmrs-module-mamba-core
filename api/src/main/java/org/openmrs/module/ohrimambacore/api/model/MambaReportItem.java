@@ -1,5 +1,7 @@
 package org.openmrs.module.ohrimambacore.api.model;
 
+import org.openmrs.BaseOpenmrsObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +14,21 @@ public class MambaReportItem implements Serializable {
 
     private static final long serialVersionUID = -8980686055469327763L;
 
-    private MambaReportItemMetadata metaData;
+//    private MambaReportItemMetadata metaData;
+
+    private Integer serialId;
 
     private List<MambaReportItemColumn> record = new ArrayList<>();
 
     public MambaReportItem() {
     }
 
-    public MambaReportItemMetadata getMetaData() {
-        return metaData;
+    public Integer getSerialId() {
+        return serialId;
     }
 
-    public void setMetaData(MambaReportItemMetadata metaData) {
-        this.metaData = metaData;
+    public void setSerialId(Integer serialId) {
+        this.serialId = serialId;
     }
 
     public List<MambaReportItemColumn> getRecord() {
