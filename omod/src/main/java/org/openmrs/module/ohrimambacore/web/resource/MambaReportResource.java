@@ -1,5 +1,7 @@
 package org.openmrs.module.ohrimambacore.web.resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ohrimambacore.api.MambaReportService;
@@ -24,6 +26,8 @@ import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report", supportedClass = MambaReportItem.class, supportedOpenmrsVersions = {"2.0 - 2.*"})
 public class MambaReportResource extends BaseDelegatingReadableResource<MambaReportItem> {
+
+    private Log log = LogFactory.getLog(this.getClass());
 
     @Override
     public MambaReportItem getByUniqueId(String s) {
@@ -73,6 +77,9 @@ public class MambaReportResource extends BaseDelegatingReadableResource<MambaRep
 
     @Override
     protected PageableResult doSearch(RequestContext requestContext) {
+
+        log.info("doSearch - OHRI Mamba Core");
+        System.out.println("doSearch 2 - OHRI Mamba Core");
 
         String mambaSearchFieldsString = requestContext.getParameter("mamba_search_fields");
         ObjectMapper objectMapper = new ObjectMapper();
