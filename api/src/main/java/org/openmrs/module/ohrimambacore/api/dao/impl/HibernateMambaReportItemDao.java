@@ -51,7 +51,8 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
             Object[] row = (Object[]) result;
 
             MambaReportItem reportItem = new MambaReportItem();
-            reportItem.setMetaData(new MambaReportItemMetadata(serialId));
+//            reportItem.setMetaData(new MambaReportItemMetadata(serialId));
+             reportItem.setSerialId(serialId);
             mambaReportItems.add(reportItem);
 
             for (int i = 0; i < row.length; i++) {

@@ -7,6 +7,8 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ohrimambacore.api.MambaReportService;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
+import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
+import org.openmrs.module.ohrimambacore.api.model.MambaReportItemMetadata;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.web.controller.MambaReportRestController;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -18,6 +20,8 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -27,7 +31,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report", supportedClass = MambaReportItem.class, supportedOpenmrsVersions = {"2.0 - 2.*"})
-public class MambaReportResource implements Searchable, Converter<MambaReportItem> {
+public class MambaReportResource implements Searchable {
 
     private Log log = LogFactory.getLog(this.getClass());
 
@@ -61,26 +65,40 @@ public class MambaReportResource implements Searchable, Converter<MambaReportIte
 
 
         String reportId = context.getRequest().getParameter("reportId");
+        context.setLimit(10);
+        context.setStartIndex(0);
         //get and compare other params from db with request ones
 
-        log.info("retrieve - OHRI Mamba Core");
         System.out.println("retrieve 2 - OHRI Mamba Core: " + reportId);
 
         if (reportId == null) {
-            PageableResult result = this.doSearch(context);
-            return result.toSimpleObject(this);
+            return new EmptySearchResult().toSimpleObject(null);
         } else {
-            //Date minStartDate = fromStartDate != null ? (Date) ConversionUtil.convert(fromStartDate, Date.class) : null;
-            //return this.getVisits(context, patientParameter, includeInactiveParameter, minStartDate);
-            return null;
+            return getTestReports(context);
         }
     }
 
-//    private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter, Date minStartDate) {
-//        Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(this.getPatient(patientParameter));
-//        boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
-//        return (new NeedsPaging(Context.getVisitService().getVisits((Collection) null, patients, (Collection) null, (Collection) null, minStartDate, (Date) null, (Date) null, (Date) null, (Map) null, includeInactive, context.getIncludeAll()), context)).toSimpleObject(this);
-//    }
+    private SimpleObject getTestReports(RequestContext requestContext) throws ResponseException {
+
+        List<MambaReportItem> mambaReportItems = new ArrayList<>();
+
+        MambaReportItem reportItem = new MambaReportItem();
+        reportItem.setSerialId(1);
+        reportItem.getRecord().add(new MambaReportItemColumn("col_name_1", "row_value_1"));
+
+        MambaReportItem reportItem2 = new MambaReportItem();
+        reportItem2.setSerialId(2);
+        reportItem2.getRecord().add(new MambaReportItemColumn("col_name_2", "row_value_2"));
+
+        mambaReportItems.add(reportItem);
+        mambaReportItems.add(reportItem2);
+
+        System.out.println("Size: " + mambaReportItems.size());
+        System.out.println("Records: " + mambaReportItems);
+
+        //return (new NeedsPaging<>(mambaReportItems, requestContext)).toSimpleObject(this);
+        return new SimpleObject().add("results", mambaReportItems);
+    }
 
     protected PageableResult doSearch(RequestContext context) {
         return new EmptySearchResult();
@@ -89,30 +107,5 @@ public class MambaReportResource implements Searchable, Converter<MambaReportIte
     @Override
     public String getUri(Object o) {
         return null;
-    }
-
-    @Override
-    public MambaReportItem newInstance(String s) {
-        return new MambaReportItem();
-    }
-
-    @Override
-    public MambaReportItem getByUniqueId(String s) {
-        return null;
-    }
-
-    @Override
-    public SimpleObject asRepresentation(MambaReportItem mambaReportItem, Representation representation) throws ConversionException {
-        return null;
-    }
-
-    @Override
-    public Object getProperty(MambaReportItem mambaReportItem, String s) throws ConversionException {
-        return null;
-    }
-
-    @Override
-    public void setProperty(Object o, String s, Object o1) throws ConversionException {
-
     }
 }
