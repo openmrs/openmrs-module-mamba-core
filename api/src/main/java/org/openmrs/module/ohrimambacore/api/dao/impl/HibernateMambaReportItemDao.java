@@ -6,7 +6,6 @@ import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
-import org.openmrs.module.ohrimambacore.api.model.MambaReportItemMetadata;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 
 import java.util.ArrayList;
@@ -51,8 +50,8 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
             Object[] row = (Object[]) result;
 
             MambaReportItem reportItem = new MambaReportItem();
-//            reportItem.setMetaData(new MambaReportItemMetadata(serialId));
-             reportItem.setSerialId(serialId);
+            // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
+            reportItem.setSerialId(serialId);
             mambaReportItems.add(reportItem);
 
             for (int i = 0; i < row.length; i++) {
