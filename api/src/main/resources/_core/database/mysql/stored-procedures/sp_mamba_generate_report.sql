@@ -19,7 +19,6 @@ BEGIN
     PREPARE prepared_statement FROM @generate_report;
     EXECUTE prepared_statement;
     DEALLOCATE PREPARE prepared_statement;
-END;
-//
+END //
 
 DELIMITER ;
