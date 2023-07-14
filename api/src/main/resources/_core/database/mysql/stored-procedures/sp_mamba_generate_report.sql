@@ -11,7 +11,7 @@ BEGIN
 
     SELECT DISTINCT report_procedure_name
     INTO @procedure_name
-    FROM mamba_dim_report_metadata
+    FROM mamba_dim_report_definition
     WHERE report_id = @report_identifier;
 
     SET @generate_report = CONCAT('CALL ', @procedure_name, '();');
