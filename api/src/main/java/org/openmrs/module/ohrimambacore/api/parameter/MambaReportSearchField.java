@@ -26,6 +26,10 @@ public class MambaReportSearchField implements Serializable {
     public MambaReportSearchField() {
     }
 
+    public MambaReportSearchField(String fieldName, String fieldValue) {
+        this(fieldName, "", fieldValue, "");
+    }
+
     public MambaReportSearchField(String fieldName, String operator, String fieldValue, String logicalOperator) {
         this.fieldName = fieldName;
         this.operator = operator;

@@ -7,9 +7,11 @@ import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
+import org.openmrs.module.ohrimambacore.api.parameter.MambaReportSearchField;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * @author smallGod
@@ -27,9 +29,26 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
     @Override
     public List<MambaReportItem> getMambaReport(MambaReportCriteria criteria) {
 
-        SQLQuery query = sessionFactory.getCurrentSession()
-                .createSQLQuery("CALL sp_mamba_generate_report(:report_id)");
+        List<MambaReportSearchField> searchFields = criteria.getSearchFields();
+
+        StringJoiner whereClause = new StringJoiner(" AND ", " WHERE ", "");
+
+        if (searchFields != null && !searchFields.isEmpty()) {
+            for (MambaReportSearchField searchField : searchFields) {
+                String fieldName = searchField.getFieldName();
+                whereClause.add(fieldName + " = :" + fieldName);
+            }
+        }
+
+        String queryString = "CALL sp_mamba_generate_report(:report_id)" + whereClause;
+
+        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(queryString);
+
         query.setParameter("report_id", criteria.getReportId());
+        for (MambaReportSearchField searchField : searchFields) {
+            query.setParameter(searchField.getFieldName(), searchField.getFieldValue());
+        }
+
 
         // Set pagination parameters
         int pageNumber = 1; // Page number (starting from 1)
