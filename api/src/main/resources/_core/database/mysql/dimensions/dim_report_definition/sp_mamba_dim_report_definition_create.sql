@@ -1,6 +1,8 @@
 -- $BEGIN
 
-CREATE TABLE IF NOT EXISTS mamba_dim_report_definition -- TODO: REMOVE the 'NOT EXISTS PART once the insert is automated'
+DROP TABLE IF EXISTS mamba_dim_report_definition; -- TODO: REMOVE this once the insert is automated'
+
+CREATE TABLE mamba_dim_report_definition
 (
     id                    INT          NOT NULL AUTO_INCREMENT,
     report_id             VARCHAR(255) NOT NULL,
