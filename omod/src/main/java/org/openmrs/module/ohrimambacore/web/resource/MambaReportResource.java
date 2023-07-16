@@ -10,6 +10,7 @@ import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemMetadata;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
+import org.openmrs.module.ohrimambacore.api.parameter.MambaReportSearchField;
 import org.openmrs.module.ohrimambacore.web.controller.MambaReportRestController;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -40,26 +41,6 @@ public class MambaReportResource implements Searchable {
     }
 
 
-//    public Object retrieve(String reportId, RequestContext requestContext) throws ResponseException {
-//
-//        log.info("retrieve - OHRI Mamba Core");
-//        System.out.println("retrieve 2 - OHRI Mamba Core: " + reportId);
-//
-//        String mambaSearchFieldsString = requestContext.getParameter("mamba_search_fields");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        List<MambaReportItem> mambaReportItem = new ArrayList<>();
-//        try {
-//            MambaReportCriteria searchCriteria = objectMapper.readValue(mambaSearchFieldsString, MambaReportCriteria.class);
-//            mambaReportItem = getService().getMambaReportByCriteria(searchCriteria);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        return new NeedsPaging<>(mambaReportItem, requestContext);
-//    }
-
-
     @Override
     public SimpleObject search(RequestContext context) throws ResponseException {
 
@@ -74,7 +55,21 @@ public class MambaReportResource implements Searchable {
         if (reportId == null) {
             return new EmptySearchResult().toSimpleObject(null);
         } else {
-            return getTestReports(context);
+
+            MambaReportCriteria searchCriteria = new MambaReportCriteria(reportId);
+            searchCriteria.setReportId(reportId);
+
+            Enumeration<String> parameterNames = context.getRequest().getParameterNames();
+            while (parameterNames.hasMoreElements()) {
+
+                String paramName = parameterNames.nextElement();
+                String paramValue = context.getRequest().getParameter(paramName);
+                searchCriteria.getSearchFields().add(new MambaReportSearchField(paramName, paramValue));
+                System.out.println("Parameter: " + paramName + ", Value: " + paramValue);
+            }
+
+            List<MambaReportItem> mambaReportItems = getService().getMambaReportByCriteria(searchCriteria);
+            return new SimpleObject().add("results", mambaReportItems);
         }
     }
 
@@ -108,4 +103,27 @@ public class MambaReportResource implements Searchable {
     public String getUri(Object o) {
         return null;
     }
+
+
+    /*
+    public Object retrieve(String reportId, RequestContext requestContext) throws ResponseException {
+
+        log.info("retrieve - OHRI Mamba Core");
+        System.out.println("retrieve 2 - OHRI Mamba Core: " + reportId);
+
+        String mambaSearchFieldsString = requestContext.getParameter("mamba_search_fields");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        List<MambaReportItem> mambaReportItem = new ArrayList<>();
+        try {
+            MambaReportCriteria searchCriteria = objectMapper.readValue(mambaSearchFieldsString, MambaReportCriteria.class);
+            mambaReportItem = getService().getMambaReportByCriteria(searchCriteria);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new NeedsPaging<>(mambaReportItem, requestContext);
+    }
+    */
+
 }
