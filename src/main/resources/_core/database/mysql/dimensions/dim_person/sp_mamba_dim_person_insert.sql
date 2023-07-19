@@ -1,25 +1,36 @@
 -- $BEGIN
 
-INSERT INTO mamba_dim_person (person_id,
-                              birthdate,
-                              birthdate_estimated,
-                              dead,
-                              death_date,
-                              deathdate_estimated,
-                              gender,
-                              date_created,
-                              uuid,
-                              voided)
-SELECT person_id,
-       birthdate,
-       birthdate_estimated,
-       dead,
-       death_date,
-       deathdate_estimated,
-       gender,
-       date_created,
-       uuid,
-       voided
-FROM person;
+INSERT INTO mamba_dim_person
+    (
+        person_id,
+        birthdate,
+        birthdate_estimated,
+        dead,
+        death_date,
+        deathdate_estimated,
+        gender,
+        date_created,
+        person_name_short,
+        person_name_long,
+        uuid,
+        voided
+    )
+
+    SELECT psn.person_id,
+           psn.birthdate,
+           psn.birthdate_estimated,
+           psn.dead,
+           psn.death_date,
+           psn.deathdate_estimated,
+           psn.gender,
+           psn.date_created,
+           CONCAT_WS(' ',prefix,given_name,middle_name,family_name) AS person_name_short,
+           CONCAT_WS(' ', prefix,given_name, middle_name,family_name_prefix, family_name,family_name2,family_name_suffix, degree)
+            AS person_name_long,
+            psn.uuid,
+            psn.voided
+    FROM person psn
+     INNER JOIN  person_name pn
+         on psn.person_id = pn.person_id;
 
 -- $END
