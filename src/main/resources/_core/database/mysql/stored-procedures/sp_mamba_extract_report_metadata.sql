@@ -33,12 +33,15 @@ BEGIN
                     SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
 
                     SET @tbl_name = '';
-                    INSERT INTO mamba_dim_concept_metadata(report_name,
-                                                           flat_table_name,
-                                                           encounter_type_uuid,
-                                                           column_label,
-                                                           concept_uuid,
-                                                           concepts_locale)
+                    INSERT INTO mamba_dim_concept_metadata
+                        (
+                            report_name,
+                            flat_table_name,
+                            encounter_type_uuid,
+                            column_label,
+                            concept_uuid,
+                            concepts_locale
+                        )
                     VALUES (JSON_UNQUOTE(@report_name),
                             JSON_UNQUOTE(@flat_table_name),
                             JSON_UNQUOTE(@encounter_type),
