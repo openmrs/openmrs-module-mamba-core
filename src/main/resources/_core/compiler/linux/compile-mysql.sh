@@ -361,8 +361,6 @@ DELIMITER ;
     ### all_stored_procedures="${all_stored_procedures//'$target_database'/'$analysis_database'}" commented out since we are not using it now
     ### all_stored_procedures="${all_stored_procedures//\$target_database/'$analysis_database'}" even this works!!
 
-    all_stored_procedures="${all_stored_procedures//'$target_database'/'$analysis_database'}"
-
     ### write built contents (final SQL file contents) to the build output file
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
