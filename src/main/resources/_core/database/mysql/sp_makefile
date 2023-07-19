@@ -81,6 +81,11 @@ dimensions/dim_person_address/sp_mamba_dim_person_address_create.sql
 dimensions/dim_person_address/sp_mamba_dim_person_address_insert.sql
 dimensions/dim_person_address/sp_mamba_dim_person_address.sql
 
+dimensions/dim_user/sp_mamba_dim_user_create.sql
+dimensions/dim_user/sp_mamba_dim_user_insert.sql
+dimensions/dim_user/sp_mamba_dim_user_update.sql
+dimensions/dim_user/sp_mamba_dim_user.sql
+
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_create.sql
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_insert.sql
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_update.sql
