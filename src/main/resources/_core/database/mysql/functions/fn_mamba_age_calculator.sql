@@ -44,7 +44,6 @@ BEGIN
 
         RETURN age;
     END IF;
-END;
-
+END//
 
 DELIMITER ;

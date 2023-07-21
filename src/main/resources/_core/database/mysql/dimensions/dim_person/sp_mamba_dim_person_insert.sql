@@ -32,6 +32,7 @@ SELECT psn.person_id,
        psn.voided
 FROM person psn
          INNER JOIN person_name pn
-                    on psn.person_id = pn.person_id;
+                    on psn.person_id = pn.person_id
+where pn.preferred=1;
 
 -- $END
