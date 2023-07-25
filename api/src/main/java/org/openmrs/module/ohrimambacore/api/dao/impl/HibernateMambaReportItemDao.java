@@ -49,17 +49,13 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
             query.setParameter(searchField.getFieldName(), searchField.getFieldValue());
         }
 
-
-        // Set pagination parameters
-        int pageNumber = 1; // Page number (starting from 1)
-        int pageSize = 10; // Number of rows per page
+        int pageNumber = 1;
+        int pageSize = 10;
 
         int firstResult = (pageNumber - 1) * pageSize;
-        //query.setFirstResult(firstResult);
-        //query.setMaxResults(pageSize);
+        //query.setFirstResult(firstResult); query.setMaxResults(pageSize);
 
         List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
-
         String[] columnNames = query.getReturnAliases();
 
         int serialId = 1;
