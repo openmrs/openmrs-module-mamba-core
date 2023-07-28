@@ -1,6 +1,6 @@
 -- $BEGIN
 
-DROP TABLE IF EXISTS mamba_dim_report_definition; -- TODO: REMOVE this once the insert is automated'
+DROP TABLE IF EXISTS mamba_dim_report_definition;
 
 CREATE TABLE mamba_dim_report_definition
 (
@@ -8,6 +8,9 @@ CREATE TABLE mamba_dim_report_definition
     report_id             VARCHAR(255) NOT NULL,
     report_procedure_name VARCHAR(255) NOT NULL,
     report_name           VARCHAR(255) NULL,
+    parameter_name        VARCHAR(255) NULL,
+    parameter_type        VARCHAR(255) NULL,
+    parameter_position    INT,
 
     PRIMARY KEY (id)
 )

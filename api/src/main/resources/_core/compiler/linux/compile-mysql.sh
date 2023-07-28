@@ -45,7 +45,9 @@ function read_config_metadata() {
 
   FIRST_FILE=true
   for FILENAME in "$config_dir"/*.json; do
-    if [ "$FIRST_FILE" = false ]; then
+    if [ "$FILENAME" = 'reports.json' ]; then
+        continue
+    elif [ "$FIRST_FILE" = false ]; then
       JSON_CONTENTS="$JSON_CONTENTS,
   "
     fi
@@ -64,6 +66,30 @@ function read_config_metadata() {
   -- \$END"
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
+}
+
+# Read in the JSON for Report Definition configuration metadata
+function read_config_report_definition_metadata() {
+
+    FILENAME="$config_dir"/reports.json;
+    printf "### Report definition file name: $FILENAME "
+
+    JSON_CONTENTS="$(cat "$FILENAME")";
+
+     printf "### Report definition: $JSON_CONTENTS"
+
+    REPORT_DEFINITION_CONTENT="
+  -- \$BEGIN"$'
+
+  SET @report_definition_json = \''$JSON_CONTENTS\'';
+
+  CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, '\''mamba_dim_report_definition'\'');'"
+
+  -- \$END"
+
+  printf  "### Definition Content:  $REPORT_DEFINITION_CONTENT   \n"
+
+  echo "$REPORT_DEFINITION_CONTENT" > "../../database/$db_engine/config/mamba_dim_report_definition_insert.sql" #TODO: improve!!
 }
 
 function make_buildfile_liquibase_compatible(){
@@ -271,6 +297,9 @@ elif [ "$objects_to_clear" == "views" ] || [ "$objects_to_clear" == "view" ] || 
     clear_message="clearing all views in $schema_name"
     clear_objects_sql="CALL dbo.sp_xf_system_drop_all_views_in_schema '$schema_name' "
 fi
+
+# Read in the JSON for Report Definition configuration metadata
+read_config_report_definition_metadata
 
 # Read in the JSON configuration metadata for Table flattening
 read_config_metadata

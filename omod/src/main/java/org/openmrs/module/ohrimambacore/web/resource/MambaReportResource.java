@@ -31,7 +31,7 @@ public class MambaReportResource implements Searchable {
     @Override
     public SimpleObject search(RequestContext context) throws ResponseException {
 
-        String reportId = context.getRequest().getParameter("reportId");
+        String reportId = context.getRequest().getParameter("report_id");
         context.setLimit(10);
         context.setStartIndex(0);
         //get and compare other params from db with request ones
@@ -41,8 +41,8 @@ public class MambaReportResource implements Searchable {
             return new EmptySearchResult().toSimpleObject(null);
         } else {
             //TODO: (non-business code) - Delete this after resolving module issues - only for unblocking purposes
-            return getPlaceHolderReport(reportId);
-            //return fetchReport(reportId, context);
+            //return getPlaceHolderReport(reportId);
+            return fetchReport(reportId, context);
         }
     }
 
