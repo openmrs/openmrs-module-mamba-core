@@ -11,8 +11,6 @@ INSERT INTO mamba_dim_person
         deathdate_estimated,
         gender,
         date_created,
-        person_name_short,
-        person_name_long,
         uuid,
         voided
     )
