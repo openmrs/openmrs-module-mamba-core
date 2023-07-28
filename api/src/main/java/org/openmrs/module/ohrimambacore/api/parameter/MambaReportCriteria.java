@@ -11,10 +11,10 @@ import java.util.List;
  */
 public class MambaReportCriteria implements Serializable {
 
-    @JsonProperty("person_name")
+    @JsonProperty("report_id")
     private String reportId;
 
-    @JsonProperty("search_fields")
+    @JsonProperty("arguments")
     private List<MambaReportSearchField> searchFields = new ArrayList<>();
 
     public MambaReportCriteria(String reportId) {

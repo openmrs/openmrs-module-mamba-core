@@ -11,38 +11,38 @@ public class MambaReportSearchField implements Serializable {
 
     private static final long serialVersionUID = -5995274582315599409L;
 
-    @JsonProperty("field_name")
-    private String fieldName;
+    @JsonProperty("column")
+    private String column;
 
     @JsonProperty("operator")
     private String operator;
 
-    @JsonProperty("field_value")
-    private String fieldValue;
+    @JsonProperty("value")
+    private String value;
 
-    @JsonProperty("logical_operator")
+    @JsonProperty("logical_op")
     private String logicalOperator;
 
     public MambaReportSearchField() {
     }
 
-    public MambaReportSearchField(String fieldName, String fieldValue) {
-        this(fieldName, "", fieldValue, "");
+    public MambaReportSearchField(String column, String value) {
+        this(column, "", value, "");
     }
 
-    public MambaReportSearchField(String fieldName, String operator, String fieldValue, String logicalOperator) {
-        this.fieldName = fieldName;
+    public MambaReportSearchField(String column, String operator, String value, String logicalOperator) {
+        this.column = column;
         this.operator = operator;
-        this.fieldValue = fieldValue;
+        this.value = value;
         this.logicalOperator = logicalOperator;
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public String getColumn() {
+        return column;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    public void setColumn(String column) {
+        this.column = column;
     }
 
     public String getOperator() {
@@ -53,12 +53,12 @@ public class MambaReportSearchField implements Serializable {
         this.operator = operator;
     }
 
-    public String getFieldValue() {
-        return fieldValue;
+    public String getValue() {
+        return value;
     }
 
-    public void setFieldValue(String fieldValue) {
-        this.fieldValue = fieldValue;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getLogicalOperator() {

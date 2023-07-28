@@ -17,6 +17,7 @@ stored-procedures/sp_mamba_flat_encounter_table_insert.sql
 stored-procedures/sp_mamba_flat_encounter_table_insert_all.sql
 stored-procedures/sp_mamba_multiselect_values_update.sql
 stored-procedures/sp_mamba_extract_report_metadata.sql
+stored-procedures/sp_mamba_extract_report_definition_metadata.sql
 stored-procedures/sp_mamba_load_agegroup.sql
 stored-procedures/sp_mamba_generate_report.sql
 
@@ -67,7 +68,7 @@ dimensions/dim_metadata/sp_mamba_dim_concept_metadata_update.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql
 
 dimensions/dim_report_definition/sp_mamba_dim_report_definition_create.sql
-###dimensions/dim_report_definition/sp_mamba_dim_report_definition_insert.sql
+#config/sp_mamba_dim_report_definition_insert.sql
 dimensions/dim_report_definition/sp_mamba_dim_report_definition_update.sql
 dimensions/dim_report_definition/sp_mamba_dim_report_definition.sql
 
