@@ -1,5 +1,5 @@
 -- $BEGIN
-CREATE TABLE namibia.relationship
+CREATE TABLE mamba_dim_relationship
 (
     relationship_id INT                  NOT NULL AUTO_INCREMENT,
     person_a        INT                  NOT NULL,
