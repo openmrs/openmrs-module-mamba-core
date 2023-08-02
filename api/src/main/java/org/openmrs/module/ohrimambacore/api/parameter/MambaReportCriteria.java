@@ -17,6 +17,11 @@ public class MambaReportCriteria implements Serializable {
     @JsonProperty("arguments")
     private List<MambaReportSearchField> searchFields = new ArrayList<>();
 
+
+    public MambaReportCriteria() {
+        this(null);
+    }
+
     public MambaReportCriteria(String reportId) {
         this.reportId = reportId;
     }

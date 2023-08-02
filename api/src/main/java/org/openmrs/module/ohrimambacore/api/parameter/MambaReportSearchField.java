@@ -20,7 +20,7 @@ public class MambaReportSearchField implements Serializable {
     @JsonProperty("value")
     private String value;
 
-    @JsonProperty("logical_op")
+    @JsonProperty("logical_operator")
     private String logicalOperator;
 
     public MambaReportSearchField() {
