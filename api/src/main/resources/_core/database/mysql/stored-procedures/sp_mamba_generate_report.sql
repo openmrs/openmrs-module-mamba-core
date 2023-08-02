@@ -70,6 +70,3 @@ BEGIN
 END //
 
 DELIMITER ;
-
-
-

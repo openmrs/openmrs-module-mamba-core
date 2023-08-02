@@ -31,32 +31,27 @@ public class MambaReportResource implements Searchable {
     @Override
     public SimpleObject search(RequestContext context) throws ResponseException {
 
-        String reportId = context.getRequest().getParameter("report_id");
         context.setLimit(10);
         context.setStartIndex(0);
-        //get and compare other params from db with request ones
-        System.out.println("retrieve 2 - OHRI Mamba Core: " + reportId);
 
-        if (reportId == null) {
-            return new EmptySearchResult().toSimpleObject(null);
-        } else {
-            //TODO: (non-business code) - Delete this after resolving module issues - only for unblocking purposes
-            //return getPlaceHolderReport(reportId);
-            return fetchReport(reportId, context);
-        }
-    }
-
-    private SimpleObject fetchReport(String reportId, RequestContext context) {
-
-        MambaReportCriteria searchCriteria = new MambaReportCriteria(reportId);
-        searchCriteria.setReportId(reportId);
+        MambaReportCriteria searchCriteria = new MambaReportCriteria();
 
         Enumeration<String> parameterNames = context.getRequest().getParameterNames();
         while (parameterNames.hasMoreElements()) {
 
             String paramName = parameterNames.nextElement();
             String paramValue = context.getRequest().getParameter(paramName);
-            searchCriteria.getSearchFields().add(new MambaReportSearchField(paramName, paramValue));
+
+            if (paramName.equals("report_id")) {
+                System.out.println("retrieve 2 - OHRI Mamba Core: " + paramValue);
+                searchCriteria.setReportId(paramValue);
+            } else {
+                searchCriteria.getSearchFields().add(new MambaReportSearchField(paramName, paramValue));
+            }
+        }
+
+        if (searchCriteria.getReportId() == null) {
+            return new EmptySearchResult().toSimpleObject(null);
         }
 
         List<MambaReportItem> mambaReportItems = getService().getMambaReportByCriteria(searchCriteria);

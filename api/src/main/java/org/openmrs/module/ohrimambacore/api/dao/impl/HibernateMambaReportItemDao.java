@@ -53,9 +53,10 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
         int firstResult = (pageNumber - 1) * pageSize;
         //query.setFirstResult(firstResult); query.setMaxResults(pageSize);
 
-        //List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
-        List<?> resultList = query.list();
+        List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
+       // List<?> resultList = query.list();
         System.out.println("query list size: " + resultList.size());
+        System.out.println("Res: " + resultList);
 
         String[] columnNames = query.getReturnAliases();
 
