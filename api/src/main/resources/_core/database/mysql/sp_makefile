@@ -68,7 +68,7 @@ dimensions/dim_metadata/sp_mamba_dim_concept_metadata_update.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql
 
 dimensions/dim_report_definition/sp_mamba_dim_report_definition_create.sql
-#config/sp_mamba_dim_report_definition_insert.sql
+config/sp_mamba_dim_report_definition_insert.sql
 dimensions/dim_report_definition/sp_mamba_dim_report_definition_update.sql
 dimensions/dim_report_definition/sp_mamba_dim_report_definition.sql
 
