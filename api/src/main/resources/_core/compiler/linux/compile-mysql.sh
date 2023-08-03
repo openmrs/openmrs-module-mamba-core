@@ -45,7 +45,7 @@ function read_config_metadata() {
 
   FIRST_FILE=true
   for FILENAME in "$config_dir"/*.json; do
-    if [ "$FILENAME" = 'reports.json' ]; then
+    if [ "$FILENAME" = "$config_dir/reports.json" ]; then
         continue
     elif [ "$FIRST_FILE" = false ]; then
       JSON_CONTENTS="$JSON_CONTENTS,
@@ -57,39 +57,37 @@ function read_config_metadata() {
   JSON_CONTENTS="$JSON_CONTENTS]}"
 
   SQL_CONTENTS="
-  -- \$BEGIN"$'
+      -- \$BEGIN"$'
 
-  SET @report_data = \''$JSON_CONTENTS\'';
+      SET @report_data = \''$JSON_CONTENTS\'';
 
-  CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');'"
+      CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');'"
 
-  -- \$END"
+      -- \$END"
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
+
 }
 
 # Read in the JSON for Report Definition configuration metadata
 function read_config_report_definition_metadata() {
 
-    FILENAME="$config_dir"/reports.json;
-    printf "### Report definition file name: $FILENAME "
+    FILENAME="$config_dir/reports.json";
+    JSON_CONTENTS=$(echo "$(cat "$FILENAME")" | sed "s/'/''/g")
 
-    JSON_CONTENTS="$(cat "$FILENAME")";
+    REPORT_DEFINITION_CONTENT="$(cat <<EOF
+    -- \$BEGIN
+    SET @report_definition_json = '$JSON_CONTENTS';
+    -- SET @report_definition_json_escaped = REPLACE(@report_definition_json, "'", "''");
 
-     printf "### Report definition: $JSON_CONTENTS"
+    CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
+    -- \$END
+EOF
+)"
 
-    REPORT_DEFINITION_CONTENT="
-  -- \$BEGIN"$'
+    printf  "### Report Definition SP:  $REPORT_DEFINITION_CONTENT   \n"
 
-  SET @report_definition_json = \''$JSON_CONTENTS\'';
-
-  CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, '\''mamba_dim_report_definition'\'');'"
-
-  -- \$END"
-
-  printf  "### Definition Content:  $REPORT_DEFINITION_CONTENT   \n"
-
-  echo "$REPORT_DEFINITION_CONTENT" > "../../database/$db_engine/config/mamba_dim_report_definition_insert.sql" #TODO: improve!!
+  echo "$REPORT_DEFINITION_CONTENT" > "../../database/$db_engine/config/sp_mamba_dim_report_definition_insert.sql" #TODO: improve!!
 }
 
 function make_buildfile_liquibase_compatible(){
