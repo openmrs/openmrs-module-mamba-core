@@ -23,26 +23,45 @@ BEGIN
             DO
 
                 SELECT JSON_EXTRACT(@report_array, CONCAT('$[', @report_count, ']')) INTO @report;
-                SELECT JSON_EXTRACT(@report, '$.report_name') INTO @report_name;
-                SELECT JSON_EXTRACT(@report, '$.report_id') INTO @report_id;
-                SELECT JSON_EXTRACT(@report, '$.report_procedure_name') INTO @report_procedure_name;
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, '$.report_name')) INTO @report_name;
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, '$.report_id')) INTO @report_id;
+                SELECT CONCAT('sp_mamba_', @report_id, '_query') INTO @report_procedure_name;
+                SELECT CONCAT('mamba_dim_', @report_id) INTO @table_name;
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, CONCAT('$.report_sql.sql_query'))) INTO @sql_query;
+                SELECT JSON_EXTRACT(@report, CONCAT('$.report_sql.query_params')) INTO @query_params_array;
 
+                INSERT INTO mamba_dim_report_definition(report_id,
+                                                        report_procedure_name,
+                                                        sql_query,
+                                                        table_name,
+                                                        report_name)
+                VALUES (@report_id,
+                        @report_procedure_name,
+                        @sql_query,
+                        @table_name,
+                        @report_name);
 
-                SELECT JSON_KEYS(@column_array) INTO @column_keys_array;
-                SELECT JSON_LENGTH(@column_keys_array) INTO @column_keys_array_len;
-                SET @col_count = 0;
-                WHILE @col_count < @column_keys_array_len
+                -- Iterate over the "params" array for each report
+                SELECT JSON_LENGTH(@query_params_array) INTO @total_params;
+
+                SET @param_count = 0;
+                WHILE @param_count < @total_params
                     DO
-                        SELECT JSON_EXTRACT(@column_keys_array, CONCAT('$[', @col_count, ']')) INTO @field_name;
-                        SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
+                        SELECT JSON_EXTRACT(@query_params_array, CONCAT('$[', @param_count, ']')) INTO @param;
+                        SELECT JSON_UNQUOTE(JSON_EXTRACT(@param, '$.name')) INTO @param_name;
+                        SELECT JSON_UNQUOTE(JSON_EXTRACT(@param, '$.type')) INTO @param_type;
+                        SET @param_position = @param_count + 1;
 
-                        SET @tbl_name = '';
-                        INSERT INTO mamba_dim_report_definition(report_id, report_procedure_name, report_name)
-                        VALUES (JSON_UNQUOTE(@report_name),
-                                JSON_UNQUOTE(@report_id),
-                                JSON_UNQUOTE(@report_procedure_name));
+                        INSERT INTO mamba_dim_report_definition_parameters(report_id,
+                                                                           parameter_name,
+                                                                           parameter_type,
+                                                                           parameter_position)
+                        VALUES (@report_id,
+                                @parameter_name,
+                                @parameter_type,
+                                @param_position);
 
-                        SET @col_count = @col_count + 1;
+                        SET @param_count = @param_position;
                     END WHILE;
 
                 SET @report_count = @report_count + 1;
