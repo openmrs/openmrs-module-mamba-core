@@ -57,8 +57,8 @@ BEGIN
                                                                            parameter_type,
                                                                            parameter_position)
                         VALUES (@report_id,
-                                @parameter_name,
-                                @parameter_type,
+                                @param_name,
+                                @param_type,
                                 @param_position);
 
                         SET @param_count = @param_position;
