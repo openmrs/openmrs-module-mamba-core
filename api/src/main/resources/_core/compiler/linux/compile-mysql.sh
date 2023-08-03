@@ -85,8 +85,6 @@ function read_config_report_definition_metadata() {
 EOF
 )"
 
-    printf  "### Report Definition SP:  $REPORT_DEFINITION_CONTENT   \n"
-
   echo "$REPORT_DEFINITION_CONTENT" > "../../database/$db_engine/config/sp_mamba_dim_report_definition_insert.sql" #TODO: improve!!
 }
 

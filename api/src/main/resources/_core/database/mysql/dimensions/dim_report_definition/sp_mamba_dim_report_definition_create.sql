@@ -21,7 +21,7 @@ CREATE INDEX mamba_dim_report_definition_report_id_index
 CREATE TABLE mamba_dim_report_definition_parameters
 (
     id                 INT          NOT NULL AUTO_INCREMENT,
-    report_id          INT          NOT NULL,
+    report_id          VARCHAR(255) NOT NULL,
     parameter_name     VARCHAR(255) NOT NULL,
     parameter_type     VARCHAR(255) NOT NULL,
     parameter_position INT          NOT NULL, -- takes order or declaration in JSON file
