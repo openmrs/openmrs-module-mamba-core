@@ -4,7 +4,7 @@
 
     <groupId>org.openmrs.ohri</groupId>
     <artifactId>ohri-mamba-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>OHRI Mamba Core: Extensible core functions [POM]</name>
@@ -142,7 +142,7 @@
         <connection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</connection>
         <url>https://github.com/UCSF-IGHS/ohri-mamba-core</url>
         <developerConnection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</developerConnection>
-        <tag>v1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
 </project>
