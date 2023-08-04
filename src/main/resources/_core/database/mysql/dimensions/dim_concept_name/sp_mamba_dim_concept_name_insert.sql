@@ -14,6 +14,7 @@ SELECT cn.concept_name_id,
        cn.concept_name_type
 FROM concept_name cn
  WHERE cn.locale = 'en'
-  AND cn.locale_preferred = 1;
+  AND cn.locale_preferred = 1
+    AND cn.voided = 0;
 
 -- $END

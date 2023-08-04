@@ -67,6 +67,7 @@ dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql
 
 dimensions/dim_person/sp_mamba_dim_person_create.sql
 dimensions/dim_person/sp_mamba_dim_person_insert.sql
+dimensions/dim_person/sp_mamba_dim_person_update.sql
 dimensions/dim_person/sp_mamba_dim_person.sql
 
 dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_create.sql
@@ -86,6 +87,11 @@ dimensions/dim_user/sp_mamba_dim_user_create.sql
 dimensions/dim_user/sp_mamba_dim_user_insert.sql
 dimensions/dim_user/sp_mamba_dim_user_update.sql
 dimensions/dim_user/sp_mamba_dim_user.sql
+
+dimensions/dim_relationship/sp_mamba_dim_relationship_create.sql
+dimensions/dim_relationship/sp_mamba_dim_relationship_insert.sql
+dimensions/dim_relationship/sp_mamba_dim_relationship_update.sql
+dimensions/dim_relationship/sp_mamba_dim_relationship.sql
 
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_create.sql
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_insert.sql

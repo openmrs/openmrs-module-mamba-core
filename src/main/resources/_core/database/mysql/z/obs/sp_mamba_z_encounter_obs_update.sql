@@ -15,6 +15,7 @@ UPDATE mamba_z_encounter_obs z
     ON z.obs_value_coded = c.concept_id
 SET z.obs_value_text       = cn.name,
     z.obs_value_coded_uuid = c.uuid
-WHERE z.obs_value_coded IS NOT NULL;
+WHERE z.obs_value_coded IS NOT NULL
+;
 
 -- $END
