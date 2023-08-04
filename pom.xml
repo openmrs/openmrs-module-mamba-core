@@ -107,4 +107,44 @@
         </resources>
     </build>
 
+    <repositories>
+
+        <repository>
+            <id>openmrs-repo</id>
+            <name>OpenMRS Nexus Repository</name>
+            <url>https://mavenrepo.openmrs.org/public</url>
+        </repository>
+
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+
+    </repositories>
+
+    <distributionManagement>
+
+        <repository>
+            <id>openmrs-repo-modules</id>
+            <name>OpenMRS Modules</name>
+            <url>https://mavenrepo.openmrs.org/modules</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>openmrs-repo-snapshots</id>
+            <name>OpenMRS Snapshots</name>
+            <url>https://mavenrepo.openmrs.org/snapshots</url>
+        </snapshotRepository>
+
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</connection>
+        <url>https://github.com/UCSF-IGHS/ohri-mamba-core</url>
+        <developerConnection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
 </project>
