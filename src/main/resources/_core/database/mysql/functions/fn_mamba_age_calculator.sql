@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP FUNCTION IF EXISTS fn_mamba_age_calculator;
 
-CREATE FUNCTION fn_mamba_age_calculator (birthdate DATE,deathDate DATE) RETURNS  Integer
+CREATE FUNCTION fn_mamba_age_calculator(birthdate DATE, deathDate DATE) RETURNS Integer
     DETERMINISTIC
 BEGIN
     DECLARE onDate DATE;
@@ -14,7 +14,7 @@ BEGIN
     DECLARE todaysDay INT;
     DECLARE bdayDay INT;
 
-    SET onDate = NULL ;
+    SET onDate = NULL;
 
     IF birthdate IS NULL THEN
         RETURN NULL;
@@ -44,6 +44,6 @@ BEGIN
 
         RETURN age;
     END IF;
-END//
+END //
 
 DELIMITER ;
