@@ -6,7 +6,7 @@ CREATE TABLE mamba_dim_concept_name
     concept_name_id   INT          NOT NULL,
     concept_id        INT,
     name              VARCHAR(255) NOT NULL,
-    locale            VARCHAR(50)  not null,
+    locale            VARCHAR(50)  NOT NULL,
     locale_preferred  TINYINT,
     concept_name_type VARCHAR(255),
 

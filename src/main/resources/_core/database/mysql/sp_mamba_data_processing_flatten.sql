@@ -28,6 +28,8 @@ CALL sp_mamba_dim_person_address;
 
 CALL sp_mamba_dim_user;
 
+CALL sp_mamba_dim_relationship;
+
 CALL sp_mamba_dim_patient_identifier;
 
 CALL sp_mamba_dim_agegroup;

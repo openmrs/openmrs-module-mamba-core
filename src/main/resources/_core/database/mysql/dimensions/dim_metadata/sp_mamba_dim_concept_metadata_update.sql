@@ -12,6 +12,7 @@ SET md.concept_datatype = c.datatype,
 WHERE md.id > 0
   AND cn.locale = md.concepts_locale
   AND IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED');
+
 -- Use locale preferred or Fully specified name
 
 -- Update to True if this field is an obs answer to an obs Question
