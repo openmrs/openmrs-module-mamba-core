@@ -44,6 +44,7 @@ BEGIN
                 -- Iterate over the "params" array for each report
                 SELECT JSON_LENGTH(@query_params_array) INTO @total_params;
 
+                SET @parameters := NULL;
                 SET @param_count = 0;
                 WHILE @param_count < @total_params
                     DO
@@ -63,6 +64,24 @@ BEGIN
 
                         SET @param_count = @param_position;
                     END WHILE;
+
+                SELECT GROUP_CONCAT(CONCAT('IN ', parameter_name, ' ', parameter_type) SEPARATOR ', ')
+                INTO @parameters
+                FROM mamba_dim_report_definition_parameters
+                WHERE report_id = @report_id
+                ORDER BY parameter_position;
+
+                SET @procedure_definition = CONCAT(
+                                                   'CREATE PROCEDURE ', @report_procedure_name, '(', CHAR(10),
+                                                   @parameters, CHAR(10),
+                                                   ')', CHAR(10),
+                                                   'BEGIN', CHAR(10),
+                                                   @sql_query, CHAR(10),
+                                                   'END;', CHAR(10));
+
+                PREPARE CREATE_PROC FROM @procedure_definition;
+                EXECUTE CREATE_PROC;
+                DEALLOCATE PREPARE CREATE_PROC;
 
                 SET @report_count = @report_count + 1;
             END WHILE;
