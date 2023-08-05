@@ -16,6 +16,6 @@ BEGIN
     END IF;
 
     RETURN (obsValueColumn);
-END//
+END //
 
 DELIMITER ;
