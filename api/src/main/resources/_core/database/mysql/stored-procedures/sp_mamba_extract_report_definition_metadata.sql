@@ -65,7 +65,33 @@ BEGIN
                         SET @param_count = @param_position;
                     END WHILE;
 
---                SELECT GROUP_CONCAT(CONCAT('IN ', parameter_name, ' ', parameter_type) SEPARATOR ', ')
+
+--                SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
+--                INTO @column_names
+--                FROM INFORMATION_SCHEMA.COLUMNS
+--                -- WHERE TABLE_SCHEMA = 'alive' TODO: add back after verifying schema name
+--                WHERE TABLE_NAME = @report_id;
+--
+--                SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @report_id, '`');
+--
+--                SET @createtb = CONCAT('CREATE TEMP TABLE AS SELECT ', @report_id, ';', CHAR(10),
+--                                       'CREATE PROCEDURE ', @report_procedure_name, '(', CHAR(10),
+--                                       @parameters, CHAR(10),
+--                                       ')', CHAR(10),
+--                                       'BEGIN', CHAR(10),
+--                                       @sql_query, CHAR(10),
+--                                       'END;', CHAR(10));
+--
+--                PREPARE deletetb FROM @drop_table;
+--                PREPARE createtb FROM @create_table;
+--
+--               EXECUTE deletetb;
+--               EXECUTE createtb;
+--
+--                DEALLOCATE PREPARE deletetb;
+--                DEALLOCATE PREPARE createtb;
+
+                --                SELECT GROUP_CONCAT(CONCAT('IN ', parameter_name, ' ', parameter_type) SEPARATOR ', ')
 --                INTO @parameters
 --                FROM mamba_dim_report_definition_parameters
 --                WHERE report_id = @report_id
