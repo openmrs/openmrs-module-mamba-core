@@ -21,7 +21,7 @@ stored-procedures/sp_mamba_extract_report_metadata.sql
 stored-procedures/sp_mamba_extract_report_definition_metadata.sql
 stored-procedures/sp_mamba_load_agegroup.sql
 stored-procedures/sp_mamba_generate_report.sql
-stored-procedures/sp_mamba_call_report_procedure_wrapper.sql
+stored-procedures/sp_mamba_generate_report_wrapper.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
