@@ -78,7 +78,6 @@ function read_config_report_definition_metadata() {
 
     FILENAME="$config_dir/reports.json";
 
-
     # Read JSON data from a file
     json_string=$(cat $FILENAME)
 
@@ -87,9 +86,12 @@ function read_config_report_definition_metadata() {
 
     # Iterate through each report_definition
     for ((i = 0; i < total_reports; i++)); do
+
         reportId=$(jq -r ".report_definitions[$i].report_id" <<< "$json_string")
-        echo "Report ID: $reportId"
+
         report_procedure_name="sp_mamba_${reportId}_query"
+        report_columns_procedure_name="sp_mamba_${reportId}_columns_query"
+        report_columns_table_name="mamba_dim_$reportId"
 
         sql_query=$(jq -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string")
         echo "SQL Query: $sql_query"
@@ -127,7 +129,32 @@ DROP PROCEDURE IF EXISTS $report_procedure_name;
 
 CREATE PROCEDURE $report_procedure_name($in_parameters)
 BEGIN
+
+$sql_query;
+
+END //
+
+DELIMITER ;
+
+"
+
+create_report_procedure+="
+
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  $report_columns_procedure_name  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS $report_columns_procedure_name;
+
+CREATE PROCEDURE $report_columns_procedure_name($in_parameters)
+BEGIN
+
+CREATE TABLE $report_columns_table_name AS
 $sql_query
+LIMIT 0;
+
 END //
 
 DELIMITER ;
@@ -225,7 +252,10 @@ function consolidateSPsCallerFile() {
 
     # Read the sp_makefile line by line skipping comments (#) and write the file and its dir structure to a new loc.
     cat sp_makefile | grep -v "^#" | grep -v "^$" | while read -r line; do
-      echo $line
+
+      echo "copying file: $line"
+      echo "to temp location: $dbEngineBaseDir"/etl/$temp_folder_number
+
       # Extract the file name and folder name from the line
       # filename=$(basename "$line")
       # foldername=$(dirname "$line")
@@ -235,7 +265,7 @@ function consolidateSPsCallerFile() {
       #echo "Folder name: $foldername"
 
       #Copy the file with its full path and folder structure to the temp folder
-      rsync --relative "$line" "$dbEngineBaseDir"/etl/$temp_folder_number
+      rsync --relative "$line" "$dbEngineBaseDir"/etl/$temp_folder_number/
 
       # copy the new file path to the consolidated file
       echo "etl/$temp_folder_number/$line" >>"$consolidatedFile"
