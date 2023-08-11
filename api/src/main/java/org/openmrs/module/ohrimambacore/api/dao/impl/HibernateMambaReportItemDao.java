@@ -39,11 +39,14 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
             exc.printStackTrace();
         }
 
-        String reportQuery = "CALL sp_mamba_generate_report(:report_id, :arguments)";
+        String reportQuery = "CALL sp_mamba_generate_report_wrapper(:generate_columns_flag, :report_identifier, :parameter_list)";
+        // String reportQuery = "CALL sp_mamba_generate_report(:report_id, :arguments)";
+        // sp_mamba_generate_report_wrapper(0, 'hiv_exposed_infants_count', '[]');
         SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(reportQuery);
 
-        query.setParameter("report_id", criteria.getReportId());
-        query.setParameter("arguments", argumentsJson);
+        query.setParameter("generate_columns_flag", 0);
+        query.setParameter("report_identifier", criteria.getReportId());
+        query.setParameter("parameter_list", argumentsJson);
 
         System.out.println("Generated SQL Query..: " + query.getQueryString());
 
@@ -54,7 +57,7 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
         //query.setFirstResult(firstResult); query.setMaxResults(pageSize);
 
         List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
-       // List<?> resultList = query.list();
+        // List<?> resultList = query.list();
         System.out.println("query list size: " + resultList.size());
         System.out.println("Res: " + resultList);
 

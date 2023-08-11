@@ -46,17 +46,13 @@ BEGIN
                                                                               AND p.report_id = report_identifier) - 1),
                                                                     '].value'))), 'NULL');
         SET tester = CONCAT_WS(', ', tester, arg_value);
-        SET sql_args = CONCAT_WS(', ', sql_args, arg_value);
+        SET sql_args = IFNULL(CONCAT_WS(', ', sql_args, arg_value), NULL);
 
     END LOOP;
 
     CLOSE cursor_parameter_names;
 
     SET @sql = CONCAT('CALL ', proc_name, '(', IFNULL(sql_args, ''), ')');
-
-    drop table if exists kk;
-    create table kk as
-    select @sql, tester;
 
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
