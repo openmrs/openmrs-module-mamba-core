@@ -152,6 +152,7 @@ CREATE PROCEDURE $report_columns_procedure_name($in_parameters)
 BEGIN
 
 -- Create Table to store report column names with no rows
+DROP TABLE IF EXISTS $report_columns_table_name;
 CREATE TABLE $report_columns_table_name AS
 $sql_query
 LIMIT 0;
