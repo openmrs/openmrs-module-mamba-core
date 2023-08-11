@@ -2,7 +2,9 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_generate_report_wrapper;
 
-CREATE PROCEDURE sp_mamba_generate_report_wrapper(IN report_identifier VARCHAR(255), IN parameter_list JSON)
+CREATE PROCEDURE sp_mamba_generate_report_wrapper(IN generate_columns_flag TINYINT(1),
+                                                  IN report_identifier VARCHAR(255),
+                                                  IN parameter_list JSON)
 BEGIN
 
     DECLARE proc_name VARCHAR(255);
@@ -19,9 +21,15 @@ BEGIN
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-    SET proc_name = (SELECT DISTINCT (rd.report_procedure_name)
-                     FROM mamba_dim_report_definition rd
-                     WHERE rd.report_id = report_identifier);
+    IF generate_columns_flag = 1 THEN
+        SET proc_name = (SELECT DISTINCT (rd.report_columns_procedure_name)
+                         FROM mamba_dim_report_definition rd
+                         WHERE rd.report_id = report_identifier);
+    ELSE
+        SET proc_name = (SELECT DISTINCT (rd.report_procedure_name)
+                         FROM mamba_dim_report_definition rd
+                         WHERE rd.report_id = report_identifier);
+    END IF;
 
     OPEN cursor_parameter_names;
     read_loop:
@@ -44,7 +52,7 @@ BEGIN
 
     CLOSE cursor_parameter_names;
 
-    SET @sql = CONCAT('CALL ', proc_name, '(', sql_args, ')');
+    SET @sql = CONCAT('CALL ', proc_name, '(', IFNULL(sql_args, ''), ')');
 
     drop table if exists kk;
     create table kk as

@@ -20,8 +20,10 @@ stored-procedures/sp_mamba_multiselect_values_update.sql
 stored-procedures/sp_mamba_extract_report_metadata.sql
 stored-procedures/sp_mamba_extract_report_definition_metadata.sql
 stored-procedures/sp_mamba_load_agegroup.sql
-stored-procedures/sp_mamba_generate_report.sql
+#stored-procedures/sp_mamba_generate_report.sql
 stored-procedures/sp_mamba_generate_report_wrapper.sql
+#stored-procedures/sp_mamba_generate_report_columns.sql
+#stored-procedures/sp_mamba_generate_report_columns_wrapper.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
@@ -69,7 +71,7 @@ dimensions/dim_metadata/sp_mamba_dim_concept_metadata_update.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql
 
 dimensions/dim_report_definition/sp_mamba_dim_report_definition_create.sql
-# config/sp_mamba_dim_report_definition_insert.sql
+config/sp_mamba_dim_report_definition_insert.sql
 dimensions/dim_report_definition/sp_mamba_dim_report_definition_update.sql
 dimensions/dim_report_definition/sp_mamba_dim_report_definition.sql
 
