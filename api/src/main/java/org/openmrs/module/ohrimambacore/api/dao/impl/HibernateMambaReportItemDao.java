@@ -40,10 +40,7 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
         }
 
         String reportQuery = "CALL sp_mamba_generate_report_wrapper(:generate_columns_flag, :report_identifier, :parameter_list)";
-        // String reportQuery = "CALL sp_mamba_generate_report(:report_id, :arguments)";
-        // sp_mamba_generate_report_wrapper(0, 'hiv_exposed_infants_count', '[]');
         SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(reportQuery);
-
         query.setParameter("generate_columns_flag", 0);
         query.setParameter("report_identifier", criteria.getReportId());
         query.setParameter("parameter_list", argumentsJson);
@@ -52,16 +49,20 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
 
         int pageNumber = 1;
         int pageSize = 10;
-
         int firstResult = (pageNumber - 1) * pageSize;
         //query.setFirstResult(firstResult); query.setMaxResults(pageSize);
-
         List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
-        // List<?> resultList = query.list();
-        System.out.println("query list size: " + resultList.size());
-        System.out.println("Res: " + resultList);
 
-        String[] columnNames = query.getReturnAliases();
+        //Get the Columns
+        String reportColumnsQuery = "CALL sp_mamba_get_report_column_names(:report_identifier)";
+        SQLQuery columnsQuery = sessionFactory.getCurrentSession().createSQLQuery(reportColumnsQuery);
+        columnsQuery.setParameter("report_identifier", criteria.getReportId());
+        List<?> columnNamesList = columnsQuery.list();
+        List<String> columnNames = new ArrayList<>();
+        for (Object result : columnNamesList) {
+            System.out.println("Result: " + result);
+            columnNames.add((String) result);
+        }
 
         int serialId = 1;
         List<MambaReportItem> mambaReportItems = new ArrayList<>();
@@ -75,7 +76,7 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
             mambaReportItems.add(reportItem);
 
             for (int i = 0; i < row.length; i++) {
-                reportItem.getRecord().add(new MambaReportItemColumn(columnNames[i], row[i]));
+                reportItem.getRecord().add(new MambaReportItemColumn(columnNames.get(i), row[i]));
             }
             serialId++;
         }
