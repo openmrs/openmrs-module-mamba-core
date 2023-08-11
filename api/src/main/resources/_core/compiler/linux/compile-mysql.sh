@@ -151,9 +151,21 @@ DROP PROCEDURE IF EXISTS $report_columns_procedure_name;
 CREATE PROCEDURE $report_columns_procedure_name($in_parameters)
 BEGIN
 
+-- Create Table to store report column names with no rows
 CREATE TABLE $report_columns_table_name AS
 $sql_query
 LIMIT 0;
+
+-- Select report column names from Table
+SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
+INTO @column_names
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = '$report_columns_table_name';
+
+-- Update Table with report column names
+UPDATE mamba_dim_report_definition
+SET result_column_names = @column_names
+WHERE report_id='$reportId';
 
 END //
 
@@ -253,8 +265,8 @@ function consolidateSPsCallerFile() {
     # Read the sp_makefile line by line skipping comments (#) and write the file and its dir structure to a new loc.
     cat sp_makefile | grep -v "^#" | grep -v "^$" | while read -r line; do
 
-      echo "copying file: $line"
-      echo "to temp location: $dbEngineBaseDir"/etl/$temp_folder_number
+      # echo "copying file: $line"
+      # echo "to temp location: $dbEngineBaseDir"/etl/$temp_folder_number
 
       # Extract the file name and folder name from the line
       # filename=$(basename "$line")
