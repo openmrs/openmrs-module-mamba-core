@@ -10,9 +10,7 @@ import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportSearchField;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * @author smallGod
@@ -57,26 +55,25 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
         String reportColumnsQuery = "CALL sp_mamba_get_report_column_names(:report_identifier)";
         SQLQuery columnsQuery = sessionFactory.getCurrentSession().createSQLQuery(reportColumnsQuery);
         columnsQuery.setParameter("report_identifier", criteria.getReportId());
+
         List<?> columnNamesList = columnsQuery.list();
         List<String> columnNames = new ArrayList<>();
         for (Object result : columnNamesList) {
-            System.out.println("Result: " + result);
             columnNames.add((String) result);
         }
 
         int serialId = 1;
         List<MambaReportItem> mambaReportItems = new ArrayList<>();
-
         for (Object result : resultList) {
-            Object[] row = (Object[]) result;
 
+            List<?> row = (List<?>) result;
             MambaReportItem reportItem = new MambaReportItem();
             // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
             reportItem.setSerialId(serialId);
             mambaReportItems.add(reportItem);
 
-            for (int i = 0; i < row.length; i++) {
-                reportItem.getRecord().add(new MambaReportItemColumn(columnNames.get(i), row[i]));
+            for (int i = 0; i < row.size(); i++) {
+                reportItem.getRecord().add(new MambaReportItemColumn(columnNames.get(i), row.get(i)));
             }
             serialId++;
         }
