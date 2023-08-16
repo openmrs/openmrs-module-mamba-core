@@ -14,8 +14,8 @@
 
     <!-- Required Privileges  -->
     <privilege>
-        <name>Serve Mamba ETL Reports via a Service layer</name>
-        <description>Serve Mamba ETL Reports via a Service layer</description>
+        <name>View MambaReport</name>
+        <description>Base privilege to view Mamba Reports served via the Service layer</description>
     </privilege>
 
     <require_modules>

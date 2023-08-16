@@ -50,6 +50,8 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
         int firstResult = (pageNumber - 1) * pageSize;
         //query.setFirstResult(firstResult); query.setMaxResults(pageSize);
         List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
+        System.out.println("size: " + resultList.size());
+        System.out.println("resultList: " + resultList);
 
         //Get the Columns
         String reportColumnsQuery = "CALL sp_mamba_get_report_column_names(:report_identifier)";
@@ -62,20 +64,29 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
             columnNames.add((String) result);
         }
 
-        int serialId = 1;
         List<MambaReportItem> mambaReportItems = new ArrayList<>();
-        for (Object result : resultList) {
-
-            List<?> row = (List<?>) result;
+        if (resultList == null || resultList.isEmpty()) {
             MambaReportItem reportItem = new MambaReportItem();
-            // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
-            reportItem.setSerialId(serialId);
+            reportItem.setSerialId(1);
             mambaReportItems.add(reportItem);
-
-            for (int i = 0; i < row.size(); i++) {
-                reportItem.getRecord().add(new MambaReportItemColumn(columnNames.get(i), row.get(i)));
+            for (String columnName : columnNames) {
+                reportItem.getRecord().add(new MambaReportItemColumn(columnName, null));
             }
-            serialId++;
+        } else {
+
+            int serialId = 1;
+            for (Object result : resultList) {
+
+                List<?> row = (List<?>) result;
+                MambaReportItem reportItem = new MambaReportItem();
+                // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
+                reportItem.setSerialId(serialId);
+                mambaReportItems.add(reportItem);
+                for (int i = 0; i < row.size(); i++) {
+                    reportItem.getRecord().add(new MambaReportItemColumn(columnNames.get(i), row.get(i)));
+                }
+                serialId++;
+            }
         }
         return mambaReportItems;
     }
