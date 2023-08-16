@@ -27,7 +27,7 @@ public interface MambaReportService extends OpenmrsService {
 	 * @param mambaReportId the MambaReport id
 	 * @return the MambaReport with given report id, or null if none exists
 	 */
-	//@Authorized({ MambaReportsConstants.MANAGE_ORDER_TEMPLATES })
+	@Authorized({ MambaReportsConstants.VIEW_MAMBA_REPORT })
 	List<MambaReportItem>  getMambaReport(String mambaReportId);
 	
 
@@ -37,6 +37,6 @@ public interface MambaReportService extends OpenmrsService {
 	 * @param criteria - the criteria for the returned MambaReport results
 	 * @return a list of MambaReport
 	 */
-	//@Authorized({ MambaReportsConstants.MANAGE_ORDER_TEMPLATES })
+	@Authorized({ MambaReportsConstants.VIEW_MAMBA_REPORT })
 	List<MambaReportItem> getMambaReportByCriteria(MambaReportCriteria criteria);
 }
