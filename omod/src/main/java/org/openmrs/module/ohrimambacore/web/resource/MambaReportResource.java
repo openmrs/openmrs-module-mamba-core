@@ -27,9 +27,10 @@ public class MambaReportResource implements Searchable {
         return Context.getService(MambaReportService.class);
     }
 
-
     @Override
     public SimpleObject search(RequestContext context) throws ResponseException {
+
+        System.out.println("Search resource hit");
 
         context.setLimit(10);
         context.setStartIndex(0);
@@ -43,7 +44,6 @@ public class MambaReportResource implements Searchable {
             String paramValue = context.getRequest().getParameter(paramName);
 
             if (paramName.equals("report_id")) {
-                System.out.println("retrieve 2 - OHRI Mamba Core: " + paramValue);
                 searchCriteria.setReportId(paramValue);
             } else {
                 searchCriteria.getSearchFields().add(new MambaReportSearchField(paramName, paramValue));
@@ -51,39 +51,12 @@ public class MambaReportResource implements Searchable {
         }
 
         if (searchCriteria.getReportId() == null) {
+            System.err.println("Warning: Report ID is null");
             return new EmptySearchResult().toSimpleObject(null);
         }
 
         List<MambaReportItem> mambaReportItems = getService().getMambaReportByCriteria(searchCriteria);
-        return new SimpleObject().add("results", mambaReportItems);
-    }
-
-    //TODO: (non-business code) - Delete this function after resolving module issues - only for unblocking purposes
-    private SimpleObject getPlaceHolderReport(String reportId) throws ResponseException {
-
-        switch (reportId) {
-
-            case "total_deliveries":
-                return getPlaceHolderData("total_deliveries", new Random().nextInt(1001));
-            case "hiv_exposed_infants":
-                return getPlaceHolderData("hiv_exposed_infants", new Random().nextInt(40));
-            case "total_pregnant_women":
-                return getPlaceHolderData("total_pregnant_women", new Random().nextInt(723));
-            default:
-                return new EmptySearchResult().toSimpleObject(null);
-        }
-    }
-
-    //TODO: Only doing this till module issue is resolved - Remove all these hard-coded values/functions later
-    private SimpleObject getPlaceHolderData(String columnName, Object rowValue) {
-
-        List<MambaReportItem> mambaReportItems = new ArrayList<>();
-
-        MambaReportItem reportItem = new MambaReportItem();
-        reportItem.setSerialId(1);
-        reportItem.getRecord().add(new MambaReportItemColumn(columnName, rowValue));
-        mambaReportItems.add(reportItem);
-
+        System.out.println("mambaReportItems: " + mambaReportItems);
         return new SimpleObject().add("results", mambaReportItems);
     }
 
@@ -91,7 +64,6 @@ public class MambaReportResource implements Searchable {
     public String getUri(Object o) {
         return null;
     }
-
 
     /*
     public Object retrieve(String reportId, RequestContext requestContext) throws ResponseException {
@@ -135,5 +107,4 @@ public class MambaReportResource implements Searchable {
     }
 
     */
-
 }
