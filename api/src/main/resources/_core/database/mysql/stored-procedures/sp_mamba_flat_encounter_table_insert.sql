@@ -32,6 +32,7 @@ BEGIN
                 ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
             WHERE cm.flat_table_name = ''', @tbl_name, '''
             AND eo.encounter_type_uuid = cm.encounter_type_uuid
+            AND eo.row_num = cm.row_num
             GROUP BY eo.encounter_id, eo.person_id, eo.encounter_datetime;');
 
     PREPARE inserttbl FROM @insert_stmt;

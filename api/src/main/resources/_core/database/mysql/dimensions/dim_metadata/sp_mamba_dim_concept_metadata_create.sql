@@ -14,6 +14,7 @@ CREATE TABLE mamba_dim_concept_metadata
     report_name         VARCHAR(255) NOT NULL,
     flat_table_name     VARCHAR(255) NULL,
     encounter_type_uuid CHAR(38)     NOT NULL,
+    row_num             INT          NULL DEFAULT 1,
 
     PRIMARY KEY (id)
 )
