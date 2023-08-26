@@ -28,14 +28,14 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
 	 * @see #started()
 	 */
 	public void started() {
-		log.info("Started OHRI Mamba Core");
+		log.info("Started OHRI MambaETL Core");
 	}
 	
 	/**
 	 * @see #shutdown()
 	 */
 	public void shutdown() {
-		log.info("Shutdown OHRI Mamba Core");
+		log.info("Shutdown OHRI MambaETL Core");
 	}
 	
 }

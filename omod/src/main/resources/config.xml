@@ -4,18 +4,18 @@
 
     <!-- Base Module Properties -->
     <id>ohrimamba-core</id>
-    <name>OHRI Mamba Core</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <name>OHRI MambaETL Core</name>
+    <version>2.0.1-SNAPSHOT</version>
     <package>org.openmrs.module.ohrimambacore</package>
     <author>Arthur D. Mugume [OHRI]</author>
-    <description>OHRI Mamba Core library module</description>
+    <description>OHRI MambaETL Core library module</description>
     <activator>org.openmrs.module.ohrimambacore.OhriMambaCoreActivator</activator>
     <require_version>2.3.1</require_version>
 
     <!-- Required Privileges  -->
     <privilege>
         <name>View MambaReport</name>
-        <description>Base privilege to view Mamba Reports served via the Service layer</description>
+        <description>Base privilege to view MambaETL Reports served via the Service layer</description>
     </privilege>
 
     <require_modules>

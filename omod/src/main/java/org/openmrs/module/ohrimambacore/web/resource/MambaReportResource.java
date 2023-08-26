@@ -68,8 +68,8 @@ public class MambaReportResource implements Searchable {
     /*
     public Object retrieve(String reportId, RequestContext requestContext) throws ResponseException {
 
-        log.info("retrieve - OHRI Mamba Core");
-        System.out.println("retrieve 2 - OHRI Mamba Core: " + reportId);
+        log.info("retrieve - OHRI MambaETL Core");
+        System.out.println("retrieve 2 - OHRI MambaETL Core: " + reportId);
 
         String mambaSearchFieldsString = requestContext.getParameter("mamba_search_fields");
         ObjectMapper objectMapper = new ObjectMapper();
