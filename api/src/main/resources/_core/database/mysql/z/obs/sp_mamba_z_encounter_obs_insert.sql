@@ -18,7 +18,8 @@ INSERT INTO mamba_z_encounter_obs
         obs_answer_uuid,
         obs_value_coded_uuid,
         status,
-        voided
+        voided,
+        row_num
     )
     SELECT o.encounter_id,
            o.person_id,
@@ -36,7 +37,8 @@ INSERT INTO mamba_z_encounter_obs
            NULL             AS obs_answer_uuid,
            NULL             AS obs_value_coded_uuid,
            o.status,
-           o.voided
+           o.voided,
+           ROW_NUMBER()OVER(PARTITION BY person_id,encounter_id,concept_id)
     FROM obs o
              INNER JOIN mamba_dim_encounter e
                         ON o.encounter_id = e.encounter_id
