@@ -52,8 +52,8 @@ function read_config_metadata() {
         continue
     elif [ "$FIRST_FILE" = false ]; then
         JSON_CONTENTS="$JSON_CONTENTS,"
-    else
-        JSON_CONTENTS=""
+#     else
+#        JSON_CONTENTS=""
     fi
     JSON_CONTENTS="$JSON_CONTENTS$(cat "$FILENAME")"
     FIRST_FILE=false

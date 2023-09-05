@@ -32,4 +32,7 @@ CREATE INDEX mamba_dim_patient_identifier_identifier_type_index
 CREATE INDEX mamba_dim_patient_identifier_uuid_index
     ON mamba_dim_patient_identifier (uuid);
 
+CREATE INDEX mamba_dim_patient_identifier_preferred_index
+    ON mamba_dim_patient_identifier (preferred);
+
 -- $END
