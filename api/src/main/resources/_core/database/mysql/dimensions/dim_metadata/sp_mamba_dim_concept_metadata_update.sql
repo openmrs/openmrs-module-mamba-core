@@ -22,4 +22,15 @@ UPDATE mamba_dim_concept_metadata md
 SET md.concept_answer_obs = 1
 WHERE md.id > 0;
 
+-- Update row number
+UPDATE mamba_dim_concept_metadata md
+INNER JOIN (
+    SELECT
+        id,
+        ROW_NUMBER()  OVER (PARTITION BY  flat_table_name,concept_id ORDER BY id ASC) num
+    FROM mamba_dim_concept_metadata)m
+ON md.id = m.id
+SET md.row_num = num
+WHERE md.id > 0;
+
 -- $END

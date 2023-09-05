@@ -20,6 +20,7 @@ CREATE TABLE mamba_z_encounter_obs
     encounter_type_uuid     CHAR(38),
     status                  VARCHAR(16)   NOT NULL,
     voided                  TINYINT       NOT NULL,
+    row_num                 INT           NULL,
 
     PRIMARY KEY (id)
 )
