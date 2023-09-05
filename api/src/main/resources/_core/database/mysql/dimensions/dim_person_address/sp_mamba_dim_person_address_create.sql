@@ -27,4 +27,10 @@ CREATE TABLE mamba_dim_person_address
 CREATE INDEX mamba_dim_person_address_person_address_id_index
     ON mamba_dim_person_address (person_address_id);
 
+CREATE INDEX mamba_dim_person_address_person_id_index
+    ON mamba_dim_person_address (person_id);
+
+CREATE INDEX mamba_dim_person_address_preferred_index
+    ON mamba_dim_person_address (preferred);
+
 -- $END

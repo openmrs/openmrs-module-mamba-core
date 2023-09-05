@@ -5,7 +5,7 @@ CREATE TABLE mamba_dim_person_name
     id                 INT         NOT NULL AUTO_INCREMENT,
     person_name_id     INT         NOT NULL,
     person_id          INT         NOT NULL,
-    preferred          TINYINT  NOT NULL,
+    preferred          TINYINT     NOT NULL,
     prefix             VARCHAR(50) NULL,
     given_name         VARCHAR(50) NULL,
     middle_name        VARCHAR(50) NULL,
@@ -13,6 +13,7 @@ CREATE TABLE mamba_dim_person_name
     family_name        VARCHAR(50) NULL,
     family_name2       VARCHAR(50) NULL,
     family_name_suffix VARCHAR(50) NULL,
+    degree             VARCHAR(50) NULL,
 
     PRIMARY KEY (id)
 )
