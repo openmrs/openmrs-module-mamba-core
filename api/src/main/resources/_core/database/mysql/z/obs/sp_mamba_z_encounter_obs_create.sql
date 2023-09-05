@@ -50,4 +50,7 @@ CREATE INDEX mamba_z_encounter_obs_status_index
 CREATE INDEX mamba_z_encounter_obs_voided_index
     ON mamba_z_encounter_obs (voided);
 
+CREATE INDEX mamba_z_encounter_obs_row_num_index
+    ON mamba_z_encounter_obs (row_num);
+
 -- $END
