@@ -13,13 +13,21 @@ BEGIN
     DECLARE bdayMonth INT;
     DECLARE todaysDay INT;
     DECLARE bdayDay INT;
+    DECLARE birthdateCheck VARCHAR(255) DEFAULT NULL;
 
     SET onDate = NULL;
 
-    IF birthdate IS NULL THEN
+    -- Check if birthdate is not null and not an empty string
+    IF birthdate IS NULL OR TRIM(birthdate) = '' THEN
         RETURN NULL;
     ELSE
         SET today = CURDATE();
+
+        -- Check if birthdate is a valid date using STR_TO_DATE &  -- Check if birthdate is not in the future
+        SET birthdateCheck = STR_TO_DATE(birthdate, '%Y-%m-%d');
+        IF birthdateCheck IS NULL OR birthdateCheck > today THEN
+            RETURN NULL;
+        END IF;
 
         IF onDate IS NOT NULL THEN
             SET today = onDate;
