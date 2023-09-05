@@ -27,7 +27,10 @@ CREATE TABLE mamba_z_encounter_obs
     CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_z_encounter_obs_encounter_id_type_uuid_person_id_index
-    ON mamba_z_encounter_obs (encounter_id, encounter_type_uuid, person_id);
+    ON mamba_z_encounter_obs (encounter_id, person_id, encounter_datetime);
+
+CREATE INDEX mamba_z_encounter_obs_encounter_id_index
+    ON mamba_z_encounter_obs (encounter_id);
 
 CREATE INDEX mamba_z_encounter_obs_encounter_type_uuid_index
     ON mamba_z_encounter_obs (encounter_type_uuid);
@@ -52,5 +55,11 @@ CREATE INDEX mamba_z_encounter_obs_voided_index
 
 CREATE INDEX mamba_z_encounter_obs_row_num_index
     ON mamba_z_encounter_obs (row_num);
+
+CREATE INDEX mamba_z_encounter_obs_encounter_datetime_index
+    ON mamba_z_encounter_obs (encounter_datetime);
+
+CREATE INDEX mamba_z_encounter_obs_person_id_index
+    ON mamba_z_encounter_obs (person_id);
 
 -- $END
