@@ -22,9 +22,9 @@ CALL sp_mamba_dim_encounter_type;
 
 CALL sp_mamba_dim_encounter;
 
-CALL sp_mamba_dim_person;
-
 CALL sp_mamba_dim_person_name;
+
+CALL sp_mamba_dim_person;
 
 CALL sp_mamba_dim_person_address;
 

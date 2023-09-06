@@ -1,6 +1,6 @@
 # ohri-mamba-core
 
-OHRI Mamba plugin - Extensible core functions of the OHRI Mamba ETL
+OHRI MambaETL plugin OpenMRS module - Extensible core functions of the OHRI MambaETL
 
 Pre-requisites:
 -

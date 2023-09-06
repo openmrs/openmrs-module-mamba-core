@@ -44,20 +44,21 @@ create_report_procedure=""
 # Read in the JSON configuration metadata for Table flattening
 function read_config_metadata() {
 
-  JSON_CONTENTS="{\"flat_report_metadata\":[
-  "
+  JSON_CONTENTS="{\"flat_report_metadata\":["
 
   FIRST_FILE=true
   for FILENAME in "$config_dir"/*.json; do
     if [ "$FILENAME" = "$config_dir/reports.json" ]; then
         continue
     elif [ "$FIRST_FILE" = false ]; then
-      JSON_CONTENTS="$JSON_CONTENTS,
-  "
+        JSON_CONTENTS="$JSON_CONTENTS,"
+#     else
+#        JSON_CONTENTS=""
     fi
     JSON_CONTENTS="$JSON_CONTENTS$(cat "$FILENAME")"
     FIRST_FILE=false
   done
+
   JSON_CONTENTS="$JSON_CONTENTS]}"
 
   SQL_CONTENTS="
@@ -77,9 +78,22 @@ function read_config_metadata() {
 function read_config_report_definition_metadata() {
 
     FILENAME="$config_dir/reports.json";
+    REPORT_DEFINITION_FILE="../../database/$db_engine/config/sp_mamba_dim_report_definition_insert.sql"
 
-    # Read JSON data from a file
-    json_string=$(cat $FILENAME)
+    # Check if FILENAME is null
+    if [ -z "$FILENAME" ]; then
+        json_string='{"report_definitions": []}'
+        echo "FILENAME is null. Will not attempt to read report_definition."
+    fi
+
+    # Check if reports.json file exists
+    if [ -f "$FILENAME" ]; then
+        # Read JSON data from a file
+        json_string=$(cat "$FILENAME")
+    else
+        echo "reports.json file not found. Will not attempt to read report_definition."
+        json_string='{"report_definitions": []}'
+    fi
 
     # Get the total number of report_definitions
     total_reports=$(jq '.report_definitions | length' <<< "$json_string")
@@ -173,24 +187,23 @@ END //
 DELIMITER ;
 
 "
-
     done
 
     # Now Read in the contents for the Mysql Part - to insert into Tables
+    if [ ! -z "$FILENAME" ] && [ -f "$FILENAME" ]; then
 
-    JSON_CONTENTS=$(echo "$(cat "$FILENAME")" | sed "s/'/''/g")
+        JSON_CONTENTS=$(cat "$FILENAME" | sed "s/'/''/g") # Read in the contents for the JSON file and escape single quotes
 
-    REPORT_DEFINITION_CONTENT="$(cat <<EOF
-    -- \$BEGIN
-    SET @report_definition_json = '$JSON_CONTENTS';
-    -- SET @report_definition_json_escaped = REPLACE(@report_definition_json, "'", "''");
-
-    CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
-    -- \$END
+        REPORT_DEFINITION_CONTENT=$(cat <<EOF
+-- \$BEGIN
+SET @report_definition_json = '$JSON_CONTENTS';
+CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
+-- \$END
 EOF
-)"
+)
+    fi
 
-  echo "$REPORT_DEFINITION_CONTENT" > "../../database/$db_engine/config/sp_mamba_dim_report_definition_insert.sql" #TODO: improve!!
+    echo "$REPORT_DEFINITION_CONTENT" > "$REPORT_DEFINITION_FILE" #TODO: improve!!
 }
 
 function make_buildfile_liquibase_compatible(){
