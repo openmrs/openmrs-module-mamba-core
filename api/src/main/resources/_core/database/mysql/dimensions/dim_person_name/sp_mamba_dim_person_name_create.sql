@@ -14,6 +14,7 @@ CREATE TABLE mamba_dim_person_name
     family_name2       VARCHAR(50) NULL,
     family_name_suffix VARCHAR(50) NULL,
     degree             VARCHAR(50) NULL,
+    voided             TINYINT(1)  NOT NULL,
 
     PRIMARY KEY (id)
 )
@@ -24,5 +25,11 @@ CREATE INDEX mamba_dim_person_name_person_name_id_index
 
 CREATE INDEX mamba_dim_person_name_person_id_index
     ON mamba_dim_person_name (person_id);
+
+CREATE INDEX mamba_dim_person_name_voided_index
+    ON mamba_dim_person_name (voided);
+
+CREATE INDEX mamba_dim_person_name_preferred_index
+    ON mamba_dim_person_name (preferred);
 
 -- $END

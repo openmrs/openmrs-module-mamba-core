@@ -32,6 +32,7 @@ SELECT psn.person_id,
 FROM person psn
          INNER JOIN mamba_dim_person_name pn
                     on psn.person_id = pn.person_id
-where pn.preferred = 1;
+WHERE pn.preferred = 1
+  AND pn.voided = 0;
 
 -- $END
