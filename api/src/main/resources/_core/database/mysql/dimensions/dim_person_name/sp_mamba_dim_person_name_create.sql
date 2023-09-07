@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE mamba_dim_person_name
+CREATE TABLE [analysis_db].mamba_dim_person_name
 (
     id                 INT         NOT NULL AUTO_INCREMENT,
     person_name_id     INT         NOT NULL,
@@ -21,15 +21,15 @@ CREATE TABLE mamba_dim_person_name
     CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_dim_person_name_person_name_id_index
-    ON mamba_dim_person_name (person_name_id);
+    ON [analysis_db].mamba_dim_person_name (person_name_id);
 
 CREATE INDEX mamba_dim_person_name_person_id_index
-    ON mamba_dim_person_name (person_id);
+    ON [analysis_db].mamba_dim_person_name (person_id);
 
 CREATE INDEX mamba_dim_person_name_voided_index
-    ON mamba_dim_person_name (voided);
+    ON [analysis_db].mamba_dim_person_name (voided);
 
 CREATE INDEX mamba_dim_person_name_preferred_index
-    ON mamba_dim_person_name (preferred);
+    ON [analysis_db].mamba_dim_person_name (preferred);
 
 -- $END

@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE mamba_dim_encounter
+CREATE TABLE [analysis_db].mamba_dim_encounter
 (
     id                  INT      NOT NULL AUTO_INCREMENT,
     encounter_id        INT      NOT NULL,
@@ -24,18 +24,18 @@ CREATE TABLE mamba_dim_encounter
     CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_dim_encounter_encounter_id_index
-    ON mamba_dim_encounter (encounter_id);
+    ON [analysis_db].mamba_dim_encounter (encounter_id);
 
 CREATE INDEX mamba_dim_encounter_encounter_type_index
-    ON mamba_dim_encounter (encounter_type);
+    ON [analysis_db].mamba_dim_encounter (encounter_type);
 
 CREATE INDEX mamba_dim_encounter_uuid_index
-    ON mamba_dim_encounter (uuid);
+    ON [analysis_db].mamba_dim_encounter (uuid);
 
 CREATE INDEX mamba_dim_encounter_encounter_type_uuid_index
-    ON mamba_dim_encounter (encounter_type_uuid);
+    ON [analysis_db].mamba_dim_encounter (encounter_type_uuid);
 
 CREATE INDEX mamba_dim_encounter_patient_id_index
-    ON mamba_dim_encounter (patient_id);
+    ON [analysis_db].mamba_dim_encounter (patient_id);
 
 -- $END

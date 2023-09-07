@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO mamba_dim_concept_name (concept_name_id,
+INSERT INTO [analysis_db].mamba_dim_concept_name (concept_name_id,
                                     concept_id,
                                     name,
                                     locale,

@@ -1,5 +1,5 @@
 -- $BEGIN
-CREATE TABLE mamba_dim_relationship
+CREATE TABLE [analysis_db].mamba_dim_relationship
 (
 
     relationship_id INT          NOT NULL AUTO_INCREMENT,
@@ -23,9 +23,9 @@ CREATE TABLE mamba_dim_relationship
 ) CHARSET = UTF8MB3;
 
 CREATE INDEX mamba_dim_relationship_person_a_index
-    ON mamba_dim_relationship (person_a);
+    ON [analysis_db].mamba_dim_relationship (person_a);
 
 CREATE INDEX mamba_dim_relationship_person_b_index
-    ON mamba_dim_relationship (person_b);
+    ON [analysis_db].mamba_dim_relationship (person_b);
 
 -- $END

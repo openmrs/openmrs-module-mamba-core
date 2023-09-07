@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO mamba_dim_encounter (encounter_id,
+INSERT INTO [analysis_db].mamba_dim_encounter (encounter_id,
                                  uuid,
                                  encounter_type,
                                  encounter_type_uuid,
@@ -19,10 +19,10 @@ SELECT e.encounter_id,
        e.voided,
        e.visit_id
 FROM encounter e
-         INNER JOIN mamba_dim_encounter_type et
+         INNER JOIN [analysis_db].mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid
           IN (SELECT DISTINCT(md.encounter_type_uuid)
-              FROM mamba_dim_concept_metadata md);
+              FROM [analysis_db].mamba_dim_concept_metadata md);
 
 -- $END

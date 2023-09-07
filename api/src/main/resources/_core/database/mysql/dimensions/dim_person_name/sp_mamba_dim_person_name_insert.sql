@@ -1,5 +1,5 @@
 -- $BEGIN
-INSERT INTO mamba_dim_person_name(person_name_id,
+INSERT INTO [analysis_db].mamba_dim_person_name(person_name_id,
                                   person_id,
                                   preferred,
                                   prefix,

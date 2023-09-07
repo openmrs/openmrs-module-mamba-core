@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO mamba_dim_relationship
+INSERT INTO [analysis_db].mamba_dim_relationship
     (
         relationship_id,
         person_a,

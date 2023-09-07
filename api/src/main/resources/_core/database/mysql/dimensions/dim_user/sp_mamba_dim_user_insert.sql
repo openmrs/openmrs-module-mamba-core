@@ -1,5 +1,5 @@
 -- $BEGIN
-    INSERT INTO mamba_dim_users
+    INSERT INTO [analysis_db].mamba_dim_users
         (
             user_id,
             system_id,
