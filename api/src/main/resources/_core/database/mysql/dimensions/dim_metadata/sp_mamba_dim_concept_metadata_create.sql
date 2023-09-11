@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE [analysis_db].mamba_dim_concept_metadata
+CREATE TABLE mamba_dim_concept_metadata
 (
     id                  INT          NOT NULL AUTO_INCREMENT,
     concept_id          INT          NULL,
@@ -21,22 +21,22 @@ CREATE TABLE [analysis_db].mamba_dim_concept_metadata
     CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_dim_concept_metadata_concept_id_index
-    ON [analysis_db].mamba_dim_concept_metadata (concept_id);
+    ON mamba_dim_concept_metadata (concept_id);
 
 CREATE INDEX mamba_dim_concept_metadata_concept_uuid_index
-    ON [analysis_db].mamba_dim_concept_metadata (concept_uuid);
+    ON mamba_dim_concept_metadata (concept_uuid);
 
 CREATE INDEX mamba_dim_concept_metadata_encounter_type_uuid_index
-    ON [analysis_db].mamba_dim_concept_metadata (encounter_type_uuid);
+    ON mamba_dim_concept_metadata (encounter_type_uuid);
 
 CREATE INDEX mamba_dim_concept_metadata_concepts_locale_index
-    ON [analysis_db].mamba_dim_concept_metadata (concepts_locale);
+    ON mamba_dim_concept_metadata (concepts_locale);
 
 CREATE INDEX mamba_dim_concept_metadata_row_num_index
-    ON [analysis_db].mamba_dim_concept_metadata (row_num);
+    ON mamba_dim_concept_metadata (row_num);
 
 CREATE INDEX mamba_dim_concept_metadata_flat_table_name_index
-    ON [analysis_db].mamba_dim_concept_metadata (flat_table_name);
+    ON mamba_dim_concept_metadata (flat_table_name);
 
 -- ALTER TABLE `mamba_dim_concept_metadata`
 --     ADD COLUMN `encounter_type_id` INT NULL AFTER `output_table_name`,

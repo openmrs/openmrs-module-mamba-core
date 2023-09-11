@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO [analysis_db].mamba_dim_location (location_id,
+INSERT INTO mamba_dim_location (location_id,
                                 name,
                                 description,
                                 city_village,

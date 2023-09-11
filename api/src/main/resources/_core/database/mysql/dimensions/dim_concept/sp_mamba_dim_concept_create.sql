@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE [analysis_db].mamba_dim_concept
+CREATE TABLE mamba_dim_concept
 (
     id          INT          NOT NULL AUTO_INCREMENT,
     concept_id  INT          NOT NULL,
@@ -13,12 +13,12 @@ CREATE TABLE [analysis_db].mamba_dim_concept
     CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_dim_concept_concept_id_index
-    ON [analysis_db].mamba_dim_concept (concept_id);
+    ON mamba_dim_concept (concept_id);
 
 CREATE INDEX mamba_dim_concept_uuid_index
-    ON [analysis_db].mamba_dim_concept (uuid);
+    ON mamba_dim_concept (uuid);
 
 CREATE INDEX mamba_dim_concept_datatype_id_index
-    ON [analysis_db].mamba_dim_concept (datatype_id);
+    ON mamba_dim_concept (datatype_id);
 
 -- $END

@@ -1,7 +1,7 @@
 -- $BEGIN
 
 -- update age_value b
-UPDATE [analysis_db].mamba_dim_agegroup a
+UPDATE mamba_dim_agegroup a
 SET datim_age_val =
     CASE
         WHEN a.datim_agegroup = '<1' THEN 1

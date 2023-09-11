@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE [analysis_db].mamba_dim_concept_name
+CREATE TABLE mamba_dim_concept_name
 (
     id                INT          NOT NULL AUTO_INCREMENT,
     concept_name_id   INT          NOT NULL,
@@ -15,18 +15,18 @@ CREATE TABLE [analysis_db].mamba_dim_concept_name
     CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_dim_concept_name_concept_name_id_index
-    ON [analysis_db].mamba_dim_concept_name (concept_name_id);
+    ON mamba_dim_concept_name (concept_name_id);
 
 CREATE INDEX mamba_dim_concept_name_concept_id_index
-    ON [analysis_db].mamba_dim_concept_name (concept_id);
+    ON mamba_dim_concept_name (concept_id);
 
 CREATE INDEX mamba_dim_concept_name_concept_name_type_index
-    ON [analysis_db].mamba_dim_concept_name (concept_name_type);
+    ON mamba_dim_concept_name (concept_name_type);
 
 CREATE INDEX mamba_dim_concept_name_locale_index
-    ON [analysis_db].mamba_dim_concept_name (locale);
+    ON mamba_dim_concept_name (locale);
 
 CREATE INDEX mamba_dim_concept_name_locale_preferred_index
-    ON [analysis_db].mamba_dim_concept_name (locale_preferred);
+    ON mamba_dim_concept_name (locale_preferred);
 
 -- $END

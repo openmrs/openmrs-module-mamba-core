@@ -1,9 +1,9 @@
 -- $BEGIN
 
-CREATE TABLE [analysis_db].mamba_dim_person
+CREATE TABLE mamba_dim_person
 (
     id                  INT          NOT NULL AUTO_INCREMENT,
-    person_id           INT          NOT NULL UNIQUE,
+    person_id           INT          NOT NULL,
     birthdate           DATE         NULL,
     birthdate_estimated TINYINT(1)   NOT NULL,
     age                 INT          NULL,
@@ -21,9 +21,9 @@ CREATE TABLE [analysis_db].mamba_dim_person
 ) CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_dim_person_person_id_index
-    ON [analysis_db].mamba_dim_person (person_id);
+    ON mamba_dim_person (person_id);
 
 CREATE INDEX mamba_dim_person_uuid_index
-    ON [analysis_db].mamba_dim_person (uuid);
+    ON mamba_dim_person (uuid);
 
 -- $END

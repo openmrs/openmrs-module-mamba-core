@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO [analysis_db].mamba_dim_concept (uuid,
+INSERT INTO mamba_dim_concept (uuid,
                                concept_id,
                                datatype_id)
 SELECT c.uuid        AS uuid,

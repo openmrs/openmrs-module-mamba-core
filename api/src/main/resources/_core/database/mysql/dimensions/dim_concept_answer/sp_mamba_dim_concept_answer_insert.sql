@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO [analysis_db].mamba_dim_concept_answer (concept_answer_id,
+INSERT INTO mamba_dim_concept_answer (concept_answer_id,
                                       concept_id,
                                       answer_concept,
                                       answer_drug)

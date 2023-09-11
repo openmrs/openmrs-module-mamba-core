@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE [analysis_db].mamba_dim_agegroup
+CREATE TABLE mamba_dim_agegroup
 (
     id              INT         NOT NULL AUTO_INCREMENT,
     age             INT         NULL,

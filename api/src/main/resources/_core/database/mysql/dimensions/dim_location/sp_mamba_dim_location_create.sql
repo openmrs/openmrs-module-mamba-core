@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE [analysis_db].mamba_dim_location
+CREATE TABLE mamba_dim_location
 (
     id              INT          NOT NULL AUTO_INCREMENT,
     location_id     INT          NOT NULL,
@@ -34,9 +34,9 @@ CREATE TABLE [analysis_db].mamba_dim_location
     CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_dim_location_location_id_index
-    ON [analysis_db].mamba_dim_location (location_id);
+    ON mamba_dim_location (location_id);
 
 CREATE INDEX mamba_dim_location_name_index
-    ON [analysis_db].mamba_dim_location (name);
+    ON mamba_dim_location (name);
 
 -- $END

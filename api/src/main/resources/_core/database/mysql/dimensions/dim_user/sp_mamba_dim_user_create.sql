@@ -1,5 +1,5 @@
 -- $BEGIN
-    CREATE TABLE [analysis_db].mamba_dim_users
+    CREATE TABLE mamba_dim_users
     (
         id            INT          NOT NULL AUTO_INCREMENT,
         user_id       INT          NOT NULL,
@@ -22,6 +22,6 @@
         CHARSET = UTF8MB4;
 
     CREATE INDEX mamba_dim_users_user_id_index
-        ON [analysis_db].mamba_dim_users (user_id);
+        ON mamba_dim_users (user_id);
 
 -- $END

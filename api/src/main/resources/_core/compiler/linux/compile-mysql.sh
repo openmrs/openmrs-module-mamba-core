@@ -516,7 +516,7 @@ DELIMITER ;
 
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
-    sed -i "s/\[analysis_db\]/$analysis_database/g" "$file_to_clean"
+    # sed -i "s/\[analysis_db\]/$analysis_database/g" "$file_to_clean"
 
     cleaned_file="$BUILD_DIR/liquibase_$sp_out_file"
     make_buildfile_liquibase_compatible

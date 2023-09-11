@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO [analysis_db].mamba_dim_person (person_id,
+INSERT INTO mamba_dim_person (person_id,
                               birthdate,
                               birthdate_estimated,
                               age,
@@ -30,7 +30,7 @@ SELECT psn.person_id,
        psn.uuid,
        psn.voided
 FROM person psn
-         INNER JOIN [analysis_db].mamba_dim_person_name pn
+         INNER JOIN mamba_dim_person_name pn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1
   AND pn.voided = 0;
