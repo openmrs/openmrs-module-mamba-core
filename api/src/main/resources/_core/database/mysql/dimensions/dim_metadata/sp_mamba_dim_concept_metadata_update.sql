@@ -20,7 +20,14 @@ UPDATE mamba_dim_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
     ON md.concept_id = ca.answer_concept
 SET md.concept_answer_obs = 1
-WHERE md.id > 0;
+WHERE md.id > 0 AND
+        md.concept_id IN (SELECT DISTINCT ca.concept_id
+                          FROM  mamba_dim_concept_answer ca);
+
+-- Update to for multiple selects/dropdowns/options this field is an obs answer to an obs Question
+UPDATE mamba_dim_concept_metadata md
+SET md.concept_answer_obs = 1
+WHERE md.id > 0 and concept_datatype = 'N/A';
 
 -- Update row number
 UPDATE mamba_dim_concept_metadata md
