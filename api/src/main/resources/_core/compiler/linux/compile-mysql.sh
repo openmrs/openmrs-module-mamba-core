@@ -8,18 +8,19 @@ Usage: ${0##*/} [-h] [-d DATABASE] [-v VW_MAKEFILE] [-s SP_MAKEFILE]...
 Reads file paths in the MAKE FILEs and for each file, uses the content to create a stored procedure or a view. Stored procedures are
 put in the create_stored_procedures.sql file and views in a create_views.sql file.
 
-    -h              display this help and exit
-    -t CONFIG_DIR   JSON configuration file
-    -n DB_ENGINE    Database Vendor/Engine. One of: mysql|postgres|sqlserver|oracle
-    -d DATABASE     the Target/Analysis Database the created stored procedures will run on.
-    -v VW_MAKEFILE  file with a list of all files with views
-    -s SP_MAKEFILE  file with a list of all files with stored procedures
-    -k SCHEMA       schema in which the views and or stored procedures will be put
-    -o OUTPUT_FILE  the file where the compiled output will be put
-    -b BUILD_FLAG   (1 or 0) - If set to 1, engine will recompile scripts, if 0 - do nothing
-    -c all          clear all schema objects before run
-    -c sp           clear all stored procedures before run
-    -c views        clear all views before run
+    -h                      display this help and exit
+    -t CONFIG_DIR           JSON configuration file
+    -n DB_ENGINE            Database Vendor/Engine. One of: mysql|postgres|sqlserver|oracle
+    -d SOURCE_DATABASE      the Source Database (openmrs database).
+    -a ANALYSIS_DATABASE    the Target/Analysis Database (where the ETL data is stored).
+    -v VW_MAKEFILE          file with a list of all files with views
+    -s SP_MAKEFILE          file with a list of all files with stored procedures
+    -k SCHEMA               schema in which the views and or stored procedures will be put
+    -o OUTPUT_FILE          the file where the compiled output will be put
+    -b BUILD_FLAG           (1 or 0) - If set to 1, engine will recompile scripts, if 0 - do nothing
+    -c all                  clear all schema objects before run
+    -c sp                   clear all stored procedures before run
+    -c views                clear all views before run
 
 EOF
 }
@@ -325,6 +326,7 @@ BUILD_DIR=""
 sp_out_file="create_stored_procedures.sql"
 vw_out_file="create_views.sql"
 makefile=""
+source_database=""
 analysis_database=""
 config_dir=""
 cleaned_file=""
@@ -338,7 +340,7 @@ OPTIND=1
 IFS='
 '
 
-while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:c:" opt; do
     case "${opt}" in
         h)
             show_help
@@ -348,7 +350,9 @@ while getopts ":h:t:n:d:v:s:k:o:c:" opt; do
             ;;
         n)  db_engine="$OPTARG"
             ;;
-        d)  analysis_database="$OPTARG"
+        d)  source_database="$OPTARG"
+            ;;
+        a)  analysis_database="$OPTARG"
             ;;
         v)  views="$OPTARG"
             ;;
@@ -439,6 +443,11 @@ then
         $clear_objects_sql
     "
 
+    if [ ! -n "$source_database" ]
+    then
+        all_stored_procedures=""
+    fi
+
     if [ ! -n "$analysis_database" ]
     then
         all_stored_procedures=""
@@ -513,10 +522,41 @@ DELIMITER ;
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
     ### SG - Clean up build file to make it Liquibase compatible ###
-
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
-    # sed -i "s/\[analysis_db\]/$analysis_database/g" "$file_to_clean"
+
+    ## Add the target database to use at the beginning of the script
+    use_target_db="USE $analysis_database;"$'\n\n'~ #TODO: also adds to the Create_sp SP need to correct to only add to the liquibase cleaned file
+
+    # Create a temporary file with the text to prepend
+    temp_file=$(mktemp)
+
+    # Add the text to the temporary file
+    echo "$use_target_db" > "$temp_file"
+
+    # Append the original file's content to the temporary file
+    cat "$file_to_clean" >> "$temp_file"
+
+    # Overwrite the original file with the contents of the temporary file
+    mv "$temp_file" "$file_to_clean"
+
+    # Remove the temporary file
+    rm "$temp_file"
+
+
+    ## Replace source database placeholder name
+
+    temp_file=$(mktemp)
+
+    # Use awk to perform the replacement
+    awk -v search="mamba_source_db" -v replace="$source_database" '{ gsub(search, replace) }1' "$file_to_clean" > "$temp_file"
+
+    # Overwrite the original file with the contents of the temporary file
+    mv "$temp_file" "$file_to_clean"
+
+    # Remove the temporary file
+    rm "$temp_file"
+
 
     cleaned_file="$BUILD_DIR/liquibase_$sp_out_file"
     make_buildfile_liquibase_compatible
@@ -538,6 +578,11 @@ then
 $clear_objects_sql
 
 "
+    if [ ! -n "$source_database" ]
+    then
+        views_body=""
+    fi
+
     if [ ! -n "$analysis_database" ]
     then
         views_body=""

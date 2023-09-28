@@ -37,7 +37,7 @@ SELECT o.encounter_id,
        o.status,
        o.voided,
        ROW_NUMBER() OVER (PARTITION BY person_id,encounter_id,concept_id)
-FROM obs o
+FROM mamba_source_db.obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.encounter_id
 WHERE o.encounter_id IS NOT NULL;

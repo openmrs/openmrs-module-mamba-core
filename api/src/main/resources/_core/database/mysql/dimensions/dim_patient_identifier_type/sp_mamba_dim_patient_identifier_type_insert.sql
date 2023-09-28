@@ -8,6 +8,6 @@ SELECT patient_identifier_type_id,
        name,
        description,
        uuid
-FROM patient_identifier_type;
+FROM mamba_source_db.patient_identifier_type;
 
 -- $END

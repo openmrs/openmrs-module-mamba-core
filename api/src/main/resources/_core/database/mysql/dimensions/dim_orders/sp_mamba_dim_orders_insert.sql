@@ -37,6 +37,6 @@ SELECT order_id,
        sort_weight,
        fulfiller_comment,
        fulfiller_status
-FROM orders;
+FROM mamba_source_db.orders;
 
 -- $END

@@ -34,6 +34,6 @@ SELECT
     date_voided,
     void_reason,
     uuid
-FROM relationship;
+FROM mamba_source_db.relationship;
 
 -- $END

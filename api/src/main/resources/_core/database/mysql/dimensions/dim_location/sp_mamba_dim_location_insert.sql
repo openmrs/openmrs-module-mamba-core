@@ -50,6 +50,6 @@ SELECT location_id,
        address13,
        address14,
        address15
-FROM location;
+FROM mamba_source_db.location;
 
 -- $END

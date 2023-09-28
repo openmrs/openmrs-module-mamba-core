@@ -8,6 +8,6 @@ SELECT ca.concept_answer_id AS concept_answer_id,
        ca.concept_id        AS concept_id,
        ca.answer_concept    AS answer_concept,
        ca.answer_drug       AS answer_drug
-FROM concept_answer ca;
+FROM mamba_source_db.concept_answer ca;
 
 -- $END

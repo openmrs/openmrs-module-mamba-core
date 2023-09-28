@@ -16,6 +16,6 @@ SELECT patient_id,
        date_created,
        uuid,
        voided
-FROM patient_identifier;
+FROM mamba_source_db.patient_identifier;
 
 -- $END

@@ -18,7 +18,7 @@ SELECT e.encounter_id,
        e.date_created,
        e.voided,
        e.visit_id
-FROM encounter e
+FROM mamba_source_db.encounter e
          INNER JOIN mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid

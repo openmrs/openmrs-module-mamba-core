@@ -11,7 +11,7 @@ add_option() {
 }
 
 # Parse arguments
-while getopts ":h:t:n:d:v:s:k:o:b:c:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:b:c:" opt; do
   case "${opt}" in
   h) add_option "-h" "${OPTARG}" ;;
   t) add_option "-t" "${OPTARG}" ;;
@@ -28,6 +28,7 @@ while getopts ":h:t:n:d:v:s:k:o:b:c:" opt; do
     esac
     ;;
   d) add_option "-d" "${OPTARG}" ;;
+  a) add_option "-a" "${OPTARG}" ;;
   v) add_option "-v" "${OPTARG}" ;;
   s) add_option "-s" "${OPTARG}" ;;
   k) add_option "-k" "${OPTARG}" ;;

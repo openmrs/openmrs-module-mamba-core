@@ -29,7 +29,7 @@ SELECT psn.person_id,
                                                                     AS person_name_long,
        psn.uuid,
        psn.voided
-FROM person psn
+FROM mamba_source_db.person psn
          INNER JOIN mamba_dim_person_name pn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1

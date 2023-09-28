@@ -23,7 +23,7 @@ SELECT pn.person_name_id,
        pn.family_name_suffix,
        pn.degree,
        pn.voided
-FROM person_name pn;
+FROM mamba_source_db.person_name pn;
 -- $END
 
 
