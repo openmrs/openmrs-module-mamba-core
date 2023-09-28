@@ -2,9 +2,10 @@
 
 CREATE TABLE mamba_dim_encounter_type
 (
-    id                INT      NOT NULL AUTO_INCREMENT,
-    encounter_type_id INT      NOT NULL,
-    uuid              CHAR(38) NOT NULL,
+    id                INT         NOT NULL AUTO_INCREMENT,
+    encounter_type_id INT         NOT NULL,
+    uuid              CHAR(38)    NOT NULL,
+    name              VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (id)
 )

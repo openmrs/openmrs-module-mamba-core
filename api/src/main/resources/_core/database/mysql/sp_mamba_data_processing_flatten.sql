@@ -34,6 +34,8 @@ CALL sp_mamba_dim_relationship;
 
 CALL sp_mamba_dim_patient_identifier;
 
+CALL sp_mamba_dim_orders;
+
 CALL sp_mamba_dim_agegroup;
 
 CALL sp_mamba_z_encounter_obs;
