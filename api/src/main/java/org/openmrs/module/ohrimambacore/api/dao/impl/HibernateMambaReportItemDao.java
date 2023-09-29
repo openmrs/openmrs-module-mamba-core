@@ -9,6 +9,8 @@ import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportSearchField;
+import org.openmrs.module.ohrimambacore.db.AnalysisDbSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -18,7 +20,9 @@ import java.util.*;
  */
 public class HibernateMambaReportItemDao implements MambaReportItemDao {
 
-    private DbSessionFactory sessionFactory;
+    //    private DbSessionFactory sessionFactory;
+    @Autowired
+    private AnalysisDbSessionFactory sessionFactory;
 
     @Override
     public List<MambaReportItem> getMambaReport(String mambaReportId) {
@@ -143,11 +147,11 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
         return mambaReportItems;
     }
 
-    public DbSessionFactory getSessionFactory() {
+    public AnalysisDbSessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
-    public void setSessionFactory(DbSessionFactory sessionFactory) {
+    public void setSessionFactory(AnalysisDbSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 }
