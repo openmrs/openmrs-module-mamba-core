@@ -1,5 +1,6 @@
 package org.openmrs.module.ohrimambacore.db;
 
+import org.hibernate.Session;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.hibernate.SessionFactory;
 
@@ -14,8 +15,8 @@ public class AnalysisDbSessionFactory {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public DbSession getCurrentSession() {
-		return new DbSession(sessionFactory);
+	public Session getCurrentSession() {
+		return sessionFactory.getCurrentSession();
 	}
 	
 	public SessionFactory getHibernateSessionFactory() {

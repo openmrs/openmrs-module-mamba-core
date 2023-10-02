@@ -26,9 +26,10 @@
     <context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
 
     <bean id="analysisSessionFactory" class="org.openmrs.module.ohrimambacore.db.AnalysisHibernateSessionFactoryBean">
+<!--         <property name="administrationDAO" ref="adminDAO"/>-->
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <bean id="analysisTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="analysisSessionFactory"/>
     </bean>
 

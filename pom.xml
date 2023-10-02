@@ -173,7 +173,7 @@
 
     <build>
 
-        <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
+<!--        <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>-->
 
         <pluginManagement>
             <plugins>

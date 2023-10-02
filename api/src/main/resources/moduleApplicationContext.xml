@@ -35,7 +35,7 @@
 
     <bean id="mambaReportService"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionManager" ref="analysisTransactionManager"/>
         <property name="target">
             <bean class="org.openmrs.module.ohrimambacore.api.impl.MambaReportServiceImpl">
                 <property name="dao" ref="mambaReportItemDao"/>

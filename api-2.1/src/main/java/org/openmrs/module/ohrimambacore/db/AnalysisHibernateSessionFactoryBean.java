@@ -26,10 +26,21 @@ public class AnalysisHibernateSessionFactoryBean extends LocalSessionFactoryBean
         String dbUrl = administrationDAO.getGlobalProperty("mambaetl.analysis.db.url");
         String dbUsername = administrationDAO.getGlobalProperty("mambaetl.analysis.db.username");
         String dbPassword = administrationDAO.getGlobalProperty("mambaetl.analysis.db.password");
+        String dbDriverClass = administrationDAO.getGlobalProperty("mambaetl.analysis.db.driver");
 
-        config.setProperty("hibernate.connection.url", dbUrl);
-        config.setProperty("hibernate.connection.username", dbUsername);
-        config.setProperty("hibernate.connection.password", dbPassword);
+        System.out.println("dbUrl  2.1   : " + dbUrl);
+        System.out.println("dbUsername   : " + dbUsername);
+        System.out.println("dbPassword   : " + dbPassword);
+        System.out.println("dbDriverClass: " + dbDriverClass);
+
+//        config.setProperty("hibernate.connection.url", dbUrl);
+//        config.setProperty("hibernate.connection.username", dbUsername);
+//        config.setProperty("hibernate.connection.password", dbPassword);
+//        config.setProperty("hibernate.connection.driver_class", dbDriverClass);
+
+        config.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true");
+        config.setProperty("hibernate.connection.username", "openmrs_rwanda_emr");
+        config.setProperty("hibernate.connection.password", "password");
         config.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
 
         super.afterPropertiesSet();
