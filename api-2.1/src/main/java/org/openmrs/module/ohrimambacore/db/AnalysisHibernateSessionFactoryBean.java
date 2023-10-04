@@ -1,6 +1,7 @@
 package org.openmrs.module.ohrimambacore.db;
 
 import org.openmrs.annotation.OpenmrsProfile;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.db.AdministrationDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
@@ -16,32 +17,22 @@ import java.util.Properties;
 public class AnalysisHibernateSessionFactoryBean extends LocalSessionFactoryBean {
 
     @Autowired
-    AdministrationDAO administrationDAO;
+    AdministrationService adminService;
 
     @Override
     public void afterPropertiesSet() throws IOException {
 
         Properties config = getHibernateProperties();
 
-        String dbUrl = administrationDAO.getGlobalProperty("mambaetl.analysis.db.url");
-        String dbUsername = administrationDAO.getGlobalProperty("mambaetl.analysis.db.username");
-        String dbPassword = administrationDAO.getGlobalProperty("mambaetl.analysis.db.password");
-        String dbDriverClass = administrationDAO.getGlobalProperty("mambaetl.analysis.db.driver");
+        String dbUrl = adminService.getGlobalProperty("mambaetl.analysis.db.url");
+        String dbUsername = adminService.getGlobalProperty("mambaetl.analysis.db.username");
+        String dbPassword = adminService.getGlobalProperty("mambaetl.analysis.db.password");
+        String dbDriverClass = adminService.getGlobalProperty("mambaetl.analysis.db.driver");
 
-        System.out.println("dbUrl  2.1   : " + dbUrl);
-        System.out.println("dbUsername   : " + dbUsername);
-        System.out.println("dbPassword   : " + dbPassword);
-        System.out.println("dbDriverClass: " + dbDriverClass);
-
-//        config.setProperty("hibernate.connection.url", dbUrl);
-//        config.setProperty("hibernate.connection.username", dbUsername);
-//        config.setProperty("hibernate.connection.password", dbPassword);
-//        config.setProperty("hibernate.connection.driver_class", dbDriverClass);
-
-        config.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true");
-        config.setProperty("hibernate.connection.username", "openmrs_rwanda_emr");
-        config.setProperty("hibernate.connection.password", "password");
-        config.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+        config.setProperty("hibernate.connection.url", dbUrl);
+        config.setProperty("hibernate.connection.username", dbUsername);
+        config.setProperty("hibernate.connection.password", dbPassword);
+        config.setProperty("hibernate.connection.driver_class", dbDriverClass);
 
         super.afterPropertiesSet();
     }
