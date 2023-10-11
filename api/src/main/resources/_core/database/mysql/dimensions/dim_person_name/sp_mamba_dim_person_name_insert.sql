@@ -1,5 +1,4 @@
 -- $BEGIN
-
 INSERT INTO mamba_dim_person_name(person_name_id,
                                   person_id,
                                   preferred,
@@ -10,7 +9,8 @@ INSERT INTO mamba_dim_person_name(person_name_id,
                                   family_name,
                                   family_name2,
                                   family_name_suffix,
-                                  degree)
+                                  degree,
+                                  voided)
 SELECT pn.person_name_id,
        pn.person_id,
        pn.preferred,
@@ -21,12 +21,9 @@ SELECT pn.person_name_id,
        pn.family_name,
        pn.family_name2,
        pn.family_name_suffix,
-       pn.degree
-FROM person_name pn;
-
-CREATE INDEX mamba_dim_person_name_preferred_index
-    ON mamba_dim_person_name (preferred);
-
+       pn.degree,
+       pn.voided
+FROM mamba_source_db.person_name pn;
 -- $END
 
 

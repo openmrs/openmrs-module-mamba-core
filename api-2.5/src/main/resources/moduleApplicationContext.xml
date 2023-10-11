@@ -25,32 +25,12 @@
 
     <context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
 
-    <bean id="analysisDbSessionFactory" class="org.openmrs.module.ohrimambacore.db.AnalysisDbSessionFactory">
-        <constructor-arg name="sessionFactory" ref="analysisSessionFactory"/>
+    <bean id="analysisSessionFactory" class="org.openmrs.module.ohrimambacore.db.AnalysisHibernateSessionFactoryBean">
+<!--         <property name="administrationDAO" ref="adminDAO"/>-->
     </bean>
 
-    <bean id="mambaReportItemDao" class="org.openmrs.module.ohrimambacore.api.dao.impl.HibernateMambaReportItemDao">
-        <property name="sessionFactory" ref="analysisDbSessionFactory"/>
+    <bean id="analysisTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="analysisSessionFactory"/>
     </bean>
 
-    <bean id="mambaReportService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager" ref="analysisTransactionManager"/>
-        <property name="target">
-            <bean class="org.openmrs.module.ohrimambacore.api.impl.MambaReportServiceImpl">
-                <property name="dao" ref="mambaReportItemDao"/>
-            </bean>
-        </property>
-        <property name="preInterceptors" ref="serviceInterceptors"/>
-        <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
-    </bean>
-
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.openmrs.module.ohrimambacore.api.MambaReportService</value>
-                <ref bean="mambaReportService"/>
-            </list>
-        </property>
-    </bean>
 </beans>

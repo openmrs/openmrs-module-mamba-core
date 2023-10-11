@@ -3,7 +3,7 @@
 CREATE TABLE mamba_dim_person
 (
     id                  INT          NOT NULL AUTO_INCREMENT,
-    person_id           INT          NOT NULL UNIQUE,
+    person_id           INT          NOT NULL,
     birthdate           DATE         NULL,
     birthdate_estimated TINYINT(1)   NOT NULL,
     age                 INT          NULL,

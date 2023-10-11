@@ -11,6 +11,7 @@
     <description>OHRI MambaETL Core library module</description>
     <activator>org.openmrs.module.ohrimambacore.OhriMambaCoreActivator</activator>
     <require_version>2.3.1</require_version>
+<!--    <require_version>${openmrsPlatformVersion}</require_version>-->
 
     <!-- Required Privileges  -->
     <privilege>
@@ -36,6 +37,17 @@
         <lang>es</lang>
         <file>messages_es.properties</file>
     </messages>
+
+    <conditionalResources>
+        <conditionalResource>
+            <path>/lib/ohrimamba-core-api-2.1-${project.version}.jar</path>
+            <openmrsVersion>2.1.* - 2.3.*</openmrsVersion>
+        </conditionalResource>
+        <conditionalResource>
+            <path>/lib/ohrimamba-core-api-2.5-${project.version}.jar</path>
+            <openmrsVersion>2.4.* - 9.*</openmrsVersion>
+        </conditionalResource>
+    </conditionalResources>
 
 </module>
 

@@ -104,6 +104,11 @@ dimensions/dim_relationship/sp_mamba_dim_relationship_insert.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship_update.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship.sql
 
+dimensions/dim_orders/sp_mamba_dim_orders_create.sql
+dimensions/dim_orders/sp_mamba_dim_orders_insert.sql
+dimensions/dim_orders/sp_mamba_dim_orders_update.sql
+dimensions/dim_orders/sp_mamba_dim_orders.sql
+
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_create.sql
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_insert.sql
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_update.sql

@@ -12,7 +12,7 @@ SELECT cn.concept_name_id,
        cn.locale,
        cn.locale_preferred,
        cn.concept_name_type
-FROM concept_name cn
+FROM mamba_source_db.concept_name cn
  WHERE cn.locale = 'en'
   AND cn.locale_preferred = 1
     AND cn.voided = 0;

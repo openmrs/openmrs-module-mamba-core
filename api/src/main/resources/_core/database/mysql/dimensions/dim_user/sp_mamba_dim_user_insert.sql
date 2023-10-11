@@ -31,5 +31,5 @@
             retire_reason,
             uuid,
             email
-        FROM users c;
+        FROM mamba_source_db.users c;
 -- $END

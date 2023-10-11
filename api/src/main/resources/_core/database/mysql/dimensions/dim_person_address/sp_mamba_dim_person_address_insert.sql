@@ -32,6 +32,6 @@ SELECT person_address_id,
        country,
        latitude,
        longitude
-FROM person_address;
+FROM mamba_source_db.person_address;
 
 -- $END
