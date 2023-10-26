@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_extract_report_definition_metadata;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_extract_report_definition_metadata(
     IN report_definition_json JSON,

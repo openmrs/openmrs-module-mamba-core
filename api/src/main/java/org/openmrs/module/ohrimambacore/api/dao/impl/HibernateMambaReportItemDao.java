@@ -3,7 +3,6 @@ package org.openmrs.module.ohrimambacore.api.dao.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
-import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;

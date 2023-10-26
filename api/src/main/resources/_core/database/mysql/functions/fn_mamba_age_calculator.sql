@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP FUNCTION IF EXISTS fn_mamba_age_calculator;
+
+DELIMITER //
 
 CREATE FUNCTION fn_mamba_age_calculator(birthdate DATE, deathDate DATE) RETURNS Integer
     DETERMINISTIC

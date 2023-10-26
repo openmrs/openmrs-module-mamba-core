@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS `sp_mamba_multiselect_values_update`;
+
+DELIMITER //
 
 CREATE PROCEDURE `sp_mamba_multiselect_values_update`(
     IN table_to_update CHAR(100) CHARACTER SET UTF8MB4,

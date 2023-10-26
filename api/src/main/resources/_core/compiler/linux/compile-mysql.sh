@@ -138,9 +138,9 @@ create_report_procedure+="
 -- ----------------------  $report_procedure_name  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS $report_procedure_name;
+
+DELIMITER //
 
 CREATE PROCEDURE $report_procedure_name($in_parameters)
 BEGIN
@@ -159,9 +159,9 @@ create_report_procedure+="
 -- ----------------------  $report_columns_procedure_name  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS $report_columns_procedure_name;
+
+DELIMITER //
 
 CREATE PROCEDURE $report_columns_procedure_name($in_parameters)
 BEGIN
@@ -453,7 +453,7 @@ then
         all_stored_procedures=""
     fi
 
-    # if any of the files doesnt exist, do not process
+    # if any of the files doesn't exist, do not process
     for file_path in $(sed -E '/^[[:blank:]]*(#|$)/d; s/#.*//' $makefile)
     do
         if [ ! -f "$WORKING_DIR/$file_path" ]
@@ -495,9 +495,9 @@ $sp_body
 -- ----------------------  $sp_name  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS $sp_name;
+
+DELIMITER //
 
 CREATE PROCEDURE $sp_name()
 BEGIN

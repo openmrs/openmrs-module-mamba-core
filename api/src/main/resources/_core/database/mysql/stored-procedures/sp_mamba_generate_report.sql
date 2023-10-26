@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_generate_report;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_generate_report(
     IN report_id VARCHAR(255),

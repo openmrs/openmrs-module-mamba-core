@@ -11,14 +11,22 @@ package org.openmrs.module.ohrimambacore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.ohrimambacore.task.FlattenTableTask;
+import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.Task;
+import org.openmrs.scheduler.TaskDefinition;
+
+import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
 public class OhriMambaCoreActivator extends BaseModuleActivator {
 
-    private Log log = LogFactory.getLog(this.getClass());
+    private static Log log = LogFactory.getLog(OhriMambaCoreActivator.class);
 
     public OhriMambaCoreActivator() {
         super();
@@ -28,7 +36,10 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      * @see #started()
      */
     public void started() {
-        log.info("Started OHRI MambaETL Core");
+        log.info("Started OHRI-MambaETL");
+        System.out.println("Adding mamba flattening Task...");
+        registerTask("MambaETL Reporting Task", "MambaETL - flatten data models & Prepare Reporting data",
+                FlattenTableTask.class, 60 * 60 * 24l);
     }
 
     /**
@@ -57,5 +68,44 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
     @Override
     public void willStop() {
         super.willStop();
+    }
+
+    /**
+     * Register a new OpenMRS task
+     *
+     * @param name        the name
+     * @param description the description
+     * @param clazz       the task class
+     * @param interval    the interval in seconds
+     * @return boolean true if successful, else false
+     * @throws SchedulerException if task could not be scheduled
+     */
+    private static boolean registerTask(String name, String description, Class<? extends Task> clazz, long interval) {
+        try {
+            Context.addProxyPrivilege("Manage Scheduler");
+
+            TaskDefinition taskDef = Context.getSchedulerService().getTaskByName(name);
+            if (taskDef == null) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, 20);
+                taskDef = new TaskDefinition();
+                taskDef.setTaskClass(clazz.getCanonicalName());
+                taskDef.setStartOnStartup(true);
+                taskDef.setRepeatInterval(interval);
+                taskDef.setStarted(true);
+                taskDef.setStartTime(cal.getTime());
+                taskDef.setName(name);
+                taskDef.setUuid(UUID.randomUUID().toString());
+                taskDef.setDescription(description);
+                Context.getSchedulerService().scheduleTask(taskDef);
+            }
+
+        } catch (SchedulerException ex) {
+            log.warn("Unable to register task '" + name + "' with scheduler", ex);
+            return false;
+        } finally {
+            Context.removeProxyPrivilege("Manage Scheduler");
+        }
+        return true;
     }
 }

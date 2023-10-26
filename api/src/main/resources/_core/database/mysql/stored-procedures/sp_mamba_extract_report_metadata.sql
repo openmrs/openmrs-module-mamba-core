@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_extract_report_metadata;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_extract_report_metadata(
     IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4,

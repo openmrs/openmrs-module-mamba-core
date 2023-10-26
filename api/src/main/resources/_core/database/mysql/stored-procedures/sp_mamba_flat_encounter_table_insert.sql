@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_insert;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_flat_encounter_table_insert(
     IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
