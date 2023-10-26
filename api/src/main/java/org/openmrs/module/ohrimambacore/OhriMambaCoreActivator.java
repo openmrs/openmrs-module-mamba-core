@@ -36,7 +36,7 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      * @see #started()
      */
     public void started() {
-        log.info("Started MambaETL base Module");
+        log.info("Started MambaETL base Module..");
         System.out.println("Started MambaETL base Module");
     }
 

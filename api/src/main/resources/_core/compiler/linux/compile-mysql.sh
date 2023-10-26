@@ -526,7 +526,7 @@ DELIMITER ;
 
 
     ## Add the target database to use at the beginning of the script
-    use_target_db="USE $analysis_database;"$'\n\n'~ #TODO: also adds to the Create_sp SP need to correct to only add to the liquibase cleaned file
+    use_target_db="USE $analysis_database;"$'\n\n'~ #TODO: also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
 
     # Create a temporary file with the text to prepend
     temp_file=$(mktemp)
