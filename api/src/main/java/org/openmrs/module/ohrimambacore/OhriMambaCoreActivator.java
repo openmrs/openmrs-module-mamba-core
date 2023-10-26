@@ -36,10 +36,8 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      * @see #started()
      */
     public void started() {
-        log.info("Started OHRI-MambaETL");
-        System.out.println("Adding mamba flattening Task...");
-        registerTask("MambaETL Reporting Task", "MambaETL - flatten data models & Prepare Reporting data",
-                FlattenTableTask.class, 60 * 60 * 24l);
+        log.info("Started MambaETL base Module");
+        System.out.println("Started MambaETL base Module");
     }
 
     /**
@@ -47,11 +45,12 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      */
 
     public void shutdown() {
-        log.info("Shutdown OHRI MambaETL Core");
+        log.info("Shutdown MambaETL base Module");
     }
 
     @Override
     public void stopped() {
+        log.info("MambaETL base Module stopped");
         super.stopped();
     }
 
@@ -102,6 +101,7 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
 
         } catch (SchedulerException ex) {
             log.warn("Unable to register task '" + name + "' with scheduler", ex);
+            ex.printStackTrace();
             return false;
         } finally {
             Context.removeProxyPrivilege("Manage Scheduler");
