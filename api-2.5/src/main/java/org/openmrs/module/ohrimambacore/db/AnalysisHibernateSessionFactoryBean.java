@@ -29,7 +29,7 @@ public class AnalysisHibernateSessionFactoryBean extends LocalSessionFactoryBean
         String dbDriverClass = adminService.getGlobalProperty("mambaetl.analysis.db.driver");
 
         System.out.println("url.. : " + dbUrl);
-        System.out.println("pass..: " + dbPassword);
+        System.out.println("user..: " + dbUsername);
 
         config.setProperty("hibernate.connection.url", dbUrl);
         config.setProperty("hibernate.connection.username", dbUsername);
