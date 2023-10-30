@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_generate_report_wrapper;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_generate_report_wrapper(IN generate_columns_flag TINYINT(1),
                                                   IN report_identifier VARCHAR(255),

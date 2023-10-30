@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP FUNCTION IF EXISTS fn_mamba_get_obs_value_column;
+
+DELIMITER //
 
 CREATE FUNCTION fn_mamba_get_obs_value_column(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
     DETERMINISTIC

@@ -138,9 +138,9 @@ create_report_procedure+="
 -- ----------------------  $report_procedure_name  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS $report_procedure_name;
+
+DELIMITER //
 
 CREATE PROCEDURE $report_procedure_name($in_parameters)
 BEGIN
@@ -159,9 +159,9 @@ create_report_procedure+="
 -- ----------------------  $report_columns_procedure_name  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS $report_columns_procedure_name;
+
+DELIMITER //
 
 CREATE PROCEDURE $report_columns_procedure_name($in_parameters)
 BEGIN
@@ -240,6 +240,11 @@ function make_buildfile_liquibase_compatible(){
     echo "$line" >> "$cleaned_file"
 
   done < "$file_to_clean"
+
+  #after executing use analysis_db at strt of execution, we were getting a weir error in openmrs on unlocking liquibase changelock where it was looking for the Table inside analysis_db yet it is in the Openmrs transactional db
+  #so let's manually change back to use the openmrs database at the end
+  use_source_db="USE $source_database;"
+  echo "$use_source_db" >> "$cleaned_file"
 
 }
 
@@ -453,7 +458,7 @@ then
         all_stored_procedures=""
     fi
 
-    # if any of the files doesnt exist, do not process
+    # if any of the files doesn't exist, do not process
     for file_path in $(sed -E '/^[[:blank:]]*(#|$)/d; s/#.*//' $makefile)
     do
         if [ ! -f "$WORKING_DIR/$file_path" ]
@@ -495,9 +500,9 @@ $sp_body
 -- ----------------------  $sp_name  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS $sp_name;
+
+DELIMITER //
 
 CREATE PROCEDURE $sp_name()
 BEGIN
@@ -526,7 +531,7 @@ DELIMITER ;
 
 
     ## Add the target database to use at the beginning of the script
-    use_target_db="USE $analysis_database;"$'\n\n'~ #TODO: also adds to the Create_sp SP need to correct to only add to the liquibase cleaned file
+    use_target_db="USE $analysis_database;"$'\n\n'~ #TODO: also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
 
     # Create a temporary file with the text to prepend
     temp_file=$(mktemp)

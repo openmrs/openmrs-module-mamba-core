@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_get_report_column_names;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_get_report_column_names(IN report_identifier VARCHAR(255))
 BEGIN

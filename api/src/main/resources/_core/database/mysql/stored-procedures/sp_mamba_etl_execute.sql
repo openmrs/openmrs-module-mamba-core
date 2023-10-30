@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_etl_execute;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_etl_execute()
 BEGIN

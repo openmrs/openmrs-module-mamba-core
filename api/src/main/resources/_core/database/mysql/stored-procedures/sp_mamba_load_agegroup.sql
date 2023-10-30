@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_load_agegroup;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_load_agegroup()
 BEGIN

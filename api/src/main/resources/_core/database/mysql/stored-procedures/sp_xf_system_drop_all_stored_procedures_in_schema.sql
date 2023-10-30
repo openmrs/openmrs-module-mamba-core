@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_stored_procedures_in_schema;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_xf_system_drop_all_stored_procedures_in_schema(
     IN database_name CHAR(255) CHARACTER SET UTF8MB4
