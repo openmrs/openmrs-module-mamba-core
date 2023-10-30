@@ -241,6 +241,11 @@ function make_buildfile_liquibase_compatible(){
 
   done < "$file_to_clean"
 
+  #after executing use analysis_db at strt of execution, we were getting a weir error in openmrs on unlocking liquibase changelock where it was looking for the Table inside analysis_db yet it is in the Openmrs transactional db
+  #so let's manually change back to use the openmrs database at the end
+  use_source_db="USE $source_database;"
+  echo "$use_source_db" >> "$cleaned_file"
+
 }
 
 function consolidateSPsCallerFile() {
