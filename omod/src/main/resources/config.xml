@@ -3,12 +3,12 @@
 <module configVersion="1.2">
 
     <!-- Base Module Properties -->
-    <id>ohrimamba-core</id>
-    <name>OHRI MambaETL Core</name>
-    <version>2.0.1-SNAPSHOT</version>
-    <package>org.openmrs.module.ohrimambacore</package>
-    <author>Arthur D. Mugume [OHRI]</author>
-    <description>OHRI MambaETL Core library module</description>
+    <id>${project.parent.artifactId}</id>
+    <name>${project.parent.name}</name>
+    <version>${project.parent.version}</version>
+    <package>${project.parent.groupId}.${project.parent.artifactId}</package>
+    <author>${project.parent.organization.name}</author>
+    <description>${project.parent.description}</description>
     <activator>org.openmrs.module.ohrimambacore.OhriMambaCoreActivator</activator>
     <require_version>2.3.1</require_version>
 <!--    <require_version>${openmrsPlatformVersion}</require_version>-->
@@ -40,11 +40,11 @@
 
     <conditionalResources>
         <conditionalResource>
-            <path>/lib/ohrimamba-core-api-2.1-${project.version}.jar</path>
+            <path>/lib/ohrimamba-core-api-2.1-${project.parent.version}.jar</path>
             <openmrsVersion>2.1.* - 2.3.*</openmrsVersion>
         </conditionalResource>
         <conditionalResource>
-            <path>/lib/ohrimamba-core-api-2.5-${project.version}.jar</path>
+            <path>/lib/ohrimamba-core-api-2.5-${project.parent.version}.jar</path>
             <openmrsVersion>2.4.* - 9.*</openmrsVersion>
         </conditionalResource>
     </conditionalResources>

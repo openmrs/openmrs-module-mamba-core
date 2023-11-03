@@ -16,6 +16,10 @@
     <name>OHRI MambaETL Core: Extensible core functions [POM]</name>
     <description>OHRI MambaETL Core - Extensible core functions for the OHRI MambaETL</description>
 
+    <organization>
+        <name>OHRI</name>
+    </organization>
+
     <url>https://wiki.openmrs.org/x/FQ4z</url>
 
     <scm>
@@ -226,11 +230,11 @@
             </plugins>
         </pluginManagement>
 
-        <resources>
+        <!--<resources>
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-        </resources>
+        </resources>-->
 
     </build>
 
