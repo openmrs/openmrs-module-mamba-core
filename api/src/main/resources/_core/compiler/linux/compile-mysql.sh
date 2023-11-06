@@ -85,6 +85,14 @@ function read_config_report_definition_metadata() {
     if [ -z "$FILENAME" ]; then
         json_string='{"report_definitions": []}'
         echo "FILENAME is null. Will not attempt to read report_definition."
+
+        EMPTY_CONTENT=$(cat <<EOF
+        -- \$BEGIN
+        -- \$END
+        EOF
+        )
+        echo "$EMPTY_CONTENT" > "$REPORT_DEFINITION_FILE" #TODO: improve!!
+        return
     fi
 
     # Check if reports.json file exists
