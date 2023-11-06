@@ -85,14 +85,6 @@ function read_config_report_definition_metadata() {
     if [ -z "$FILENAME" ]; then
         json_string='{"report_definitions": []}'
         echo "FILENAME is null. Will not attempt to read report_definition."
-
-        EMPTY_CONTENT=$(cat <<EOF
-        -- \$BEGIN
-        -- \$END
-        EOF
-        )
-        echo "$EMPTY_CONTENT" > "$REPORT_DEFINITION_FILE" #TODO: improve!!
-        return
     fi
 
     # Check if reports.json file exists
@@ -100,8 +92,12 @@ function read_config_report_definition_metadata() {
         # Read JSON data from a file
         json_string=$(cat "$FILENAME")
     else
-        echo "reports.json file not found. Will not attempt to read report_definition."
+        echo "reports.json file Not found. Will not attempt to read report_definition."
         json_string='{"report_definitions": []}'
+
+        echo "-- \$BEGIN" >> "$REPORT_DEFINITION_FILE"
+        echo "-- \$END" >> "$REPORT_DEFINITION_FILE"
+        return
     fi
 
     # Get the total number of report_definitions
