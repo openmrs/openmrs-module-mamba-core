@@ -7,6 +7,8 @@ CREATE TABLE mamba_z_encounter_obs
     person_id               INT           NOT NULL,
     encounter_datetime      DATETIME      NOT NULL,
     obs_datetime            DATETIME      NOT NULL,
+    location_id             INT           NULL,
+    obs_group_id            INT           NULL,
     obs_question_concept_id INT DEFAULT 0 NOT NULL,
     obs_value_text          TEXT          NULL,
     obs_value_numeric       DOUBLE        NULL,
