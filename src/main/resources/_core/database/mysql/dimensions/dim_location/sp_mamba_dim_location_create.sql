@@ -31,7 +31,7 @@ CREATE TABLE mamba_dim_location
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 CREATE INDEX mamba_dim_location_location_id_index
     ON mamba_dim_location (location_id);

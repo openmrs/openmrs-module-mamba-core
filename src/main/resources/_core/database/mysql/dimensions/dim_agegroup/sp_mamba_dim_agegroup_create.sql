@@ -9,6 +9,6 @@ CREATE TABLE mamba_dim_agegroup
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 -- $END

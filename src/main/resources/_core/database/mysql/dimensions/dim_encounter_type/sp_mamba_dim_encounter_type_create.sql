@@ -8,7 +8,7 @@ CREATE TABLE mamba_dim_encounter_type
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 CREATE INDEX mamba_dim_encounter_type_encounter_type_id_index
     ON mamba_dim_encounter_type (encounter_type_id);

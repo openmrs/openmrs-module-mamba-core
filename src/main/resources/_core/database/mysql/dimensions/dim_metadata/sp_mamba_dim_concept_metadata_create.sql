@@ -17,7 +17,7 @@ CREATE TABLE mamba_dim_concept_metadata
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 CREATE INDEX mamba_dim_concept_metadata_concept_id_index
     ON mamba_dim_concept_metadata (concept_id);

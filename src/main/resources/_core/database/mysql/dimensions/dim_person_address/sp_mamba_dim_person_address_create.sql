@@ -22,7 +22,7 @@ CREATE TABLE mamba_dim_person_address
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 CREATE INDEX mamba_dim_person_address_person_address_id_index
     ON mamba_dim_person_address (person_address_id);
