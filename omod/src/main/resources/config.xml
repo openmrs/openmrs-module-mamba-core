@@ -38,16 +38,5 @@
         <file>messages_es.properties</file>
     </messages>
 
-    <conditionalResources>
-        <conditionalResource>
-            <path>/lib/ohrimamba-core-api-2.1-${project.parent.version}.jar</path>
-            <openmrsVersion>2.1.* - 2.3.*</openmrsVersion>
-        </conditionalResource>
-        <conditionalResource>
-            <path>/lib/ohrimamba-core-api-2.5-${project.parent.version}.jar</path>
-            <openmrsVersion>2.4.* - 9.*</openmrsVersion>
-        </conditionalResource>
-    </conditionalResources>
-
 </module>
 

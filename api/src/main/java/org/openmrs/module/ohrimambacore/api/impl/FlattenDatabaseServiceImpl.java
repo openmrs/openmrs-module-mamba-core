@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Arthur D. Mugume date: 01/03/2023
  */
-@Transactional
 public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements FlattenDatabaseService {
 	
 	private FlattenDatabaseDao dao;

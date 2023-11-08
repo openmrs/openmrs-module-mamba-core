@@ -1,17 +1,16 @@
 package org.openmrs.module.ohrimambacore.api.dao.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.SQLQuery;
-import org.hibernate.transform.Transformers;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
-import org.openmrs.module.ohrimambacore.api.parameter.MambaReportSearchField;
-import org.openmrs.module.ohrimambacore.db.AnalysisDbSessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openmrs.module.ohrimambacore.db.ConnectionPoolManager;
 
-import java.util.*;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author smallGod
@@ -19,9 +18,6 @@ import java.util.*;
  */
 public class HibernateMambaReportItemDao implements MambaReportItemDao {
 
-    //    private DbSessionFactory sessionFactory;
-    @Autowired
-    private AnalysisDbSessionFactory sessionFactory;
 
     @Override
     public List<MambaReportItem> getMambaReport(String mambaReportId) {
@@ -40,117 +36,75 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
             exc.printStackTrace();
         }
 
-        String reportQuery = "CALL sp_mamba_generate_report_wrapper(:generate_columns_flag, :report_identifier, :parameter_list)";
-        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(reportQuery);
-        query.setParameter("generate_columns_flag", 0);
-        query.setParameter("report_identifier", criteria.getReportId());
-        query.setParameter("parameter_list", argumentsJson);
-
-        System.out.println("Generated SQL Query..: " + query.getQueryString());
-
-        int pageNumber = 1;
-        int pageSize = 10;
-        int firstResult = (pageNumber - 1) * pageSize;
-        //query.setFirstResult(firstResult); query.setMaxResults(pageSize);
-        List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
-        System.out.println("size: " + resultList.size());
-        System.out.println("resultList: " + resultList);
-
-        //Get the Columns
-        String reportColumnsQuery = "CALL sp_mamba_get_report_column_names(:report_identifier)";
-        SQLQuery columnsQuery = sessionFactory.getCurrentSession().createSQLQuery(reportColumnsQuery);
-        columnsQuery.setParameter("report_identifier", criteria.getReportId());
-
-        List<?> columnNamesList = columnsQuery.list();
+        List<MambaReportItem> mambaReportItems = new ArrayList<>();
         List<String> columnNames = new ArrayList<>();
-        for (Object result : columnNamesList) {
-            columnNames.add((String) result);
-        }
 
-        List<MambaReportItem> mambaReportItems = new ArrayList<>();
-        if (resultList == null || resultList.isEmpty()) {
-            MambaReportItem reportItem = new MambaReportItem();
-            reportItem.setSerialId(1);
-            mambaReportItems.add(reportItem);
-            for (String columnName : columnNames) {
-                reportItem.getRecord().add(new MambaReportItemColumn(columnName, null));
-            }
-        } else {
+        BasicDataSource dataSource = ConnectionPoolManager.getDataSource();
 
-            int serialId = 1;
-            for (Object result : resultList) {
+        try (Connection connection = dataSource.getConnection();
+             CallableStatement statement = connection.prepareCall("{CALL sp_mamba_get_report_column_names(?)}")) {
 
-                List<?> row = (List<?>) result;
-                MambaReportItem reportItem = new MambaReportItem();
-                // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
-                reportItem.setSerialId(serialId);
-                mambaReportItems.add(reportItem);
-                for (int i = 0; i < row.size(); i++) {
-                    reportItem.getRecord().add(new MambaReportItemColumn(columnNames.get(i), row.get(i)));
+            statement.setString("report_identifier", criteria.getReportId());
+
+            boolean hasResults = statement.execute();
+            while (hasResults) {
+
+                ResultSet resultSet = statement.getResultSet();
+                while (resultSet.next()) {
+                    columnNames.add(resultSet.getString(1));
                 }
-                serialId++;
+                hasResults = statement.getMoreResults();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try (Connection connection = dataSource.getConnection();
+             CallableStatement statement = connection.prepareCall("{CALL sp_mamba_generate_report_wrapper(?, ?, ?)}")) {
+
+            statement.setInt("generate_columns_flag", 0);
+            statement.setString("report_identifier", criteria.getReportId());
+            statement.setString("parameter_list", argumentsJson);
+
+            boolean hasResults = statement.execute();
+            if (!hasResults) {
+
+                MambaReportItem reportItem = new MambaReportItem();
+                reportItem.setSerialId(1);
+                mambaReportItems.add(reportItem);
+                for (String columnName : columnNames) {
+                    reportItem.getRecord().add(new MambaReportItemColumn(columnName, null));
+                }
+            } else {
+
+                do {
+                    ResultSet resultSet = statement.getResultSet();
+                    ResultSetMetaData metaData = resultSet.getMetaData();
+                    int columnCount = metaData.getColumnCount();
+
+                    int serialId = 1;
+                    while (resultSet.next()) {
+
+                        MambaReportItem reportItem = new MambaReportItem();
+                        // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
+                        reportItem.setSerialId(serialId);
+                        for (int i = 1; i <= columnCount; i++) {
+
+                            String columnName = metaData.getColumnName(i);
+                            Object columnValue = resultSet.getObject(i);
+                            reportItem.getRecord().add(new MambaReportItemColumn(columnName, columnValue));
+
+                            System.out.println("Column (metadata) " + columnName + ": " + columnValue);
+                            System.out.println("Column (custom  ) " + columnNames.get(i) + ": " + resultSet.getRow());
+                        }
+                        serialId++;
+                    }
+                }
+                while (statement.getMoreResults());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return mambaReportItems;
-    }
-
-
-    public List<MambaReportItem> getMambaReport2(MambaReportCriteria criteria) {
-
-
-        StringJoiner whereClause = new StringJoiner(" AND ", " WHERE ", "");
-
-        List<MambaReportSearchField> searchFields = criteria.getSearchFields();
-        if (searchFields != null && !searchFields.isEmpty()) {
-            for (MambaReportSearchField searchField : searchFields) {
-                String fieldName = searchField.getColumn();
-                whereClause.add(fieldName + " = :" + fieldName);
-            }
-        }
-
-        String queryString = "CALL sp_mamba_generate_report(:report_id)" + whereClause;
-        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(queryString);
-
-        query.setParameter("report_id", criteria.getReportId());
-        for (MambaReportSearchField searchField : searchFields) {
-            query.setParameter(searchField.getColumn(), searchField.getValue());
-        }
-
-        int pageNumber = 1;
-        int pageSize = 10;
-
-        int firstResult = (pageNumber - 1) * pageSize;
-        //query.setFirstResult(firstResult); query.setMaxResults(pageSize);
-
-        List<?> resultList = query.setResultTransformer(Transformers.TO_LIST).list();
-        String[] columnNames = query.getReturnAliases();
-
-        System.out.println("query list size: " + resultList.size());
-
-        int serialId = 1;
-        List<MambaReportItem> mambaReportItems = new ArrayList<>();
-
-        for (Object result : resultList) {
-            Object[] row = (Object[]) result;
-
-            MambaReportItem reportItem = new MambaReportItem();
-            // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
-            reportItem.setSerialId(serialId);
-            mambaReportItems.add(reportItem);
-
-            for (int i = 0; i < row.length; i++) {
-                reportItem.getRecord().add(new MambaReportItemColumn(columnNames[i], row[i]));
-            }
-            serialId++;
-        }
-        return mambaReportItems;
-    }
-
-    public AnalysisDbSessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
-    public void setSessionFactory(AnalysisDbSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
     }
 }
