@@ -16,10 +16,10 @@ WHERE md.id > 0
 -- Use locale preferred or Fully specified name
 
 -- Update to True if this field is an obs answer to an obs Question
-UPDATE mamba_dim_concept_metadata md
-    INNER JOIN mamba_dim_concept_answer ca
-    ON md.concept_id = ca.answer_concept
-SET md.concept_answer_obs = 1
-WHERE md.id > 0;
+-- UPDATE mamba_dim_concept_metadata md
+--     INNER JOIN mamba_dim_concept_answer ca
+--     ON md.concept_id = ca.answer_concept
+-- SET md.concept_answer_obs = 1
+-- WHERE md.id > 0;
 
 -- $END
