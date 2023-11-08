@@ -6,11 +6,16 @@ functions/fn_mamba_calculate_agegroup.sql
 functions/fn_mamba_get_obs_value_column.sql
 functions/fn_mamba_age_calculator.sql
 
+functions/fn_json_extract.sql
+functions/fn_json_keys.sql
+functions/fn_json_length.sql
+functions/fn_json_quote.sql
+
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_objects_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_tables_in_schema.sql
-stored-procedures/sp_mamba_etl_execute.sql
+##stored-procedures/sp_mamba_etl_execute.sql
 
 stored-procedures/sp_mamba_flat_encounter_table_create.sql
 stored-procedures/sp_mamba_flat_encounter_table_create_all.sql
