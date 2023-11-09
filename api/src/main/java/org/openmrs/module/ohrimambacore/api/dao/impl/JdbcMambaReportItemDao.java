@@ -8,6 +8,7 @@ import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.db.ConnectionPoolManager;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author smallGod
  * date: 09/07/2023
  */
-public class HibernateMambaReportItemDao implements MambaReportItemDao {
+public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
 
     @Override
@@ -39,7 +40,9 @@ public class HibernateMambaReportItemDao implements MambaReportItemDao {
         List<MambaReportItem> mambaReportItems = new ArrayList<>();
         List<String> columnNames = new ArrayList<>();
 
-        BasicDataSource dataSource = ConnectionPoolManager.getDataSource();
+        DataSource dataSource = ConnectionPoolManager
+                .getInstance()
+                .getDataSource();
 
         try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall("{CALL sp_mamba_get_report_column_names(?)}")) {

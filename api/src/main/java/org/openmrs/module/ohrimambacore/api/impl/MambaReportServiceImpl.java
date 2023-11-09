@@ -13,6 +13,7 @@ import java.util.List;
  * @author smallGod
  * date: 09/07/2023
  */
+@Transactional
 public class MambaReportServiceImpl extends BaseOpenmrsService implements MambaReportService {
 
     private MambaReportItemDao dao;
