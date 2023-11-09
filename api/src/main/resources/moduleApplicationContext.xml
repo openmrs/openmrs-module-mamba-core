@@ -25,47 +25,23 @@
 
     <context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
 
-    <bean id="analysisDbSessionFactory" class="org.openmrs.module.ohrimambacore.db.AnalysisDbSessionFactory">
-        <constructor-arg name="sessionFactory" ref="analysisSessionFactory"/>
-    </bean>
-
-    <bean id="mambaReportItemDao" class="org.openmrs.module.ohrimambacore.api.dao.impl.HibernateMambaReportItemDao">
-        <property name="sessionFactory" ref="analysisDbSessionFactory"/>
-    </bean>
-
-    <bean id="flattenDatabaseDao" class="org.openmrs.module.ohrimambacore.api.dao.impl.HibernateFlattenDatabaseDao">
-        <property name="sessionFactory" ref="analysisDbSessionFactory"/>
-    </bean>
-
-    <bean id="mambaReportService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager" ref="analysisTransactionManager"/>
-        <property name="target">
-            <bean class="org.openmrs.module.ohrimambacore.api.impl.MambaReportServiceImpl">
-                <property name="dao" ref="mambaReportItemDao"/>
-            </bean>
-        </property>
-        <property name="preInterceptors" ref="serviceInterceptors"/>
-        <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
-    </bean>
-
-    <bean id="flattenDatabaseService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager" ref="analysisTransactionManager"/>
-        <property name="target">
-            <bean class="org.openmrs.module.ohrimambacore.api.impl.FlattenDatabaseServiceImpl">
-                <property name="dao" ref="flattenDatabaseDao"/>
-            </bean>
-        </property>
-        <property name="preInterceptors" ref="serviceInterceptors"/>
-        <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
-    </bean>
-
+    <!-- Services accessible via Context.getService() -->
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.ohrimambacore.api.MambaReportService</value>
-                <ref bean="mambaReportService"/>
+                <value>org.openmrs.module.ohrimambacore.api.FlattenDatabaseService</value>
+                <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+                    <property name="target">
+                        <bean class="org.openmrs.module.ohrimambacore.api.impl.FlattenDatabaseServiceImpl">
+                            <property name="dao">
+                                <bean class="org.openmrs.module.ohrimambacore.api.dao.impl.JdbcFlattenDatabaseDao"/>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="transactionManager" ref="transactionManager"/>
+                    <property name="preInterceptors" ref="serviceInterceptors"/>
+                    <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -73,8 +49,19 @@
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.ohrimambacore.api.FlattenDatabaseService</value>
-                <ref bean="flattenDatabaseService"/>
+                <value>org.openmrs.module.ohrimambacore.api.MambaReportService</value>
+                <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+                    <property name="target">
+                        <bean class="org.openmrs.module.ohrimambacore.api.impl.MambaReportServiceImpl">
+                            <property name="dao">
+                                <bean class="org.openmrs.module.ohrimambacore.api.dao.impl.JdbcMambaReportItemDao"/>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="transactionManager" ref="transactionManager"/>
+                    <property name="preInterceptors" ref="serviceInterceptors"/>
+                    <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
+                </bean>
             </list>
         </property>
     </bean>

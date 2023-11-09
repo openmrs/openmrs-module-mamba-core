@@ -31,8 +31,6 @@
 
     <modules>
         <module>api</module>
-        <module>api-2.1</module>
-        <module>api-2.5</module>
         <module>omod</module>
     </modules>
 
@@ -142,6 +140,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>${apache.commons.dbcp}</version>
+        </dependency>
+
     </dependencies>
 
     <pluginRepositories>
@@ -172,6 +176,7 @@
         <junit4Version>4.13.1</junit4Version>
         <openmrsPlatformVersion>2.3.2</openmrsPlatformVersion>
         <webservicesRestVersion>2.21.0</webservicesRestVersion>
+        <apache.commons.dbcp>2.11.0</apache.commons.dbcp>
 
     </properties>
 
