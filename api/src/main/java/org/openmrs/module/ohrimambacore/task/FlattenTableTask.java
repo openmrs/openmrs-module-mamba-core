@@ -13,7 +13,7 @@ public class FlattenTableTask extends AbstractTask {
     @Override
     public void execute() {
 
-        System.out.println("FlattenTableTask execute() called...");
+        System.out.println("FlattenTableTask starting to execute...");
 
         if (!isExecuting) {
 
