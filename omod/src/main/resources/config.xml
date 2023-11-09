@@ -10,8 +10,7 @@
     <author>${project.parent.organization.name}</author>
     <description>${project.parent.description}</description>
     <activator>org.openmrs.module.ohrimambacore.OhriMambaCoreActivator</activator>
-    <require_version>2.3.1</require_version>
-    <!--<require_version>${openmrsPlatformVersion}</require_version>-->
+    <require_version>${openmrsPlatformVersion}</require_version>
 
     <require_modules>
         <require_module>org.openmrs.module.webservices.rest</require_module>
