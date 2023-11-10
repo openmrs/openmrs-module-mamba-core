@@ -9,8 +9,9 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
     SET @column_labels := NULL;
+    SET @tbl_obs_group_name = CONCAT(flat_encounter_table_name,'_obs_group');
 
-    SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', flat_encounter_table_name,'_obs_group', '`');
+    SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @tbl_obs_group_name, '`');
 
     SELECT GROUP_CONCAT(column_label SEPARATOR ' TEXT, ')
     INTO @column_labels
@@ -26,12 +27,9 @@ BEGIN
     WHERE flat_table_name = flat_encounter_table_name
       AND concept_datatype IS NOT NULL;
 
-    IF @column_labels IS NULL THEN
+    IF @column_labels IS NOT NULL THEN
         SET @create_table = CONCAT(
-                'CREATE TABLE `', flat_encounter_table_name,'`_obs_group`', '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
-    ELSE
-        SET @create_table = CONCAT(
-                'CREATE TABLE `', flat_encounter_table_name,'`_obs_group`', '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, ', @column_labels, ' TEXT, INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
+                'CREATE TABLE `', @tbl_obs_group_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, ', @column_labels, ' TEXT, INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
     END IF;
 
 
@@ -39,7 +37,9 @@ BEGIN
     PREPARE createtb FROM @create_table;
 
     EXECUTE deletetb;
-    EXECUTE createtb;
+    IF @column_labels IS NOT NULL THEN
+        EXECUTE createtb;
+    END IF;
 
     DEALLOCATE PREPARE deletetb;
     DEALLOCATE PREPARE createtb;
