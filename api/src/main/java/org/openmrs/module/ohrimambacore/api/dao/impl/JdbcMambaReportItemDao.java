@@ -2,11 +2,14 @@ package org.openmrs.module.ohrimambacore.api.dao.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.db.ConnectionPoolManager;
+import org.openmrs.module.ohrimambacore.task.FlattenTableTask;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -19,6 +22,7 @@ import java.util.List;
  */
 public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
+    private static Log log = LogFactory.getLog(JdbcMambaReportItemDao.class);
 
     @Override
     public List<MambaReportItem> getMambaReport(String mambaReportId) {
@@ -33,6 +37,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             ObjectMapper objectMapper = new ObjectMapper();
             argumentsJson = objectMapper.writeValueAsString(criteria.getSearchFields());
             System.out.println("Arguments: " + argumentsJson);
+            log.info("Arguments.: " + argumentsJson);
         } catch (Exception exc) {
             exc.printStackTrace();
         }
@@ -50,6 +55,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             statement.setString("report_identifier", criteria.getReportId());
 
             boolean hasResults = statement.execute();
+            System.out.println("hasResults up: " + hasResults);
             while (hasResults) {
 
                 ResultSet resultSet = statement.getResultSet();
@@ -70,6 +76,12 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             statement.setString("parameter_list", argumentsJson);
 
             boolean hasResults = statement.execute();
+            int updateCount = statement.getUpdateCount();
+
+            System.out.println("hasResults : " + hasResults);
+            System.out.println("updateCount: " + updateCount);
+            System.out.println("columnNames: " + columnNames);
+
             if (!hasResults) {
 
                 MambaReportItem reportItem = new MambaReportItem();
@@ -78,27 +90,31 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
                 for (String columnName : columnNames) {
                     reportItem.getRecord().add(new MambaReportItemColumn(columnName, null));
                 }
+
             } else {
 
                 do {
+
                     ResultSet resultSet = statement.getResultSet();
                     ResultSetMetaData metaData = resultSet.getMetaData();
                     int columnCount = metaData.getColumnCount();
+                    System.out.println("Col. count: " + columnCount);
 
                     int serialId = 1;
                     while (resultSet.next()) {
 
+                        System.out.println("serialId: " + serialId);
                         MambaReportItem reportItem = new MambaReportItem();
                         // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
                         reportItem.setSerialId(serialId);
+                        mambaReportItems.add(reportItem);
                         for (int i = 1; i <= columnCount; i++) {
 
                             String columnName = metaData.getColumnName(i);
                             Object columnValue = resultSet.getObject(i);
                             reportItem.getRecord().add(new MambaReportItemColumn(columnName, columnValue));
 
-                            System.out.println("Column (metadata) " + columnName + ": " + columnValue);
-                            System.out.println("Column (custom  ) " + columnNames.get(i) + ": " + resultSet.getRow());
+                            System.out.println("Column (metadata..) " + columnName + ": " + columnValue);
                         }
                         serialId++;
                     }

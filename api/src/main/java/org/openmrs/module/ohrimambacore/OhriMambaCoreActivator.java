@@ -11,15 +11,7 @@ package org.openmrs.module.ohrimambacore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
-import org.openmrs.module.ohrimambacore.task.FlattenTableTask;
-import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.Task;
-import org.openmrs.scheduler.TaskDefinition;
-
-import java.util.Calendar;
-import java.util.UUID;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -36,7 +28,6 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      * @see #started()
      */
     public void started() {
-        log.info("Started MambaETL base Module..");
         System.out.println("Started MambaETL base Module");
     }
 
@@ -45,67 +36,30 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      */
 
     public void shutdown() {
-        log.info("Shutdown MambaETL base Module");
+        System.out.println("Shutdown MambaETL base Module");
     }
 
     @Override
     public void stopped() {
-        log.info("MambaETL base Module stopped");
+        System.out.println("MambaETL base Module stopped");
         super.stopped();
     }
 
     @Override
     public void willRefreshContext() {
+        System.out.println("MambaETL base Module willRefreshContext");
         super.willRefreshContext();
     }
 
     @Override
     public void willStart() {
+        System.out.println("MambaETL base Module willStart");
         super.willStart();
     }
 
     @Override
     public void willStop() {
+        System.out.println("MambaETL base Module willStop");
         super.willStop();
-    }
-
-    /**
-     * Register a new OpenMRS task
-     *
-     * @param name        the name
-     * @param description the description
-     * @param clazz       the task class
-     * @param interval    the interval in seconds
-     * @return boolean true if successful, else false
-     * @throws SchedulerException if task could not be scheduled
-     */
-    private static boolean registerTask(String name, String description, Class<? extends Task> clazz, long interval) {
-        try {
-            Context.addProxyPrivilege("Manage Scheduler");
-
-            TaskDefinition taskDef = Context.getSchedulerService().getTaskByName(name);
-            if (taskDef == null) {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.MINUTE, 20);
-                taskDef = new TaskDefinition();
-                taskDef.setTaskClass(clazz.getCanonicalName());
-                taskDef.setStartOnStartup(true);
-                taskDef.setRepeatInterval(interval);
-                taskDef.setStarted(true);
-                taskDef.setStartTime(cal.getTime());
-                taskDef.setName(name);
-                taskDef.setUuid(UUID.randomUUID().toString());
-                taskDef.setDescription(description);
-                Context.getSchedulerService().scheduleTask(taskDef);
-            }
-
-        } catch (SchedulerException ex) {
-            log.warn("Unable to register task '" + name + "' with scheduler", ex);
-            ex.printStackTrace();
-            return false;
-        } finally {
-            Context.removeProxyPrivilege("Manage Scheduler");
-        }
-        return true;
     }
 }

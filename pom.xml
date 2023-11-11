@@ -100,6 +100,18 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jacksonCoreVersion}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${apache.commons.dbcp}</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
@@ -140,12 +152,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
-            <version>${apache.commons.dbcp}</version>
-        </dependency>
-
     </dependencies>
 
     <pluginRepositories>
@@ -174,16 +180,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
-        <openmrsPlatformVersion>2.3.2</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.0.0</openmrsPlatformVersion>
         <webservicesRestVersion>2.21.0</webservicesRestVersion>
         <apache.commons.dbcp>2.11.0</apache.commons.dbcp>
+        <jacksonCoreVersion>2.15.3</jacksonCoreVersion>
 
     </properties>
 
     <build>
-
-<!--        <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>-->
-
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -234,13 +238,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
-        <!--<resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>-->
-
     </build>
 
     <repositories>

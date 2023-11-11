@@ -29,6 +29,7 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
             statement.execute();
 
         } catch (SQLException e) {
+            System.err.println("SQL Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
