@@ -2,11 +2,14 @@ package org.openmrs.module.ohrimambacore.api.dao.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.db.ConnectionPoolManager;
+import org.openmrs.module.ohrimambacore.task.FlattenTableTask;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -19,6 +22,7 @@ import java.util.List;
  */
 public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
+    private static Log log = LogFactory.getLog(JdbcMambaReportItemDao.class);
 
     @Override
     public List<MambaReportItem> getMambaReport(String mambaReportId) {
@@ -33,6 +37,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             ObjectMapper objectMapper = new ObjectMapper();
             argumentsJson = objectMapper.writeValueAsString(criteria.getSearchFields());
             System.out.println("Arguments: " + argumentsJson);
+            log.info("Arguments.: " + argumentsJson);
         } catch (Exception exc) {
             exc.printStackTrace();
         }
@@ -77,7 +82,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             System.out.println("updateCount: " + updateCount);
             System.out.println("columnNames: " + columnNames);
 
-            if (!hasResults || updateCount == -1) {
+            if (!hasResults) {
 
                 MambaReportItem reportItem = new MambaReportItem();
                 reportItem.setSerialId(1);
@@ -102,6 +107,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
                         MambaReportItem reportItem = new MambaReportItem();
                         // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
                         reportItem.setSerialId(serialId);
+                        mambaReportItems.add(reportItem);
                         for (int i = 1; i <= columnCount; i++) {
 
                             String columnName = metaData.getColumnName(i);
