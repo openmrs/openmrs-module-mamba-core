@@ -1,9 +1,10 @@
 package org.openmrs.module.ohrimambacore.web.resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ohrimambacore.api.MambaReportService;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
-import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportSearchField;
 import org.openmrs.module.ohrimambacore.web.controller.MambaReportRestController;
@@ -15,13 +16,13 @@ import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Random;
 
 @Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report", supportedClass = MambaReportItem.class, supportedOpenmrsVersions = {"2.0 - 2.*"})
 public class MambaReportResource implements Searchable {
+
+    private static Log log = LogFactory.getLog(MambaReportResource.class);
 
     private MambaReportService getService() {
         return Context.getService(MambaReportService.class);
@@ -30,7 +31,8 @@ public class MambaReportResource implements Searchable {
     @Override
     public SimpleObject search(RequestContext context) throws ResponseException {
 
-        System.out.println("Search resource hit");
+        System.out.println("Search resource hit.");
+        log.info("Search resource hit..");
 
         context.setLimit(10);
         context.setStartIndex(0);

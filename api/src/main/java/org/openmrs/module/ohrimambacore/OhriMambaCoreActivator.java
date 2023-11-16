@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 public class OhriMambaCoreActivator extends BaseModuleActivator {
 
-    private static Log log = LogFactory.getLog(OhriMambaCoreActivator.class);
+    private Log log = LogFactory.getLog(getClass());
 
     public OhriMambaCoreActivator() {
         super();
@@ -36,8 +36,9 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      * @see #started()
      */
     public void started() {
-        log.info("Started MambaETL base Module..");
         System.out.println("Started MambaETL base Module");
+        registerTask("MambaETL Task", "MambaETL Task - To Flatten and Prepare Reporting Data.", FlattenTableTask.class,
+                60 * 60 * 12L, true);
     }
 
     /**
@@ -45,27 +46,30 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      */
 
     public void shutdown() {
-        log.info("Shutdown MambaETL base Module");
+        System.out.println("Shutdown MambaETL base Module");
     }
 
     @Override
     public void stopped() {
-        log.info("MambaETL base Module stopped");
+        System.out.println("MambaETL base Module stopped");
         super.stopped();
     }
 
     @Override
     public void willRefreshContext() {
+        System.out.println("MambaETL base Module willRefreshContext");
         super.willRefreshContext();
     }
 
     @Override
     public void willStart() {
+        System.out.println("MambaETL base Module willStart");
         super.willStart();
     }
 
     @Override
     public void willStop() {
+        System.out.println("MambaETL base Module willStop");
         super.willStop();
     }
 
@@ -79,7 +83,11 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      * @return boolean true if successful, else false
      * @throws SchedulerException if task could not be scheduled
      */
-    private static boolean registerTask(String name, String description, Class<? extends Task> clazz, long interval) {
+    private boolean registerTask(String name,
+                                 String description,
+                                 Class<? extends Task> clazz,
+                                 long interval,
+                                 boolean startOnStartup) {
         try {
             Context.addProxyPrivilege("Manage Scheduler");
 
@@ -89,7 +97,7 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
                 cal.add(Calendar.MINUTE, 20);
                 taskDef = new TaskDefinition();
                 taskDef.setTaskClass(clazz.getCanonicalName());
-                taskDef.setStartOnStartup(true);
+                taskDef.setStartOnStartup(startOnStartup);
                 taskDef.setRepeatInterval(interval);
                 taskDef.setStarted(true);
                 taskDef.setStartTime(cal.getTime());
@@ -98,10 +106,9 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
                 taskDef.setDescription(description);
                 Context.getSchedulerService().scheduleTask(taskDef);
             }
-
+            log.info("A Task '" + name + "' has been Registered Successfully!");
         } catch (SchedulerException ex) {
             log.warn("Unable to register task '" + name + "' with scheduler", ex);
-            ex.printStackTrace();
             return false;
         } finally {
             Context.removeProxyPrivilege("Manage Scheduler");

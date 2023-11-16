@@ -12,7 +12,7 @@
 
     <artifactId>ohrimamba-core-omod</artifactId>
     <packaging>jar</packaging>
-    <name>OHRI MambaETL Core [OMOD module] - JAR</name>
+    <name>OHRI MambaETL Core: [OMOD module] - JAR</name>
     <description>OHRI MambaETL Core [OMOD module] - Extensible core functions for the OHRI MambaETL</description>
 
     <dependencies>
@@ -59,36 +59,6 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-api-2.1</artifactId>
-            <version>${project.parent.version}</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-api-2.1</artifactId>
-            <version>${project.parent.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-api-2.5</artifactId>
-            <version>${project.parent.version}</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-api-2.5</artifactId>
-            <version>${project.parent.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
         </dependency>
@@ -102,19 +72,12 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>webservices.rest-omod-common</artifactId>
-            <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>webservices.rest-omod-common</artifactId>
             <type>test-jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod-2.0</artifactId>
-            <type>jar</type>
         </dependency>
 
     </dependencies>

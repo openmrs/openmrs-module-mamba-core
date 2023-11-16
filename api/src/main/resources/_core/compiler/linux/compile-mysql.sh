@@ -81,19 +81,17 @@ function read_config_report_definition_metadata() {
     FILENAME="$config_dir/reports.json";
     REPORT_DEFINITION_FILE="../../database/$db_engine/config/sp_mamba_dim_report_definition_insert.sql"
 
-    # Check if FILENAME is null
-    if [ -z "$FILENAME" ]; then
-        json_string='{"report_definitions": []}'
-        echo "FILENAME is null. Will not attempt to read report_definition."
-    fi
-
     # Check if reports.json file exists
-    if [ -f "$FILENAME" ]; then
-        # Read JSON data from a file
-        json_string=$(cat "$FILENAME")
+    if [ -s "$FILENAME" ] && [ -f "$FILENAME" ]; then
+       json_string=$(cat "$FILENAME")
+
     else
-        echo "reports.json file not found. Will not attempt to read report_definition."
-        json_string='{"report_definitions": []}'
+      echo "reports.json file not found, is null or is not a regular file. Will not read report_definition."
+      json_string='{"report_definitions": []}'
+
+      echo "-- \$BEGIN" > "$REPORT_DEFINITION_FILE"
+      echo "-- \$END" >> "$REPORT_DEFINITION_FILE"
+      return
     fi
 
     # Get the total number of report_definitions

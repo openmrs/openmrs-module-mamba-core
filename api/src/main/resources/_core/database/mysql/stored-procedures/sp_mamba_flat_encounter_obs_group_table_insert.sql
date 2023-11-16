@@ -9,6 +9,7 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
     SET @tbl_name = flat_encounter_table_name;
+
     SET @tbl_obs_group_name = CONCAT(@tbl_name,'_obs_group');
 
         SET @old_sql = (SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
