@@ -23,7 +23,7 @@ CREATE TABLE mamba_z_encounter_obs
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 CREATE INDEX mamba_z_encounter_obs_encounter_id_type_uuid_person_id_index
     ON mamba_z_encounter_obs (encounter_id, encounter_type_uuid, person_id);

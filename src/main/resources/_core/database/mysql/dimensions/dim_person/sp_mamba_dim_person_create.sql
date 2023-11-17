@@ -18,7 +18,7 @@ CREATE TABLE mamba_dim_person
     voided              TINYINT      NOT NULL,
 
     PRIMARY KEY (id)
-) CHARSET = UTF8MB4;
+) CHARSET = UTF8;
 
 CREATE INDEX mamba_dim_person_person_id_index
     ON mamba_dim_person (person_id);

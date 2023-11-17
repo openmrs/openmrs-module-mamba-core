@@ -6,7 +6,7 @@ DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_insert_all;
 CREATE PROCEDURE sp_mamba_flat_encounter_table_insert_all()
 BEGIN
 
-    DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
+    DECLARE tbl_name CHAR(50) CHARACTER SET UTF8;
 
     DECLARE done INT DEFAULT FALSE;
 

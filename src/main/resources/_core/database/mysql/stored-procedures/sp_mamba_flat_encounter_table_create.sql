@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_create;
 
 CREATE PROCEDURE sp_mamba_flat_encounter_table_create(
-    IN flat_encounter_table_name VARCHAR(255) CHARSET UTF8MB4
+    IN flat_encounter_table_name VARCHAR(255) CHARSET UTF8
 )
 BEGIN
 

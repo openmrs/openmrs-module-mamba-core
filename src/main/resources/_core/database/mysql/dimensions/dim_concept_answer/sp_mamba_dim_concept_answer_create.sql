@@ -10,7 +10,7 @@ CREATE TABLE mamba_dim_concept_answer
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 CREATE INDEX mamba_dim_concept_answer_concept_answer_id_index
     ON mamba_dim_concept_answer (concept_answer_id);

@@ -16,7 +16,7 @@ CREATE TABLE mamba_dim_person_name
 
     PRIMARY KEY (id)
 )
-    CHARSET = UTF8MB4;
+    CHARSET = UTF8;
 
 CREATE INDEX mamba_dim_person_name_person_name_id_index
     ON mamba_dim_person_name (person_name_id);
