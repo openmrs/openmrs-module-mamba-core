@@ -46,7 +46,7 @@ Create/or go to your custom Reporting module, or clone the [MambaETL reference/t
 
 Below is an example folder structure of your project when you have added all the relevant folders and files required to support MambaETL in your project.  
 
-![Screenshot 2023-11-23 at 08.09.43.png](..%2F..%2F..%2F..%2FDesktop%2FScreenshot%202023-11-23%20at%2008.09.43.png)
+![Screenshot 2023-11-23 at 08.09.43.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-23%20at%2008.09.43.png)
 
 
 <span style='color: red;'>Step 2:</span>
