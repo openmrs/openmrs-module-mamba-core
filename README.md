@@ -1,6 +1,6 @@
 # openmrs-module-ohri-mamba-core
 
-![Mamba.png](..%2F..%2F..%2F..%2F_markdown%2FMamba.png)
+![MambaETL.png](..%2F..%2F..%2F..%2F_markdown%2FMambaETL.png)
 
 ## **Background**
 
