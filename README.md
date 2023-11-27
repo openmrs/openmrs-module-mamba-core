@@ -56,8 +56,9 @@ Leave the folder empty. Everytime you build your project, 2 MambaETL build files
 
 The MambaETL build files created under `mamba` folder are:  
 
-`create_stored_procedures.sql`
-`liquibase_create_stored_procedures.sql`
+- `create_stored_procedures.sql`
+
+- `liquibase_create_stored_procedures.sql`
 
 The `create_stored_procedures.sql` is an SQL compliant file. It contains all the ETL scripts that have been compiled into one 'big' script ready for deployment.  
 This file can be run against your ETL target database as-is, mostly for development and test purposes when you need to quickly and manually run your ETL scripts and test them out.  
