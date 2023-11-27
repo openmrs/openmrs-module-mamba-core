@@ -11,7 +11,7 @@ This means that the Obs table quickly grows to millions of records in fairly siz
 ## **Purpose of this module**
 
 The `openmrs-module-ohri-mamba-core` or simply called the MambaETL Core module is an OpenMRS module that is a collection of familiar artefacts/tooling that collectively offer out-of-the box database flattening/transposing and abstraction of repetitive reporting tasks 
-so that implementers, analysts, data scientists or teams building reports focus on building without worrying about performance bottlenecks or bothering too much about how the data is extracted from the primary data source into the reporting destination.
+so that implementers, analysts, data scientists or teams building reports focus on building without worrying about system performance bottlenecks or bothering too much about how the data is extracted from the primary data source into the reporting destination.
 
 Artefacts in this module include:
 * SQL scripts (functions, views & stored procedures), 
@@ -21,9 +21,9 @@ Artefacts in this module include:
 
 ## **How to use the module**
 This module is intended to be added or included in your main reporting module.   
-We have developed a reference or template module called [openmrs-module-ohri-mamba-ref](https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba). We strongly recommend that your refer to this module to quickly get started with your project or clone it and use it as a starting place building your own module that uses MambaETL.  
+We have developed a reference or template module called [openmrs-module-ohri-mamba-ref](https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba). We strongly recommend that your refer to this module to quickly get started with your project or clone it and use it as a starting point to building your own module that uses MambaETL.  
 
-After you have added the MambaETL core module dependencies and configurations to your own reporting module, you can go ahead and deploy your module normally, all the MambaETL functionality will be available to your module. 
+After you have added the MambaETL core module dependencies and configurations to your own reporting module, you can go ahead and deploy your module normally. All the MambaETL functionalities will be available to your module. 
 
 ## **Setting up MambaETL: A technical deep dive**
 
@@ -42,7 +42,7 @@ Pre-requisites:
 
 <span style='color: red;'>Step 1:</span>
 
-Create/or go to your custom Reporting module, or clone the [MambaETL reference/template](https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba) as a starter project.  
+Create or go to your custom Reporting module, or clone [MambaETL reference/template](https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba) as a starter project.  
 
 Below is an example folder structure of your project when you have added all the relevant folders and files required to support MambaETL in your project.  
 
