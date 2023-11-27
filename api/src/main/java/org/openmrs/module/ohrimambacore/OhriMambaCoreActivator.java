@@ -37,7 +37,7 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      */
     public void started() {
         System.out.println("Started MambaETL base Module");
-        registerTask("MambaETL Task", "MambaETL Task - To Flatten and Prepare Reporting Data.", FlattenTableTask.class,
+        registerTask("Mamba-ETL Task", "MambaETL Task - To Flatten and Prepare Reporting Data.", FlattenTableTask.class,
                 60 * 60 * 12L, true);
     }
 
