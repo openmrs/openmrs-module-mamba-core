@@ -113,8 +113,11 @@ The Json file will specify the table name and give the columns friendly names as
 
 In the database you will have the following tables, And the highlighted one is the transposed table from the above Json that was provided for HTS.
 
-![Screenshot 2023-11-27 at 11.39.43.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-27%20at%2011.39.43.png)
+![Screenshot 2023-11-27 at 11.58.55.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-27%20at%2011.58.55.png)
 
+For Extra analysis on the data, one can opt to create dimension and fact tables for easy analysis per encounter/service type for the client data as shown below in the Dimension folder.
+
+![Screenshot 2023-11-27 at 11.39.43.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-27%20at%2011.39.43.png)
 
 <span style='color: red;'>Step 7:</span>  
 
