@@ -148,7 +148,7 @@ A number of configurations have to be made in the root/parent pom file of your p
 Make sure you have configured the necessary plugins, ETL source and target database names, etc.  
 We advise that you look at or copy the MambaETL ref/template module root/parent [pom.xml](https://github.com/UCSF-IGHS/openmrs-module-ohri-core/blob/master/pom.xml) file for details as there are a number of configurations in this file.  
 
-Notably, don't forget to specify the names of your OpenMRS source database and the ETL target database in this pom file.  
+Notably, don't forget to specify the names of your OpenMRS source database and the ETL target database in this pom.xml file.  
 
 ![Screenshot 2023-11-23 at 09.18.53.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-23%20at%2009.18.53.png)
 
