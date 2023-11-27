@@ -162,8 +162,9 @@ Execution of all these files is supported by the various maven plugins added to 
 This makes it possible to follow the maven lifecycle methods to build your final MambaETL deloyment scripts that are stored in the `mamba` folder discussed in `step 2`  
 
 Run:  
-`mvn clean install`  
+`mvn clean install` on the terminal
 This command will build all your MambaETL scripts and create 2 files under the build folder in `step 2` i.e. `mamba`  
 
 That's all you need to do to prepare your deployment scripts.  
+
 Go ahead and deploy your module normally and enjoy `MambaETL` at work!
