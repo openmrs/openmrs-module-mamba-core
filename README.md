@@ -1,5 +1,7 @@
 # openmrs-module-ohri-mamba-core
 
+![Mamba.png](..%2F..%2F..%2F..%2F_markdown%2FMamba.png)
+
 ## **Background**
 
 MambaETL (or simply known as Mamba) is an OpenMRS (Open Electronic Medical Records System) implementation of data Extraction, Loading and Transforming (ETL) of data into a more denormalised format for faster data retrieval and analysis.
