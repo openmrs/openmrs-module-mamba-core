@@ -3,6 +3,7 @@
 CREATE TABLE mamba_z_encounter_obs
 (
     id                      INT           NOT NULL AUTO_INCREMENT,
+    obs_id                  INT           NOT NULL,
     encounter_id            INT           NULL,
     person_id               INT           NOT NULL,
     encounter_datetime      DATETIME      NOT NULL,
@@ -30,6 +31,9 @@ CREATE TABLE mamba_z_encounter_obs
 
 CREATE INDEX mamba_z_encounter_obs_encounter_id_type_uuid_person_id_index
     ON mamba_z_encounter_obs (encounter_id, person_id, encounter_datetime);
+
+CREATE INDEX mamba_z_encounter_obs_id_index
+    ON mamba_z_encounter_obs (obs_id);
 
 CREATE INDEX mamba_z_encounter_obs_encounter_id_index
     ON mamba_z_encounter_obs (encounter_id);
