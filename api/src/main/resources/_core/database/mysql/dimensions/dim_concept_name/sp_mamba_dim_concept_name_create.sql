@@ -8,6 +8,7 @@ CREATE TABLE mamba_dim_concept_name
     name              VARCHAR(255) NOT NULL,
     locale            VARCHAR(50)  NOT NULL,
     locale_preferred  TINYINT,
+    voided            TINYINT,
     concept_name_type VARCHAR(255),
 
     PRIMARY KEY (id)
@@ -28,5 +29,8 @@ CREATE INDEX mamba_dim_concept_name_locale_index
 
 CREATE INDEX mamba_dim_concept_name_locale_preferred_index
     ON mamba_dim_concept_name (locale_preferred);
+
+CREATE INDEX mamba_dim_concept_name_voided_index
+    ON mamba_dim_concept_name (voided);
 
 -- $END

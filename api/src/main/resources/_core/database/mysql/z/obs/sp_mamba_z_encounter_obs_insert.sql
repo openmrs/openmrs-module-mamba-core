@@ -1,7 +1,8 @@
 -- $BEGIN
 
 INSERT INTO mamba_z_encounter_obs
-(encounter_id,
+(obs_id,
+ encounter_id,
  person_id,
  obs_datetime,
  encounter_datetime,
@@ -21,7 +22,8 @@ INSERT INTO mamba_z_encounter_obs
  status,
  voided,
  row_num)
-SELECT o.encounter_id,
+SELECT o.obs_id,
+       o.encounter_id,
        o.person_id,
        o.obs_datetime,
        e.encounter_datetime,
