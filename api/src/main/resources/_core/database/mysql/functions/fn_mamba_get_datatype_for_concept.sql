@@ -7,10 +7,12 @@ CREATE FUNCTION fn_mamba_get_datatype_for_concept(conceptDatatype VARCHAR(20)) R
 BEGIN
     DECLARE mysqlDatatype VARCHAR(20);
 
-    IF conceptDatatype = 'Text'
-       OR conceptDatatype = 'Coded'
+    IF conceptDatatype = 'Coded'
        OR conceptDatatype = 'N/A' THEN
         SET mysqlDatatype = 'VARCHAR(255)';
+
+    ELSEIF conceptDatatype = 'Text' THEN
+        SET mysqlDatatype = 'TEXT';
 
     ELSEIF conceptDatatype = 'Boolean' THEN
         SET mysqlDatatype = 'TINYINT(1)';
