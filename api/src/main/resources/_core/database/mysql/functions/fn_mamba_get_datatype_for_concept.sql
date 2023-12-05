@@ -1,13 +1,13 @@
-DROP FUNCTION IF EXISTS fn_get_datatype;
+DROP FUNCTION IF EXISTS fn_mamba_get_datatype_for_concept;
 
 DELIMITER //
 
-CREATE FUNCTION fn_get_datatype(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
+CREATE FUNCTION fn_mamba_get_datatype_for_concept(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
     DETERMINISTIC
 BEGIN
     DECLARE mysqlDatatype VARCHAR(20);
 
-    IF (conceptDatatype = 'Text'
+    IF conceptDatatype = 'Text'
        OR conceptDatatype = 'Coded'
        OR conceptDatatype = 'N/A' THEN
         SET mysqlDatatype = 'VARCHAR(255)';
