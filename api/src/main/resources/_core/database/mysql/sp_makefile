@@ -5,6 +5,7 @@
 functions/fn_mamba_calculate_agegroup.sql
 functions/fn_mamba_get_obs_value_column.sql
 functions/fn_mamba_age_calculator.sql
+functions/fn_get_datatype.sql
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql

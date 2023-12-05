@@ -12,7 +12,7 @@ BEGIN
 
     SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', flat_encounter_table_name, '`');
 
-    SELECT GROUP_CONCAT(column_label SEPARATOR ' TEXT, ')
+    SELECT GROUP_CONCAT(CONCAT(column_label, ' ', fn_get_datatype(concept_datatype)) SEPARATOR ', ')
     INTO @column_labels
     FROM mamba_dim_concept_metadata
     WHERE flat_table_name = flat_encounter_table_name
