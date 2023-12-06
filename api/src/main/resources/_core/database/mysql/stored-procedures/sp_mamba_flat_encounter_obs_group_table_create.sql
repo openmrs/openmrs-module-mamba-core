@@ -14,7 +14,7 @@ BEGIN
 
     SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @tbl_obs_group_name, '`');
 
-    SELECT GROUP_CONCAT(column_label SEPARATOR ' TEXT, ')
+    SELECT GROUP_CONCAT(CONCAT(column_label, ' ', fn_mamba_get_datatype_for_concept(concept_datatype)) SEPARATOR ', ')
     INTO @column_labels
     FROM mamba_dim_concept_metadata cm
     INNER JOIN
@@ -33,7 +33,7 @@ BEGIN
 
     IF @column_labels IS NOT NULL THEN
         SET @create_table = CONCAT(
-                'CREATE TABLE `', @tbl_obs_group_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, ', @column_labels, ' TEXT, INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
+                'CREATE TABLE `', @tbl_obs_group_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, ', @column_labels, ', INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
     ELSE
         SET @create_table = CONCAT(
                 'CREATE TABLE `', @tbl_obs_group_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
