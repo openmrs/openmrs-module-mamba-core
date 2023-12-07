@@ -78,6 +78,9 @@ BEGIN
                     WHERE et.name = ''', json_file, '''
                 ) X  ;   ');
 
+        PREPARE inserttbl FROM @insert_stmt;
+        EXECUTE inserttbl;
+        DEALLOCATE PREPARE inserttbl;
     END LOOP computations_loop;
     CLOSE cursor_json_file;
 

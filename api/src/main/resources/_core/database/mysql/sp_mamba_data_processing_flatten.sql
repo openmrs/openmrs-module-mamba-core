@@ -44,6 +44,8 @@ CALL sp_mamba_dim_obs_group;
 
 CALL sp_mamba_dim_json;
 
+CALL sp_mamba_dim_json_files_insert;
+
 CALL sp_mamba_flat_encounter_table_create_all;
 
 CALL sp_mamba_flat_encounter_table_insert_all;
