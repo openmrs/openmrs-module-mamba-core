@@ -131,6 +131,10 @@ dimensions/dim_obs_group/sp_mamba_dim_obs_group_insert.sql
 dimensions/dim_obs_group/sp_mamba_dim_obs_group_update.sql
 dimensions/dim_obs_group/sp_mamba_dim_obs_group.sql
 
+dimensions/dim_json/sp_mamba_dim_json_create.sql
+dimensions/dim_json/sp_mamba_dim_json_update.sql
+dimensions/dim_json/sp_mamba_dim_json.sql
+
 #############################################################################
 ### A single SP that invokes (CALLs) the above prepared stored procedures ###
 #############################################################################
