@@ -23,6 +23,8 @@ stored-procedures/sp_mamba_flat_encounter_obs_group_table_create_all.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert_all.sql
 
+stored-procedures/sp_mamba_dim_json_files_insert.sql
+
 stored-procedures/sp_mamba_multiselect_values_update.sql
 stored-procedures/sp_mamba_extract_report_metadata.sql
 stored-procedures/sp_mamba_extract_report_definition_metadata.sql
@@ -130,6 +132,10 @@ dimensions/dim_obs_group/sp_mamba_dim_obs_group_create.sql
 dimensions/dim_obs_group/sp_mamba_dim_obs_group_insert.sql
 dimensions/dim_obs_group/sp_mamba_dim_obs_group_update.sql
 dimensions/dim_obs_group/sp_mamba_dim_obs_group.sql
+
+dimensions/dim_json/sp_mamba_dim_json_create.sql
+dimensions/dim_json/sp_mamba_dim_json_update.sql
+dimensions/dim_json/sp_mamba_dim_json.sql
 
 #############################################################################
 ### A single SP that invokes (CALLs) the above prepared stored procedures ###
