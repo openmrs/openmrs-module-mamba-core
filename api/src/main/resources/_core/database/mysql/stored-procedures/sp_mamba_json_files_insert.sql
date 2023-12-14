@@ -1,9 +1,9 @@
 -- Flatten all Encounters given in Config folder
-DROP PROCEDURE IF EXISTS sp_mamba_dim_json_files_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_json_files_insert;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_dim_json_files_insert()
+CREATE PROCEDURE sp_mamba_json_files_insert()
 BEGIN
 
     DECLARE json_file CHAR(50) CHARACTER SET UTF8MB4;
