@@ -34,6 +34,7 @@ stored-procedures/sp_mamba_get_report_column_names.sql
 stored-procedures/sp_mamba_generate_report_wrapper.sql
 #stored-procedures/sp_mamba_generate_report_columns.sql
 #stored-procedures/sp_mamba_generate_report_columns_wrapper.sql
+stored-procedures/sp_mamba_write_automated_json_config.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
