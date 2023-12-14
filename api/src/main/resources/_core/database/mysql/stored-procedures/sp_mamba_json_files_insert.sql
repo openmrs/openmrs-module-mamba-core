@@ -39,7 +39,7 @@ BEGIN
                     ''flat_table_name'',table_name,
                     ''encounter_type_uuid'',uuid,
                     ''concepts_locale'',locale,
-                    ''table'',json_obj
+                    ''table_columns'',json_obj
                     )
                 FROM (
                     SELECT DISTINCT
