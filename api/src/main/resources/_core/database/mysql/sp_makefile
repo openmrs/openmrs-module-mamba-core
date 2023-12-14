@@ -23,7 +23,7 @@ stored-procedures/sp_mamba_flat_encounter_obs_group_table_create_all.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert_all.sql
 
-stored-procedures/sp_mamba_dim_json_files_insert.sql
+stored-procedures/sp_mamba_json_files_insert.sql
 
 stored-procedures/sp_mamba_multiselect_values_update.sql
 stored-procedures/sp_mamba_extract_report_metadata.sql
@@ -34,6 +34,7 @@ stored-procedures/sp_mamba_get_report_column_names.sql
 stored-procedures/sp_mamba_generate_report_wrapper.sql
 #stored-procedures/sp_mamba_generate_report_columns.sql
 #stored-procedures/sp_mamba_generate_report_columns_wrapper.sql
+stored-procedures/sp_mamba_write_automated_json_config.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
