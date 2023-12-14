@@ -5,7 +5,6 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_write_automated_json_config()
 BEGIN
 
-    SET session group_concat_max_len = 20000;
     DECLARE countRows INT;
     DECLARE done INT DEFAULT FALSE;
     DECLARE jsonData LONGTEXT;
