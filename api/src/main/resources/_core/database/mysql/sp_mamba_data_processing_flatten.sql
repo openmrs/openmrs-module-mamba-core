@@ -46,7 +46,7 @@ CALL sp_mamba_dim_obs_group;
 
 CALL sp_mamba_dim_json;
 
-CALL sp_mamba_dim_json_files_insert;
+CALL sp_mamba_json_files_insert;
 
 CALL sp_mamba_extract_json_report_metadata;
 
