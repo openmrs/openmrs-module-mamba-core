@@ -25,7 +25,6 @@ stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert_all.sql
 
 stored-procedures/sp_mamba_json_files_insert.sql
-stored-procedures/sp_mamba_extract_json_report_metadata.sql
 
 stored-procedures/sp_mamba_multiselect_values_update.sql
 stored-procedures/sp_mamba_extract_report_metadata.sql
