@@ -13,9 +13,9 @@ BEGIN
     DECLARE cursor_json_file CURSOR FOR
         SELECT 
             DISTINCT et.name 
-        FROM obs o
-        INNER JOIN encounter e ON e.encounter_id = o.encounter_id
-        INNER JOIN encounter_type et ON e.encounter_type = et.encounter_type_id 
+        FROM mamba_source_db.obs o
+        INNER JOIN mamba_source_db.encounter e ON e.encounter_id = o.encounter_id
+        INNER JOIN mamba_source_db.encounter_type et ON e.encounter_type = et.encounter_type_id
         WHERE et.retired = 0;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
@@ -56,14 +56,14 @@ BEGIN
                                         DISTINCT et.encounter_type_id,
                                         LOWER(LEFT(REPLACE(REPLACE(REGEXP_REPLACE(cn.name, ''[^0-9a-zÀ-ÿ ]'', ''''), '' '', ''_''),''__'', ''_''),35)) name,
                                         c.uuid
-                                    FROM obs o
-                                    INNER JOIN encounter e
+                                    FROM mamba_source_db.obs o
+                                    INNER JOIN mamba_source_db.encounter e
                                               ON e.encounter_id = o.encounter_id
-                                    INNER JOIN encounter_type et
+                                    INNER JOIN mamba_source_db.encounter_type et
                                               ON e.encounter_type = et.encounter_type_id
-                                    INNER JOIN concept_name cn
+                                    INNER JOIN mamba_source_db.concept_name cn
                                               ON cn.concept_id = o.concept_id
-                                    INNER JOIN concept c
+                                    INNER JOIN mamba_source_db.concept c
                                               ON cn.concept_id = c.concept_id
                                     WHERE et.name = ''', json_file, '''
                                     AND cn.locale = ''en''
@@ -72,8 +72,8 @@ BEGIN
                                     AND et.retired = 0
                                 ) json_obj
                         ) json_obj
-                    FROM encounter_type et
-                    INNER JOIN encounter e
+                    FROM mamba_source_db.encounter_type et
+                    INNER JOIN mamba_source_db.encounter e
                         ON e.encounter_type = et.encounter_type_id
                     WHERE et.name = ''', json_file, '''
                 ) X  ;   ');
