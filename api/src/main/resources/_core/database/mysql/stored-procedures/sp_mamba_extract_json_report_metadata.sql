@@ -5,7 +5,7 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_extract_json_report_metadata(
 )
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM mamba_dim_concept_metadata) THEN
+    IF (SELECT COUNT(*) FROM mamba_dim_concept_metadata) = 0 THEN
         SET session group_concat_max_len = 20000;
 
         -- SELECT JSON_EXTRACT(report_data, '$.flat_report_metadata') INTO @report_array;

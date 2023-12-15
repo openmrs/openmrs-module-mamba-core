@@ -62,14 +62,25 @@ function read_config_metadata() {
 
   JSON_CONTENTS="$JSON_CONTENTS]}"
 
+  # Count the number of JSON files excluding 'reports.json'
+  count=$(find "$config_dir" -type f -name '*.json' ! -name 'reports.json' | wc -l)
+
   SQL_CONTENTS="
-      -- \$BEGIN"$'
 
-      SET @report_data = \''$JSON_CONTENTS\'';
-
-      CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');'"
-
-      -- \$END"
+      -- \$BEGIN
+          "$'
+              SET @report_data = '%s';
+              SET @file_count = %d;
+              IF @file_count = 0 THEN
+                    CALL sp_mamba_dim_json();
+                    SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
+              END IF;
+              CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
+          '"
+      -- \$END
+  "
+  # Replace placeholders in SQL_CONTENTS with actual values
+  SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'" "$count")
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
 

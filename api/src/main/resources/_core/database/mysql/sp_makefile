@@ -6,6 +6,7 @@ functions/fn_mamba_calculate_agegroup.sql
 functions/fn_mamba_get_obs_value_column.sql
 functions/fn_mamba_age_calculator.sql
 functions/fn_mamba_get_datatype_for_concept.sql
+functions/fn_mamba_generate_report_array_from_automated_json_table.sql
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
@@ -136,6 +137,7 @@ dimensions/dim_obs_group/sp_mamba_dim_obs_group_update.sql
 dimensions/dim_obs_group/sp_mamba_dim_obs_group.sql
 
 dimensions/dim_json/sp_mamba_dim_json_create.sql
+dimensions/dim_json/sp_mamba_dim_json_insert.sql
 dimensions/dim_json/sp_mamba_dim_json_update.sql
 dimensions/dim_json/sp_mamba_dim_json.sql
 
