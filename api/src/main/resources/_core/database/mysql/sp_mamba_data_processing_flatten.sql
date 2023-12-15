@@ -16,8 +16,6 @@ CALL sp_mamba_dim_concept;
 
 CALL sp_mamba_dim_concept_metadata;
 
--- CALL sp_mamba_write_automated_json_config;
-
 CALL sp_mamba_dim_report_definition;
 
 CALL sp_mamba_dim_encounter_type;
@@ -48,7 +46,8 @@ CALL sp_mamba_dim_json;
 
 CALL sp_mamba_json_files_insert;
 
-CALL sp_mamba_extract_json_report_metadata;
+-- CALL sp_mamba_extract_json_report_metadata;
+CALL sp_mamba_write_automated_json_config;
 
 CALL sp_mamba_flat_encounter_table_create_all;
 
