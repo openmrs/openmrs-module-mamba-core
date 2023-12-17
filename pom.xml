@@ -10,7 +10,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>ohrimamba-core</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>OHRI MambaETL Core: [parent]</name>
     <description>OHRI MambaETL Core - Extensible core functions for the OHRI MambaETL</description>
