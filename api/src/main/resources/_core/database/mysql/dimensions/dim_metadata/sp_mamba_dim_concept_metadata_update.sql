@@ -1,5 +1,8 @@
 -- $BEGIN
 
+-- Update/insert table column metadata configs without table_columns json
+CALL sp_mamba_missing_table_column_names_insert();
+
 -- Update the Concept datatypes, concept_name and concept_id based on given locale
 UPDATE mamba_dim_concept_metadata md
     INNER JOIN mamba_dim_concept c

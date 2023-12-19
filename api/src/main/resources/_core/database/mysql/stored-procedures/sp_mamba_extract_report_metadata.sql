@@ -26,31 +26,53 @@ BEGIN
 
             SELECT JSON_KEYS(@column_array) INTO @column_keys_array;
             SELECT JSON_LENGTH(@column_keys_array) INTO @column_keys_array_len;
-            SET @col_count = 0;
-            WHILE @col_count < @column_keys_array_len
-                DO
-                    SELECT JSON_EXTRACT(@column_keys_array, CONCAT('$[', @col_count, ']')) INTO @field_name;
-                    SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
 
-                    SET @tbl_name = '';
-                    INSERT INTO mamba_dim_concept_metadata
-                        (
-                            report_name,
-                            flat_table_name,
-                            encounter_type_uuid,
-                            column_label,
-                            concept_uuid,
-                            concepts_locale
-                        )
-                    VALUES (JSON_UNQUOTE(@report_name),
-                            JSON_UNQUOTE(@flat_table_name),
-                            JSON_UNQUOTE(@encounter_type),
-                            JSON_UNQUOTE(@field_name),
-                            JSON_UNQUOTE(@concept_uuid),
-                            JSON_UNQUOTE(@concepts_locale));
+            IF @column_keys_array_len = 0 THEN
 
-                    SET @col_count = @col_count + 1;
+                 INSERT INTO mamba_dim_concept_metadata
+                    (
+                        report_name,
+                        flat_table_name,
+                        encounter_type_uuid,
+                        column_label,
+                        concept_uuid,
+                        concepts_locale
+                    )
+                 VALUES (JSON_UNQUOTE(@report_name),
+                        JSON_UNQUOTE(@flat_table_name),
+                        JSON_UNQUOTE(@encounter_type),
+                        'AUTO-GENERATE',
+                        'AUTO-GENERATE',
+                        JSON_UNQUOTE(@concepts_locale));
+            ELSE
+
+                SET @col_count = 0;
+                WHILE @col_count < @column_keys_array_len
+                    DO
+                            SELECT JSON_EXTRACT(@column_keys_array, CONCAT('$[', @col_count, ']')) INTO @field_name;
+                            SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
+
+                            SET @tbl_name = '';
+                            INSERT INTO mamba_dim_concept_metadata
+                                (
+                                    report_name,
+                                    flat_table_name,
+                                    encounter_type_uuid,
+                                    column_label,
+                                    concept_uuid,
+                                    concepts_locale
+                                )
+                            VALUES (JSON_UNQUOTE(@report_name),
+                                    JSON_UNQUOTE(@flat_table_name),
+                                    JSON_UNQUOTE(@encounter_type),
+                                    JSON_UNQUOTE(@field_name),
+                                    JSON_UNQUOTE(@concept_uuid),
+                                    JSON_UNQUOTE(@concepts_locale));
+
+                        SET @col_count = @col_count + 1;
+
                 END WHILE;
+            END IF;
 
             SET @report_count = @report_count + 1;
         END WHILE;
