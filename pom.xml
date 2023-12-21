@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -10,7 +11,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>ohrimamba-core</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>OHRI MambaETL Core: [parent]</name>
     <description>OHRI MambaETL Core - Extensible core functions for the OHRI MambaETL</description>
@@ -25,7 +26,7 @@
         <connection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</connection>
         <url>https://github.com/UCSF-IGHS/ohri-mamba-core</url>
         <developerConnection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</developerConnection>
-        <tag>v3.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>

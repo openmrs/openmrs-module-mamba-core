@@ -16,11 +16,6 @@ public class ConnectionPoolManager {
 		dataSource.setPassword(Context.getAdministrationService().getGlobalProperty("mambaetl.analysis.db.password"));
 		dataSource.setInitialSize(4); // Initial number of connections
 		dataSource.setMaxTotal(20); // Maximum number of connections
-		
-		System.out.println("MambaETL URL : "
-		        + Context.getAdministrationService().getGlobalProperty("mambaetl.analysis.db.url"));
-		System.out.println("MambaETL user: "
-		        + Context.getAdministrationService().getGlobalProperty("mambaetl.analysis.db.username"));
 	}
 	
 	public static ConnectionPoolManager getInstance() {
