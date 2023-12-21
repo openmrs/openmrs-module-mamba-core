@@ -118,7 +118,7 @@ function read_config_report_definition_metadata() {
         report_columns_table_name="mamba_dim_$reportId"
 
         sql_query=$(jq -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string")
-        echo "SQL Query: $sql_query"
+        # echo "SQL Query: $sql_query"
 
         # Iterate through query_params and save values before printing
         query_params=$(jq -c ".report_definitions[$i].report_sql.query_params[] | select(length > 0) | {name, type}" <<< "$json_string")
