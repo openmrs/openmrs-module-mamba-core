@@ -36,7 +36,7 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      * @see #started()
      */
     public void started() {
-        System.out.println("Started MambaETL base Module");
+        log.info("Started MambaETL base Module");
         registerTask("Mamba-ETL Task", "MambaETL Task - To Flatten and Prepare Reporting Data.", FlattenTableTask.class,
                 60 * 60 * 12L, true);
     }
@@ -46,30 +46,30 @@ public class OhriMambaCoreActivator extends BaseModuleActivator {
      */
 
     public void shutdown() {
-        System.out.println("Shutdown MambaETL base Module");
+        log.info("Shutdown MambaETL base Module");
     }
 
     @Override
     public void stopped() {
-        System.out.println("MambaETL base Module stopped");
+        log.info("MambaETL base Module stopped");
         super.stopped();
     }
 
     @Override
     public void willRefreshContext() {
-        System.out.println("MambaETL base Module willRefreshContext");
+        log.info("MambaETL base Module willRefreshContext");
         super.willRefreshContext();
     }
 
     @Override
     public void willStart() {
-        System.out.println("MambaETL base Module willStart");
+        log.info("MambaETL base Module willStart");
         super.willStart();
     }
 
     @Override
     public void willStop() {
-        System.out.println("MambaETL base Module willStop");
+        log.info("MambaETL base Module willStop");
         super.willStop();
     }
 

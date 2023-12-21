@@ -36,7 +36,6 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             argumentsJson = objectMapper.writeValueAsString(criteria.getSearchFields());
-            System.out.println("Arguments: " + argumentsJson);
             log.info("Arguments.: " + argumentsJson);
         } catch (Exception exc) {
             exc.printStackTrace();
@@ -55,7 +54,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             statement.setString("report_identifier", criteria.getReportId());
 
             boolean hasResults = statement.execute();
-            System.out.println("hasResults up: " + hasResults);
+            log.info("hasResults up: " + hasResults);
             while (hasResults) {
 
                 ResultSet resultSet = statement.getResultSet();
@@ -78,10 +77,6 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             boolean hasResults = statement.execute();
             int updateCount = statement.getUpdateCount();
 
-            System.out.println("hasResults : " + hasResults);
-            System.out.println("updateCount: " + updateCount);
-            System.out.println("columnNames: " + columnNames);
-
             if (!hasResults) {
 
                 MambaReportItem reportItem = new MambaReportItem();
@@ -98,12 +93,10 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
                     ResultSet resultSet = statement.getResultSet();
                     ResultSetMetaData metaData = resultSet.getMetaData();
                     int columnCount = metaData.getColumnCount();
-                    System.out.println("Col. count: " + columnCount);
 
                     int serialId = 1;
                     while (resultSet.next()) {
 
-                        System.out.println("serialId: " + serialId);
                         MambaReportItem reportItem = new MambaReportItem();
                         // reportItem.setMetaData(new MambaReportItemMetadata(serialId));
                         reportItem.setSerialId(serialId);
@@ -114,7 +107,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
                             Object columnValue = resultSet.getObject(i);
                             reportItem.getRecord().add(new MambaReportItemColumn(columnName, columnValue));
 
-                            System.out.println("Column (metadata..) " + columnName + ": " + columnValue);
+                            log.info("Column (metadata..) " + columnName + ": " + columnValue);
                         }
                         serialId++;
                     }

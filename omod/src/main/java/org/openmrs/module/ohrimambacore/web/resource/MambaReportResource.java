@@ -31,7 +31,6 @@ public class MambaReportResource implements Searchable {
     @Override
     public SimpleObject search(RequestContext context) throws ResponseException {
 
-        System.out.println("Search resource hit.");
         log.info("Search resource hit..");
 
         context.setLimit(10);
@@ -58,7 +57,6 @@ public class MambaReportResource implements Searchable {
         }
 
         List<MambaReportItem> mambaReportItems = getService().getMambaReportByCriteria(searchCriteria);
-        System.out.println("mambaReportItems: " + mambaReportItems);
         return new SimpleObject().add("results", mambaReportItems);
     }
 
