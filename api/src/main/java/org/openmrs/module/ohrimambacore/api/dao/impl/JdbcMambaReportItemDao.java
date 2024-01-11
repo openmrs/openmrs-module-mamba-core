@@ -1,7 +1,6 @@
 package org.openmrs.module.ohrimambacore.api.dao.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
@@ -9,7 +8,6 @@ import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.db.ConnectionPoolManager;
-import org.openmrs.module.ohrimambacore.task.FlattenTableTask;
 
 import javax.sql.DataSource;
 import java.sql.*;
