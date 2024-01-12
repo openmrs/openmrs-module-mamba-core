@@ -34,22 +34,18 @@ BEGIN
     IF @column_labels IS NOT NULL THEN
         SET @create_table = CONCAT(
                 'CREATE TABLE `', @tbl_obs_group_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, ', @column_labels, ', INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
-    ELSE
-        SET @create_table = CONCAT(
-                'CREATE TABLE `', @tbl_obs_group_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, INDEX idx_encounter_id (encounter_id), INDEX idx_client_id (client_id), INDEX idx_encounter_datetime (encounter_datetime));');
     END IF;
-
-
-    PREPARE deletetb FROM @drop_table;
-    PREPARE createtb FROM @create_table;
 
     IF @column_labels IS NOT NULL THEN
+        PREPARE deletetb FROM @drop_table;
+        PREPARE createtb FROM @create_table;
+
         EXECUTE deletetb;
         EXECUTE createtb;
-    END IF;
 
-    DEALLOCATE PREPARE deletetb;
-    DEALLOCATE PREPARE createtb;
+        DEALLOCATE PREPARE deletetb;
+        DEALLOCATE PREPARE createtb;
+    END IF;
 
 END //
 
