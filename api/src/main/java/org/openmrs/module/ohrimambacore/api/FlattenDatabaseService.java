@@ -16,6 +16,5 @@ import org.openmrs.api.OpenmrsService;
  */
 public interface FlattenDatabaseService extends OpenmrsService {
 	
-	//@Authorized({ OrderTemplatesConstants.MANAGE_ORDER_TEMPLATES })
 	void flattenDatabase();
 }

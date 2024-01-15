@@ -32,7 +32,6 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall("{call sp_mamba_data_processing_etl()}")) {
 
-            String sql = statement.toString();
             statement.execute();
 
         } catch (SQLException e) {
