@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 /**
- * @author smallGod date: 09/07/2023
+ * date: 09/07/2023
  */
 public class MambaReportSearchField implements Serializable {
 

@@ -3,7 +3,7 @@ package org.openmrs.module.ohrimambacore.api;
 import org.openmrs.api.OpenmrsService;
 
 /**
- * @author smallGod date: 01/03/2023
+ * date: 01/03/2023
  */
 public interface FlattenDatabaseService extends OpenmrsService {
 	

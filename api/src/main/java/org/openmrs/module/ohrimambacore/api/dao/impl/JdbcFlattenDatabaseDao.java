@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * @author smallGod
  * date: 01/03/2023
  */
 public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {

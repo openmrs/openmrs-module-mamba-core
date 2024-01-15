@@ -6,7 +6,7 @@ import org.openmrs.module.ohrimambacore.api.dao.FlattenDatabaseDao;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author Arthur D. Mugume date: 01/03/2023
+ * date: 01/03/2023
  */
 @Transactional
 public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements FlattenDatabaseService {

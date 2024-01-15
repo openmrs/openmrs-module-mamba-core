@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * @author smallGod
  * date: 09/07/2023
  */
 @Transactional

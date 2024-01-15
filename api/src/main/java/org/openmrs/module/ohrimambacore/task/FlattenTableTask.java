@@ -7,7 +7,6 @@ import org.openmrs.module.ohrimambacore.api.FlattenDatabaseService;
 import org.openmrs.scheduler.tasks.AbstractTask;
 
 /**
- * @author smallGod
  * date: 26/10/2023
  */
 public class FlattenTableTask extends AbstractTask {

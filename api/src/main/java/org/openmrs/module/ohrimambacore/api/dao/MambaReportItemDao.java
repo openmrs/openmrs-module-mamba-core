@@ -6,7 +6,6 @@ import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import java.util.List;
 
 /**
- * @author smallGod
  * date: 09/07/2023
  */
 public interface MambaReportItemDao {

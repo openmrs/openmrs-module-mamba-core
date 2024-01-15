@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author smallGod
  * date: 09/07/2023
  */
 public class JdbcMambaReportItemDao implements MambaReportItemDao {

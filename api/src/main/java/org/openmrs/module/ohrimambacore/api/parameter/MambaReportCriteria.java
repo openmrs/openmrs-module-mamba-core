@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author smallGod date: 09/07/2023
+ * date: 09/07/2023
  */
 public class MambaReportCriteria implements Serializable {
 

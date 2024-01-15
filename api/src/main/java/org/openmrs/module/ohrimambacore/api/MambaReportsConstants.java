@@ -1,7 +1,7 @@
 package org.openmrs.module.ohrimambacore.api;
 
 /**
- * @author smallGod date: 16/08/2023
+ * date: 16/08/2023
  */
 public class MambaReportsConstants {
 	

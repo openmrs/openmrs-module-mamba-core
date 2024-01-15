@@ -3,7 +3,7 @@ package org.openmrs.module.ohrimambacore.api.model;
 import java.io.Serializable;
 
 /**
- * @author smallGod date: 09/07/2023
+ * date: 09/07/2023
  */
 public class MambaReportItemColumn implements Serializable {
 	

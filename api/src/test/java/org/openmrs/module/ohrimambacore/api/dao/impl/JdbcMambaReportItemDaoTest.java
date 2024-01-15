@@ -77,12 +77,10 @@ public class JdbcMambaReportItemDaoTest extends BaseModuleContextSensitiveTest {
         Assert.assertNotNull(mambaReportItemDao);
     }
 
-
     @Test
     public void getMambaReport_shouldReturnEmptyList() {
         List<MambaReportItem> mambaReportItems = mambaReportItemDao.getMambaReport("total_deliveries");
         Assert.assertNotNull(mambaReportItems);
-        System.out.println(mambaReportItems);
     }
 
     @Test
