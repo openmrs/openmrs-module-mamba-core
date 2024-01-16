@@ -129,8 +129,6 @@ These properties can also be added via the legacy admin UI as global properties.
 MambaETL depends on this database configuration to connect to the **ETL** database for processing.  
 Note: the **ETL** database name is configured in the parent `pom.xml` file of your project. More on this file configurations later.
 
-![Screenshot 2023-11-22 at 09.10.21.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-22%20at%2009.10.21.png)
-
     <globalProperty>
         <property>mambaetl.analysis.db.url</property>
         <defaultValue>jdbc:mysql://db:3306/analysis_db?autoReconnect=true</defaultValue>
