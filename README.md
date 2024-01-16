@@ -1,6 +1,6 @@
 # openmrs-module-ohri-mamba-core
 
-![MambaETL.png](..%2F..%2F..%2F..%2F_markdown%2FMambaETL.png)
+![MambaETL.png](_markdown%2FMambaETL.png)
 
 ## **Background**
 
@@ -18,8 +18,8 @@ so that implementers, analysts, data scientists or teams building reports focus 
 Artefacts in this module include:
 * SQL scripts (functions, views & stored procedures), 
 * An automation engine/bash/shell scripts, 
-* Maven configurations, 
-* and Java functionality
+* Maven configurations (Maven 3.1.0 & above), 
+* Java functionality (JAVA 7 & above)
 
 ## **How to use the module**
 This module is intended to be added or included in your main reporting module.   
@@ -53,7 +53,7 @@ Below is an example folder structure of your project when you have added all the
 
 <span style='color: red;'>Step 2:</span>
 
-Create the MambaETL build folder named: `mamaba` under the resources folder.  
+Create the MambaETL build folder named: `mamba` under the resources folder.  
 Leave the folder empty. Everytime you build your project, 2 MambaETL build files are created under this folder replacing the old files if existing.  
 
 The MambaETL build files created under `mamba` folder are:  
@@ -179,7 +179,7 @@ Notably, don't forget to specify the names of your OpenMRS source database and t
 MambaETL as earlier described, consists of a bash 'engine' and SQL compliant scripts for your reporting needs.  
 Execution of all these files is supported by the various maven plugins added to your maven project.  
 
-This makes it possible to follow the maven lifecycle methods to build your final MambaETL deloyment scripts that are stored in the `mamba` folder discussed in `step 2`  
+This makes it possible to follow the maven lifecycle methods to build your final MambaETL deployment scripts that are stored in the `mamba` folder discussed in `step 2`  
 
 Run:  
 `mvn clean install` on the terminal.
@@ -188,4 +188,20 @@ This command will build all your MambaETL scripts and create 2 files under the b
 
 That's all you need to do to prepare your deployment scripts.  
 
-Go ahead and deploy your module normally and enjoy `MambaETL` at work!
+<span style='color: red;'>Step 12:</span>
+
+`Deploy  MambaETL`
+
+Copy the OWA file to openmrs folder
+
+MambaETL will be scheduled to run automatically every 12 hours after deploying the scripts.
+![Scheduler.png](_markdown%2FScheduler.png)
+But you can adjust the timing for executing MambaETL in the openmrs scheduler if need be as shown below
+Under Administration go to scheduler and then click on manage scheduler
+![schedule manager.png](_markdown%2Fschedule%20manager.png)
+
+![Modify Scheduler.png](_markdown%2FModify%20Scheduler.png)
+Click on Schedule and then modify the timings.
+![Schedule time.png](_markdown%2FSchedule%20time.png)
+
+Enjoy `MambaETL` at work!
