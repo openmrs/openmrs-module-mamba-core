@@ -195,13 +195,18 @@ That's all you need to do to prepare your deployment scripts.
 Copy the OWA file to openmrs folder
 
 MambaETL will be scheduled to run automatically every 12 hours after deploying the scripts.
+
 ![Scheduler.png](_markdown%2FScheduler.png)
+
 But you can adjust the timing for executing MambaETL in the openmrs scheduler if need be as shown below
 Under Administration go to scheduler and then click on manage scheduler
+
 ![schedule manager.png](_markdown%2Fschedule%20manager.png)
 
 ![Modify Scheduler.png](_markdown%2FModify%20Scheduler.png)
+
 Click on Schedule and then modify the timings.
+
 ![Schedule time.png](_markdown%2FSchedule%20time.png)
 
 Enjoy `MambaETL` at work!
