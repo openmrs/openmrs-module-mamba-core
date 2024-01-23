@@ -129,7 +129,30 @@ These properties can also be added via the legacy admin UI as global properties.
 MambaETL depends on this database configuration to connect to the **ETL** database for processing.  
 Note: the **ETL** database name is configured in the parent `pom.xml` file of your project. More on this file configurations later.
 
-![Screenshot 2023-11-22 at 09.10.21.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-22%20at%2009.10.21.png)
+    <globalProperty>
+        <property>mambaetl.analysis.db.url</property>
+        <defaultValue>jdbc:mysql://db:3306/analysis_db?autoReconnect=true</defaultValue>
+        <description>MambaETL JDBC Connection string
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>mambaetl.analysis.db.username</property>
+        <defaultValue>root</defaultValue>
+        <description>MambaETL username</description>
+    </globalProperty>
+   
+    <globalProperty>
+        <property>mambaetl.analysis.db.password</property>
+        <defaultValue>openmrs</defaultValue>
+        <description>MambaETL user password</description>
+    </globalProperty>
+   
+    <globalProperty>
+        <property>mambaetl.analysis.db.driver</property>
+        <defaultValue>com.mysql.jdbc.Driver</defaultValue>
+        <description>MambaETL JDBC driver</description>
+    </globalProperty>
 
 The configured database user above must have super access to the **ETL** database to drop and create stored-procedures/views, functions, tables etc.  
 They also need select grant access to the transactional (openmrs) database.
@@ -142,7 +165,7 @@ In the above configuration, `analysis_db` is the **ETL** database name
 
 add the entry below to the bean context file:
 
-![Screenshot 2023-11-23 at 07.41.51.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-23%20at%2007.41.51.png)
+<context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
 
 <span style='color: red;'>Step 9:</span>
 
@@ -150,14 +173,78 @@ add the entry below to the bean context file:
 
 In the omod pom.xml add the MambaETL core module dependency and any other required dependencies such as `the rest module` dependencies.
 
-![Screenshot 2023-11-22 at 09.17.11.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-22%20at%2009.17.11.png)
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-2.0</artifactId>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>ohrimamba-core-omod</artifactId>
+        </dependency>
 
 
 <span style='color: red;'>Step 10:</span>
 
 Still within the `omod/pom.xml` ensure you have added all the necessary plugins. MambaETL depends on a number of plugins to copy dependencies, execute shell scripts, etc.  
 
-![Screenshot 2023-11-22 at 09.37.46.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-22%20at%2009.37.46.png)
+        <plugins>
+
+            <plugin>
+                <groupId>org.openmrs.maven.plugins</groupId>
+                <artifactId>maven-openmrs-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openmrs.maven.plugins</groupId>
+                <artifactId>openmrs-dependency-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+
 
 
 <span style='color: red;'>Step 11:</span>
@@ -170,7 +257,12 @@ We advise that you look at or copy the MambaETL ref/template module root/parent 
 
 Notably, don't forget to specify the names of your OpenMRS source database and the ETL target database in this pom.xml file.  
 
-![Screenshot 2023-11-23 at 09.18.53.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-23%20at%2009.18.53.png)
+      <!-- The source database (OpenMRS database) -->
+      <argument>-d openmrs</argument>
+   
+      <!-- The target or analysis Database where the ETL data is stored -->
+      <argument>-a analysis_db</argument>
+
 
 <span style='color: red;'>Step 11:</span>
 
