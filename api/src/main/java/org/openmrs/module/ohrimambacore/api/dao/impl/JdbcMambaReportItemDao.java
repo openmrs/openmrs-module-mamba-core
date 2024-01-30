@@ -1,7 +1,15 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.ohrimambacore.api.dao.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.ohrimambacore.api.dao.MambaReportItemDao;
@@ -9,15 +17,17 @@ import org.openmrs.module.ohrimambacore.api.model.MambaReportItem;
 import org.openmrs.module.ohrimambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.ohrimambacore.db.ConnectionPoolManager;
-import org.openmrs.module.ohrimambacore.task.FlattenTableTask;
 
+import java.sql.ResultSetMetaData;
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author smallGod
  * date: 09/07/2023
  */
 public class JdbcMambaReportItemDao implements MambaReportItemDao {
