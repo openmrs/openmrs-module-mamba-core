@@ -1,12 +1,3 @@
-/**
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
- * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
- * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
- * graphic logo is a trademark of OpenMRS Inc.
- */
 package org.openmrs.module.ohrimambacore.api.parameter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 /**
- * date: 09/07/2023
+ * @author smallGod date: 09/07/2023
  */
 public class MambaReportSearchField implements Serializable {
 
@@ -36,7 +27,7 @@ public class MambaReportSearchField implements Serializable {
     }
 
     public MambaReportSearchField(String column, String value) {
-        this(column, "=", value, "=");
+        this(column, "", value, "");
     }
 
     public MambaReportSearchField(String column, String operator, String value, String logicalOperator) {
