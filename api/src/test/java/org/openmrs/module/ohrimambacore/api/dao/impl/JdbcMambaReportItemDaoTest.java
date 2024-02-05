@@ -90,4 +90,10 @@ public class JdbcMambaReportItemDaoTest {
         List<MambaReportItem> mambaReportItems = mambaReportItemDao.getMambaReport("total_deliveries");
         Assert.assertNotNull(mambaReportItems);
     }
+
+    @Test
+    public void getMambaReport_noReportId_shouldReturnMessageReportIdRequired() {
+
+    }
+
 }
