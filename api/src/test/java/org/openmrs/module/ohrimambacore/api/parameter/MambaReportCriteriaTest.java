@@ -14,13 +14,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.openmrs.module.ohrimambacore.api.parameter.MambaReportCriteria;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class MambaReportCriteriaTest {
 
     final String reportId = "total_active_ds_cases";
-    final MambaReportSearchField searchField = new MambaReportSearchField("ptracker_id", "=", "10319A180260", "=");
+    private MambaReportSearchField searchField;
 
+
+    @Before
+    public void setUp() {
+        searchField = new MambaReportSearchField("ptracker_id", "=", "10319A180260", "=");
+    }
 
     @Test
     public void defaultConstructor_shouldInitReportIdToNullAndSearchFieldsToEmptyList() {
@@ -42,14 +50,26 @@ public class MambaReportCriteriaTest {
     @Test
     public void testGettersAndSetters() {
         MambaReportCriteria criteria = new MambaReportCriteria();
-
         criteria.setReportId(reportId);
         assertEquals(reportId, criteria.getReportId());
 
-        // Test search fields
         criteria.getSearchFields().add(searchField);
         assertFalse(criteria.getSearchFields().isEmpty());
         assertEquals(1, criteria.getSearchFields().size());
         assertEquals(searchField, criteria.getSearchFields().get(0));
+    }
+
+    @Test
+    public void testGetAndSetSearchFields() {
+        List<MambaReportSearchField> searchFields = Arrays.asList(
+                new MambaReportSearchField("field1", "value1"),
+                new MambaReportSearchField("field2", "value2")
+        );
+
+        MambaReportCriteria criteria = new MambaReportCriteria();
+        criteria.setSearchFields(searchFields);
+
+        assertNotNull(criteria.getSearchFields());
+        assertEquals(searchFields, criteria.getSearchFields());
     }
 }
