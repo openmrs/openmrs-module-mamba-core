@@ -8,13 +8,11 @@ BEGIN
     DECLARE mysqlDatatype VARCHAR(20);
 
     CASE conceptDatatype
-        WHEN conceptDatatype = 'Coded' THEN  mysqlDatatype = 'TEXT';
-        WHEN conceptDatatype = 'N/A' THEN  mysqlDatatype = 'TEXT';
-        WHEN conceptDatatype = 'Text' THEN  mysqlDatatype = 'TEXT';
-        WHEN conceptDatatype = 'Boolean' THEN  mysqlDatatype = 'VARCHAR(50)';
-        WHEN conceptDatatype = 'Date' THEN  mysqlDatatype = 'DATE';
-        WHEN conceptDatatype = 'Datetime' THEN  mysqlDatatype = 'DATETIME';
-        WHEN conceptDatatype = 'Numeric' THEN  mysqlDatatype = 'DOUBLE';
+        WHEN conceptDatatype IN ('Coded','N/A','Text') THEN SET  mysqlDatatype = 'TEXT';
+        WHEN conceptDatatype = 'Boolean' THEN SET mysqlDatatype = 'VARCHAR(50)';
+        WHEN conceptDatatype = 'Date' THEN SET mysqlDatatype = 'DATE';
+        WHEN conceptDatatype = 'Datetime' THEN  SET mysqlDatatype = 'DATETIME';
+        WHEN conceptDatatype = 'Numeric' THEN SET  mysqlDatatype = 'DOUBLE';
     END CASE;
 
     RETURN mysqlDatatype;
