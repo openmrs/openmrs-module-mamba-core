@@ -7,7 +7,7 @@ CREATE FUNCTION fn_mamba_calculate_agegroup(age INT) RETURNS VARCHAR(15)
 BEGIN
     DECLARE agegroup VARCHAR(15);
     CASE age
-        WHEN age < 1 THEN  agegroup = '<1';
+        WHEN age < 1 THEN SET agegroup = '<1';
         WHEN age between 1 and 4 THEN SET agegroup = '1-4';
         WHEN age between 5 and 9 THEN SET agegroup = '5-9';
         WHEN age between 10 and 14 THEN SET agegroup = '10-14';
