@@ -70,12 +70,13 @@ function read_config_metadata() {
       -- \$BEGIN
           "$'
               SET @report_data = '%s';
-              SET @file_count = %d;
-              IF @file_count = 0 THEN
-                    CALL sp_mamba_dim_json();
-                    SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
-              END IF;
               CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
+              SET @file_count = %d;
+              IF @file_count = 0 or @file_count > 0  THEN
+                    CALL sp_mamba_dim_json();
+                    CALL sp_mamba_write_automated_json_config;
+              END IF;
+
           '"
       -- \$END
   "
