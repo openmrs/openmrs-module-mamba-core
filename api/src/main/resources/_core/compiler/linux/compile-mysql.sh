@@ -539,15 +539,20 @@ DELIMITER ;
     ### SG - Clean up build file to make it Liquibase compatible ###
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
+    ## Automate the Create Analysis Database command at the beginning of the script
+    create_target_db="CREATE database IF NOT EXISTS '$analysis_database';"$'\n~\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
 
     ## Add the target database to use at the beginning of the script
-    use_target_db="USE $analysis_database;"$'\n\n'~ #TODO: also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
+    use_target_db="USE $analysis_database;"$'\n~\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
 
     # Create a temporary file with the text to prepend
     temp_file=$(mktemp)
 
-    # Add the text to the temporary file
-    echo "$use_target_db" > "$temp_file"
+    # Add create command text to the temporary file
+    echo "$create_target_db" > "$temp_file"
+
+    # Append use command text to the temporary file
+    echo "$use_target_db" >> "$temp_file"
 
     # Append the original file's content to the temporary file
     cat "$file_to_clean" >> "$temp_file"
