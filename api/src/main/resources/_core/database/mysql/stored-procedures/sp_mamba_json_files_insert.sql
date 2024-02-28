@@ -45,7 +45,7 @@ BEGIN
                     SELECT DISTINCT
                         et.name,
                         encounter_type_id,
-                        concat(''mamba_flat_encounter_'',LOWER(LEFT(REPLACE(REGEXP_REPLACE(et.name, ''[^0-9a-zÀ-ÿ ]'', ''''),'' '',''''),18))) AS table_name,
+                        concat(''mamba_flat_encounter_'',LOWER(LEFT(REPLACE(REGEXP_REPLACE(et.name, ''[^0-9a-z]'', ''''),'' '',''''),18))) AS table_name,
                         et.uuid,
                         ''en'' AS locale,
                         (
@@ -54,7 +54,7 @@ BEGIN
                             FROM (
                                     SELECT
                                         DISTINCT et.encounter_type_id,
-                                        LOWER(LEFT(REPLACE(REPLACE(REGEXP_REPLACE(cn.name, ''[^0-9a-z ]'', ''''), '' '', ''_''),''__'', ''_''),35)) name,
+                                        LOWER(LEFT(REPLACE(REPLACE(REGEXP_REPLACE(cn.name, ''[^0-9a-z]'', ''''), '' '', ''_''),''__'', ''_''),35)) name,
                                         c.uuid
                                     FROM mamba_source_db.obs o
                                     INNER JOIN mamba_source_db.encounter e
