@@ -41,7 +41,7 @@ BEGIN
     IF @column_labels IS NOT NULL THEN
         IF (SELECT count(*)FROM information_schema.tables WHERE table_name = @tbl_obs_group_name) > 0 THEN
             SET @insert_stmt = CONCAT(
-                    'INSERT INTO `', @tbl_obs_group_name, '` SELECT eo.encounter_id, eo.person_id, eo.encounter_datetime, ',
+                    'INSERT INTO `', @tbl_obs_group_name, '` SELECT eo.encounter_id, eo.person_id, eo.encounter_datetime, eo.location_id, ',
                     @column_labels, '
                     FROM mamba_z_encounter_obs eo
                         INNER JOIN mamba_dim_concept_metadata cm
