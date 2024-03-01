@@ -70,16 +70,17 @@ function read_config_metadata() {
       -- \$BEGIN
           "$'
               SET @report_data = '%s';
-              CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
               SET @file_count = %d;
-              IF @file_count = 0 or @file_count > 0  THEN
-                    CALL sp_mamba_dim_json();
-                    CALL sp_mamba_write_automated_json_config;
-              END IF;
 
+              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added report JSON from config dir
+              CALL sp_mamba_dim_json_insert(); -- insert automatically generated report JSON from db
+
+              SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
+              CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
           '"
       -- \$END
   "
+
   # Replace above placeholders in SQL_CONTENTS with actual values
   SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'" "$count")
 
@@ -540,7 +541,7 @@ DELIMITER ;
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
     ## Automate the Create Analysis Database command at the beginning of the script
-    create_target_db="CREATE database IF NOT EXISTS '$analysis_database';"$'\n~\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
+    create_target_db="CREATE database IF NOT EXISTS $analysis_database;"$'\n~\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
 
     ## Add the target database to use at the beginning of the script
     use_target_db="USE $analysis_database;"$'\n~\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file

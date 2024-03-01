@@ -9,8 +9,8 @@ BEGIN
 
     SELECT JSON_OBJECT('flat_report_metadata',JSON_ARRAYAGG(JSON_EXTRACT(Json_data, '$')))
     INTO report_array
-    FROM mamba_dim_json
-    WHERE uuid NOT IN (SELECT  DISTINCT encounter_type_uuid from mamba_dim_concept_metadata);
+    FROM mamba_dim_json;
+    -- WHERE uuid NOT IN (SELECT  DISTINCT encounter_type_uuid from mamba_dim_concept_metadata);
 
     RETURN report_array;
 END //

@@ -16,7 +16,8 @@ BEGIN
         FROM mamba_source_db.obs o
         INNER JOIN mamba_source_db.encounter e ON e.encounter_id = o.encounter_id
         INNER JOIN mamba_source_db.encounter_type et ON e.encounter_type = et.encounter_type_id
-        WHERE et.retired = 0;
+        WHERE et.encounter_type_id NOT IN (SELECT DISTINCT encounter_type_id from mamba_dim_json)
+        AND et.retired = 0;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
