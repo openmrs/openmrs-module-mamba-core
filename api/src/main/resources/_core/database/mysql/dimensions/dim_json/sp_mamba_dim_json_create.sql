@@ -2,11 +2,11 @@
 
 CREATE TABLE mamba_dim_json
 (
-    id                      INT          NOT NULL AUTO_INCREMENT,
-    report_name             VARCHAR(100) NOT NULL,
-    encounter_type_id       INT NOT NULL UNIQUE,
-    Json_data               JSON,
-    uuid                    CHAR(38),
+    id                INT          NOT NULL AUTO_INCREMENT,
+    report_name       VARCHAR(100) NOT NULL,
+    encounter_type_id INT          NOT NULL UNIQUE,
+    Json_data         JSON,
+    uuid              CHAR(38),
 
     PRIMARY KEY (id)
 )
