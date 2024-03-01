@@ -80,7 +80,7 @@ function read_config_metadata() {
           '"
       -- \$END
   "
-  # Replace placeholders in SQL_CONTENTS with actual values
+  # Replace above placeholders in SQL_CONTENTS with actual values
   SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'" "$count")
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
