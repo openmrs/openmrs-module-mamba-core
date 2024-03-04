@@ -49,7 +49,7 @@ BEGIN
                     WHERE  cm.flat_table_name = ''', @tbl_name, '''
                     AND eo.encounter_type_uuid = cm.encounter_type_uuid
                     AND eo.obs_group_id IS NOT NULL  AND eo.status = ''FINAL''
-                    GROUP BY eo.encounter_id, eo.person_id, eo.encounter_datetime,eo.obs_group_id;');
+                    GROUP BY eo.encounter_id, eo.person_id, eo.encounter_datetime,eo.obs_group_id, eo.location_id;');
         END IF;
     END IF;
 
