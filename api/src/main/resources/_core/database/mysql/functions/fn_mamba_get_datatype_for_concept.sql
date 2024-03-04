@@ -7,26 +7,23 @@ CREATE FUNCTION fn_mamba_get_datatype_for_concept(conceptDatatype VARCHAR(20)) R
 BEGIN
     DECLARE mysqlDatatype VARCHAR(20);
 
-    IF conceptDatatype = 'Coded'
-       OR conceptDatatype = 'N/A' THEN
-        SET mysqlDatatype = 'TEXT';
+    CASE conceptDatatype
+        WHEN conceptDatatype IN('Coded','N/A','Text') THEN
+            SET mysqlDatatype = 'TEXT';
 
-    ELSEIF conceptDatatype = 'Text' THEN
-        SET mysqlDatatype = 'TEXT';
+        WHEN conceptDatatype = 'Boolean' THEN
+            SET mysqlDatatype = 'VARCHAR(20)';
 
-    ELSEIF conceptDatatype = 'Boolean' THEN
-        SET mysqlDatatype = 'VARCHAR(30)';
+        WHEN conceptDatatype = 'Date' THEN
+            SET mysqlDatatype = 'DATE';
 
-    ELSEIF conceptDatatype = 'Date' THEN
-        SET mysqlDatatype = 'DATE';
+        WHEN conceptDatatype = 'Datetime' THEN
+            SET mysqlDatatype = 'DATETIME';
 
-    ELSEIF conceptDatatype = 'Datetime' THEN
-        SET mysqlDatatype = 'DATETIME';
+        WHEN conceptDatatype = 'Numeric' THEN
+            SET mysqlDatatype = 'DOUBLE';
 
-    ELSEIF conceptDatatype = 'Numeric' THEN
-        SET mysqlDatatype = 'DOUBLE';
-
-    END IF;
+    END CASE;
 
     RETURN mysqlDatatype;
 END //
