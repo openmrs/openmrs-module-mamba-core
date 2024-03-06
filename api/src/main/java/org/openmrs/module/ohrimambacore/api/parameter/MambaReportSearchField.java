@@ -13,9 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
-/**
- * date: 09/07/2023
- */
 public class MambaReportSearchField implements Serializable {
 
     private static final long serialVersionUID = -5995274582315599409L;

@@ -27,9 +27,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * date: 09/07/2023
- */
 public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
     private static Log log = LogFactory.getLog(JdbcMambaReportItemDao.class);

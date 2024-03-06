@@ -17,9 +17,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * date: 01/03/2023
- */
 public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
     @Override

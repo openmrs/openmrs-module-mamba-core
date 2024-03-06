@@ -18,9 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * date: 09/07/2023
- */
 @Transactional
 public class MambaReportServiceImpl extends BaseOpenmrsService implements MambaReportService {
 
