@@ -23,18 +23,18 @@
   		    http://www.springframework.org/schema/util
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
+    <context:component-scan base-package="org.openmrs.module.mambacore"/>
 
     <!-- Services accessible via Context.getService() -->
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.ohrimambacore.api.FlattenDatabaseService</value>
+                <value>org.openmrs.module.mambacore.api.FlattenDatabaseService</value>
                 <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
                     <property name="target">
-                        <bean class="org.openmrs.module.ohrimambacore.api.impl.FlattenDatabaseServiceImpl">
+                        <bean class="org.openmrs.module.mambacore.api.impl.FlattenDatabaseServiceImpl">
                             <property name="dao">
-                                <bean class="org.openmrs.module.ohrimambacore.api.dao.impl.JdbcFlattenDatabaseDao"/>
+                                <bean class="org.openmrs.module.mambacore.api.dao.impl.JdbcFlattenDatabaseDao"/>
                             </property>
                         </bean>
                     </property>
@@ -49,12 +49,12 @@
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.ohrimambacore.api.MambaReportService</value>
+                <value>org.openmrs.module.mambacore.api.MambaReportService</value>
                 <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
                     <property name="target">
-                        <bean class="org.openmrs.module.ohrimambacore.api.impl.MambaReportServiceImpl">
+                        <bean class="org.openmrs.module.mambacore.api.impl.MambaReportServiceImpl">
                             <property name="dao">
-                                <bean class="org.openmrs.module.ohrimambacore.api.dao.impl.JdbcMambaReportItemDao"/>
+                                <bean class="org.openmrs.module.mambacore.api.dao.impl.JdbcMambaReportItemDao"/>
                             </property>
                         </bean>
                     </property>

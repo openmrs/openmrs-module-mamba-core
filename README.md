@@ -165,7 +165,7 @@ In the above configuration, `analysis_db` is the **ETL** database name
 
 add the entry below to the bean context file:
 
-<context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
+<context:component-scan base-package="org.openmrs.module.mambacore"/>
 
 <span style='color: red;'>Step 9:</span>
 

@@ -9,7 +9,7 @@
     <package>${project.parent.groupId}.${project.parent.artifactId}</package>
     <author>${project.parent.organization.name}</author>
     <description>${project.parent.description}</description>
-    <activator>org.openmrs.module.ohrimambacore.OhriMambaCoreActivator</activator>
+    <activator>org.openmrs.module.mambacore.OhriMambaCoreActivator</activator>
     <require_version>${openmrsPlatformVersion}</require_version>
 
     <require_modules>
