@@ -31,10 +31,20 @@ WHERE md.id > 0 and concept_datatype = 'N/A';
 
 -- Update row number
 UPDATE mamba_dim_concept_metadata md
-    INNER JOIN (SELECT id,
-                       ROW_NUMBER() OVER (PARTITION BY flat_table_name,concept_id ORDER BY id ASC) num
-                FROM mamba_dim_concept_metadata) m
-    ON md.id = m.id
+    INNER JOIN (SELECT
+                    flat_table_name,
+                    concept_id,
+                    id,
+                    @row_number := CASE
+                        WHEN @prev_flat_table_name = flat_table_name AND @prev_concept_id = concept_id
+                            THEN @row_number + 1
+                        ELSE 1
+                    END AS num,
+                    @prev_flat_table_name := flat_table_name,
+                    @prev_concept_id := concept_id
+            FROM mamba_dim_concept_metadata
+            ORDER BY flat_table_name, concept_id, id
+            ) m ON md.id = m.id
 SET md.row_num = num
 WHERE md.id > 0;
 
