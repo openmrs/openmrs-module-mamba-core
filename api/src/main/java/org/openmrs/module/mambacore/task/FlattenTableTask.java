@@ -22,10 +22,10 @@ public class FlattenTableTask extends AbstractTask {
     @Override
     public void execute() {
 
-        log.info("MambaETL FlattenTableTask starting to execute!..");
-
+        log.info("MambaETL FlattenTableTask (will execute shortly if not already running)...");
         if (!isExecuting) {
 
+            log.info("MambaETL FlattenTableTask executing..");
             startExecuting();
 
             try {
@@ -37,7 +37,7 @@ public class FlattenTableTask extends AbstractTask {
                 log.info("MambaETL FlattenTableTask completed & stopped...");
             }
         } else {
-            log.error("Warning, an instance of MambaETL Flattening Task is still running, try again after");
+            log.warn("Warning, an instance of MambaETL Flattening Task is still running, try again after");
         }
     }
 
