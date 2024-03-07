@@ -13,9 +13,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * date: 09/07/2023
- */
 public class MambaReportItem implements Serializable {
 
     private static final long serialVersionUID = -8980686055469327763L;

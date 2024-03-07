@@ -52,7 +52,6 @@ public class MambaReportResource implements Searchable {
         }
 
         if (searchCriteria.getReportId() == null) {
-            System.err.println("Warning: Report ID is null");
             return new EmptySearchResult().toSimpleObject(null);
         }
 
@@ -64,47 +63,4 @@ public class MambaReportResource implements Searchable {
     public String getUri(Object o) {
         return null;
     }
-
-    /*
-    public Object retrieve(String reportId, RequestContext requestContext) throws ResponseException {
-
-        log.info("retrieve - OHRI MambaETL Core");
-        System.out.println("retrieve 2 - OHRI MambaETL Core: " + reportId);
-
-        String mambaSearchFieldsString = requestContext.getParameter("mamba_search_fields");
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        List<MambaReportItem> mambaReportItem = new ArrayList<>();
-        try {
-            MambaReportCriteria searchCriteria = objectMapper.readValue(mambaSearchFieldsString, MambaReportCriteria.class);
-            mambaReportItem = getService().getMambaReportByCriteria(searchCriteria);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new NeedsPaging<>(mambaReportItem, requestContext);
-    }
-
-    private SimpleObject getTestReports(RequestContext requestContext) throws ResponseException {
-
-        List<MambaReportItem> mambaReportItems = new ArrayList<>();
-
-        MambaReportItem reportItem = new MambaReportItem();
-        reportItem.setSerialId(1);
-        reportItem.getRecord().add(new MambaReportItemColumn("col_name_1", "row_value_1"));
-
-        MambaReportItem reportItem2 = new MambaReportItem();
-        reportItem2.setSerialId(2);
-        reportItem2.getRecord().add(new MambaReportItemColumn("col_name_2", "row_value_2"));
-
-        mambaReportItems.add(reportItem);
-        mambaReportItems.add(reportItem2);
-
-        System.out.println("Size: " + mambaReportItems.size());
-        System.out.println("Records: " + mambaReportItems);
-
-        //return (new NeedsPaging<>(mambaReportItems, requestContext)).toSimpleObject(this);
-        return new SimpleObject().add("results", mambaReportItems);
-    }
-
-    */
 }
