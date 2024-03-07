@@ -24,11 +24,11 @@ import java.util.UUID;
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
-public class OhriMambaCoreActivator extends BaseModuleActivator {
+public class MambaCoreActivator extends BaseModuleActivator {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public OhriMambaCoreActivator() {
+    public MambaCoreActivator() {
         super();
     }
 

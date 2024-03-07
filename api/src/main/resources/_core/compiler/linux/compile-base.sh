@@ -22,7 +22,7 @@ while getopts ":h:t:n:d:a:v:s:k:o:b:c:" opt; do
       add_option "-n" "$database_engine"
       ;;
     *)
-      echo "Database Engine/Vendor: ${OPTARG}" "not yet supported. Please Contact OHRI support" >&2
+      echo "Database Engine/Vendor: ${OPTARG}" "not yet supported. Please Contact OpenMRS support" >&2
       exit 1
       ;;
     esac
@@ -82,7 +82,7 @@ mysql)
   #        ./compile-oracle.sh "${args[@]}"
   #        ;;
 *)
-  echo "Database Engine/Vendor: $database_engine" " not yet supported. Please Contact OHRI support" >&2
+  echo "Database Engine/Vendor: $database_engine" " not yet supported. Please Contact OpenMRS support" >&2
   exit 1
   ;;
 esac
