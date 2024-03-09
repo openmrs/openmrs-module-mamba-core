@@ -9,22 +9,22 @@
     </parent>
 
     <groupId>org.openmrs.module</groupId>
-    <artifactId>ohrimamba-core</artifactId>
+    <artifactId>mamba-core</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>OHRI MambaETL Core: [parent]</name>
-    <description>OHRI MambaETL Core - Extensible core functions for the OHRI MambaETL</description>
+    <name>OpenMRS MambaETL Core: [parent]</name>
+    <description>OpenMRS MambaETL Core - Extensible core functions for the OpenMRS MambaETL</description>
 
     <organization>
-        <name>OHRI</name>
+        <name>OpenMRS, UCSF, MakSPH</name>
     </organization>
 
     <url>https://wiki.openmrs.org/x/FQ4z</url>
 
     <scm>
-        <connection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</connection>
-        <url>https://github.com/UCSF-IGHS/ohri-mamba-core</url>
-        <developerConnection>scm:git:git@github.com:UCSF-IGHS/ohri-mamba-core.git</developerConnection>
+        <connection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-mamba-core.git</connection>
+        <url>https://github.com/UCSF-IGHS/openmrs-module-mamba-core</url>
+        <developerConnection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-mamba-core.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -293,13 +293,13 @@
 
     <developers>
         <developer>
-            <id>OHRI-MambaETL-MakSPH</id>
+            <id>OpenMRS-MambaETL-MakSPH</id>
             <name>Arthur D. Mugume</name>
             <organization>MakSPH</organization>
             <organizationUrl>https://ohri</organizationUrl>
         </developer>
         <developer>
-            <id>OHRI-Mamba-UCSF</id>
+            <id>OpenMRS-Mamba-UCSF</id>
             <name>Laureen G. Omare</name>
             <organization>UCSF</organization>
             <organizationUrl>https://ohri</organizationUrl>
