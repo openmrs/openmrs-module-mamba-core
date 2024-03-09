@@ -1,4 +1,4 @@
-# openmrs-module-ohri-mamba-core
+# openmrs-module-mamba-core
 
 ![MambaETL.png](_markdown%2FMambaETL.png)
 
@@ -12,7 +12,7 @@ This means that the Obs table quickly grows to millions of records in fairly siz
 
 ## **Purpose of this module**
 
-The `openmrs-module-ohri-mamba-core` or simply called the MambaETL Core module is an OpenMRS module that is a collection of familiar artefacts/tooling that collectively offer out-of-the box database flattening/transposing and abstraction of repetitive reporting tasks 
+The `openmrs-module-mamba-core` or simply called the MambaETL Core module is an OpenMRS module that is a collection of familiar artefacts/tooling that collectively offer out-of-the box database flattening/transposing and abstraction of repetitive reporting tasks 
 so that implementers, analysts, data scientists or teams building reports focus on building without worrying about system performance bottlenecks or bothering too much about how the data is extracted from the primary data source into the reporting destination.
 
 Artefacts in this module include:
@@ -78,7 +78,7 @@ Ensure your `api` submodule has the structure as shown in the image below. We wi
 
 `../api/pom.xml`  
 
-Under your MambaETL supported project created/cloned in `Step 1` above, go to the `api` submodule and in the pom xml add the dependency entry for the [MambaETL core module](https://github.com/UCSF-IGHS/openmrs-module-ohri-core) api dependency.
+Under your MambaETL supported project created/cloned in `Step 1` above, go to the `api` submodule and in the pom xml add the dependency entry for the [MambaETL core module](https://github.com/UCSF-IGHS/openmrs-module-mamba-core) api dependency.
 
 ![Screenshot 2023-11-23 at 07.50.10.png](..%2F..%2F..%2F..%2F_markdown%2FScreenshot%202023-11-23%20at%2007.50.10.png)
 
@@ -165,7 +165,7 @@ In the above configuration, `analysis_db` is the **ETL** database name
 
 add the entry below to the bean context file:
 
-<context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
+<context:component-scan base-package="org.openmrs.module.mambacore"/>
 
 <span style='color: red;'>Step 9:</span>
 
@@ -193,7 +193,7 @@ In the omod pom.xml add the MambaETL core module dependency and any other requir
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>ohrimamba-core-omod</artifactId>
+            <artifactId>mamba-core-omod</artifactId>
         </dependency>
 
 
@@ -253,7 +253,7 @@ Still within the `omod/pom.xml` ensure you have added all the necessary plugins.
 
 A number of configurations have to be made in the root/parent pom file of your project.  
 Make sure you have configured the necessary plugins, ETL source and target database names, etc.  
-We advise that you look at or copy the MambaETL ref/template module root/parent [pom.xml](https://github.com/UCSF-IGHS/openmrs-module-ohri-core/blob/master/pom.xml) file for details as there are a number of configurations in this file.  
+We advise that you look at or copy the MambaETL ref/template module root/parent [pom.xml](https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba/blob/main/pom.xml) file for details as there are a number of configurations in this file.  
 
 Notably, don't forget to specify the names of your OpenMRS source database and the ETL target database in this pom.xml file.  
 
