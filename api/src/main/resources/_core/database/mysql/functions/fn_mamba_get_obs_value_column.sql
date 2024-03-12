@@ -6,11 +6,19 @@ CREATE FUNCTION fn_mamba_get_obs_value_column(conceptDatatype VARCHAR(20)) RETUR
     DETERMINISTIC
 BEGIN
     DECLARE obsValueColumn VARCHAR(20);
-        IF (conceptDatatype = 'Text' OR conceptDatatype = 'Coded' OR conceptDatatype = 'N/A' OR
-            conceptDatatype = 'Boolean') THEN
+
+        IF conceptDatatype = 'Text'
+           OR  conceptDatatype = 'Coded'
+           OR conceptDatatype = 'N/A' THEN
             SET obsValueColumn = 'obs_value_text';
-        ELSEIF conceptDatatype = 'Date' OR conceptDatatype = 'Datetime' THEN
+
+        ELSEIF conceptDatatype = 'Boolean' THEN
+            SET obsValueColumn = 'obs_value_text';
+
+        ELSEIF  conceptDatatype = 'Date'
+                OR conceptDatatype = 'Datetime' THEN
             SET obsValueColumn = 'obs_value_datetime';
+
         ELSEIF conceptDatatype = 'Numeric' THEN
             SET obsValueColumn = 'obs_value_numeric';
         END IF;
