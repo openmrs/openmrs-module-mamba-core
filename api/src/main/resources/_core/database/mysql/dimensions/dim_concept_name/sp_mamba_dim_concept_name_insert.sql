@@ -15,7 +15,7 @@ SELECT cn.concept_name_id,
        cn.voided,
        cn.concept_name_type
 FROM mamba_source_db.concept_name cn
- WHERE cn.locale = 'en'
+ WHERE cn.locale = (SELECT DISTINCT(concepts_locale) FROM mamba_dim_concepts_locale)
   AND cn.locale_preferred = 1
     AND cn.voided = 0;
 
