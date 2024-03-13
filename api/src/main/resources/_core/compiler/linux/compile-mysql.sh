@@ -97,7 +97,7 @@ function read_locale_setting() {
       -- \$BEGIN
           "$'
               SET @concepts_locale = '%s';
-              CALL sp_mamba_locale_insert_helper(@concepts_locale);
+              CALL sp_mamba_dim_locale_insert_helper(@concepts_locale);
           '"
       -- \$END
   "
