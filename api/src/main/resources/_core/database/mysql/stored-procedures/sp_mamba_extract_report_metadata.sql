@@ -13,11 +13,11 @@ BEGIN
     SELECT fn_mamba_json_extract_array(report_data, 'flat_report_metadata') INTO @report_array;
     SELECT fn_mamba_json_array_length(@report_array) INTO @report_array_len;
 
-    SET @report_count = 0;
-        WHILE @report_count < @report_array_len
+    SET @report_count = 1;
+        WHILE @report_count <= @report_array_len
             DO
                 SELECT fn_mamba_json_object_at_index(@report_array, @report_count) INTO @report;
-                -- SET @report =  CONCAT(@report,'}');
+                SET @report =  CONCAT(@report,'}');
                 SELECT fn_mamba_json_extract(@report, 'report_name') INTO @report_name;
                 SELECT fn_mamba_json_extract(@report, 'flat_table_name') INTO @flat_table_name;
                 SELECT fn_mamba_json_extract(@report, 'encounter_type_uuid') INTO @encounter_type;
@@ -47,9 +47,9 @@ BEGIN
                             fn_mamba_remove_quotes(@concepts_locale));
                 ELSE
 
-                    SET @col_count = 0;
-                    SET @column_array = CONCAT('{',@column_array,'}');
-                    WHILE @col_count < @column_keys_array_len
+                    SET @col_count = 1;
+                    -- SET @column_array = CONCAT('{',@column_array,'}');
+                    WHILE @col_count <= @column_keys_array_len
                         DO
                             SELECT fn_mamba_get_array_item_by_index(@column_keys_array, @col_count) INTO @field_name;
                             SELECT fn_mamba_json_value_by_key(@column_array,  @field_name) INTO @concept_uuid;

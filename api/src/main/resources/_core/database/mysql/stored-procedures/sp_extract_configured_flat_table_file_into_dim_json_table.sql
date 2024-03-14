@@ -17,16 +17,16 @@ BEGIN
     SELECT fn_mamba_json_extract_array(report_data, 'flat_report_metadata') INTO @report_array;
     SELECT fn_mamba_json_array_length(@report_array) INTO @report_array_len;
 
-    SET @report_count = 0;
-    WHILE @report_count < @report_array_len
+    SET @report_count = 1;
+    WHILE @report_count <= @report_array_len
         DO
 
             SELECT fn_mamba_json_object_at_index(@report_array, @report_count) INTO @report_data_item;
-            -- SET @report_data_item =  CONCAT(@report_data_item,'}');
+            SET @report_data_item =  CONCAT(@report_data_item,'}');
             SELECT fn_mamba_json_extract(@report_data_item, 'report_name') INTO @report_name;
             SELECT fn_mamba_json_extract(@report_data_item, 'encounter_type_uuid') INTO @encounter_type_uuid;
 
-            SET @et_uuid = JSON_UNQUOTE(@encounter_type_uuid);
+            SET @et_uuid = fn_mamba_remove_quotes(@encounter_type_uuid);
 
             SELECT DISTINCT encounter_type_id
             INTO @encounter_type_id

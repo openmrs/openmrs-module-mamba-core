@@ -12,7 +12,7 @@ BEGIN
   SET cleaned_string = REPLACE(cleaned_string, CHAR(10), '');  -- Line feed
   SET cleaned_string = REPLACE(cleaned_string, CHAR(13), '');  -- Carriage return
   SET cleaned_string = REPLACE(cleaned_string, CHAR(32), '');  -- Space
-  SET cleaned_string = REPLACE(cleaned_string, CHAR(160), ''); -- Non-breaking space
+  -- SET cleaned_string = REPLACE(cleaned_string, CHAR(160), ''); -- Non-breaking space
 
 RETURN TRIM(cleaned_string);
 END //
