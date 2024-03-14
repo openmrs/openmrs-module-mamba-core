@@ -11,7 +11,7 @@ add_option() {
 }
 
 # Parse arguments
-while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:b:c:" opt; do
   case "${opt}" in
   h) add_option "-h" "${OPTARG}" ;;
   t) add_option "-t" "${OPTARG}" ;;
@@ -48,7 +48,6 @@ while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:" opt; do
     #add_option "-b" "${OPTARG}" We don't need to forward this argument
     ;;
   c) add_option "-c" "${OPTARG}" ;;
-  l) add_option "-l" "${OPTARG}" ;;
   *)
     echo "Invalid option: -$OPTARG. Use -n mysql|postgres|sqlserver|oracle." >&2
     exit 1

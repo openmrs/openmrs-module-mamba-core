@@ -24,7 +24,7 @@ INSERT INTO mamba_dim_obs_group (
                    WHERE obs_group_id IS NOT NULL) a
               WHERE row_num >1
           )
-      AND cn.locale IN (SELECT DISTINCT(concepts_locale) FROM mamba_dim_concepts_locale)
+      AND cn.locale ='en'
       AND cn.locale_preferred = 1
       AND cn.voided = 0
 ;
