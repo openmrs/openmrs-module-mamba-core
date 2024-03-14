@@ -558,6 +558,19 @@ DELIMITER ;
     # Append the original file's content to the temporary file
     cat "$file_to_clean" >> "$temp_file"
 
+    #remove extra tild signs
+    input_file="create_stored_procedures.sql"
+
+    # Create a temporary file
+    temp_file=$(mktemp)
+
+    # Use sed to remove tildes from the input file and save the result to the temporary file
+    sed 's/~//g' "$input_file" > "$temp_file"
+
+    # Overwrite the original file with the content of the temporary file
+    mv "$temp_file" "$input_file"
+
+
     # Overwrite the original file with the contents of the temporary file
     mv "$temp_file" "$file_to_clean"
 
