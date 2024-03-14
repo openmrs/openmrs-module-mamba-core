@@ -304,6 +304,12 @@
             <organization>UCSF</organization>
             <organizationUrl>http://ucglobalprograms.org/kenya</organizationUrl>
         </developer>
+        <developer>
+            <id>OpenMRS-MambaETL-UoN</id>
+            <name>Amos Laboso</name>
+            <organization>UoN</organization>
+            <organizationUrl>https://www.uonbi.ac.ke</organizationUrl>
+        </developer>
     </developers>
 
 </project>
