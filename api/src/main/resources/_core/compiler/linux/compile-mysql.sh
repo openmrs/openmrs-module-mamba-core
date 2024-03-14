@@ -21,6 +21,7 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
     -c all                  clear all schema objects before run
     -c sp                   clear all stored procedures before run
     -c views                clear all views before run
+    -l locale               locale to use e.g 'en'
 
 EOF
 }
@@ -86,6 +87,25 @@ function read_config_metadata() {
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
 
+}
+
+#Read in the locale setting
+function read_locale_setting() {
+
+  SQL_CONTENTS="
+
+      -- \$BEGIN
+          "$'
+              SET @concepts_locale = '%s';
+              CALL sp_mamba_locale_insert_helper(@concepts_locale);
+          '"
+      -- \$END
+  "
+
+  # Replace above placeholders in SQL_CONTENTS with actual values
+  SQL_CONTENTS=$(printf "$concepts_locale")
+
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
 }
 
 # Read in the JSON for Report Definition configuration metadata
@@ -344,6 +364,7 @@ vw_out_file="create_views.sql"
 makefile=""
 source_database=""
 analysis_database=""
+concepts_locale=""
 config_dir=""
 cleaned_file=""
 file_to_clean=""
@@ -356,7 +377,7 @@ OPTIND=1
 IFS='
 '
 
-while getopts ":h:t:n:d:a:v:s:k:o:c:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:c:l:" opt; do
     case "${opt}" in
         h)
             show_help
@@ -379,6 +400,8 @@ while getopts ":h:t:n:d:a:v:s:k:o:c:" opt; do
         o)  out_file="$OPTARG"
             ;;
         c)  objects="$OPTARG"
+            ;;
+        l)  concepts_locale="$OPTARG"
             ;;
         *)
             show_help >&2
@@ -434,6 +457,9 @@ elif [ "$objects_to_clear" == "views" ] || [ "$objects_to_clear" == "view" ] || 
     clear_message="clearing all views in $schema_name"
     clear_objects_sql="CALL dbo.sp_xf_system_drop_all_views_in_schema '$schema_name' "
 fi
+
+# Read in the concepts locale setting
+read_locale_setting
 
 # Read in the JSON for Report Definition configuration metadata
 read_config_report_definition_metadata
