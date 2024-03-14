@@ -338,6 +338,26 @@ function exit_if_file_absent(){
     fi
 }
 
+# Remove tildes
+function remove_tildes_in_create_stored_procedures_file (){
+
+     build_file="$BUILD_DIR/$sp_out_file"
+
+     # Create a temporary file to write contents without tildes
+    temp_file_no_tildes=$(mktemp)
+
+    # Use sed to remove tildes and save the result to the temporary file created above
+    sed 's/~//g' "$build_file" > "$temp_file_no_tildes"
+
+    # Overwrite the original file with the content of the temporary file
+    mv "$temp_file_no_tildes" "$build_file"
+
+    # Remove the temporary file
+    rm "$temp_file_no_tildes"
+}
+
+
+
 BUILD_DIR=""
 sp_out_file="create_stored_procedures.sql"
 vw_out_file="create_views.sql"
@@ -537,6 +557,10 @@ DELIMITER ;
     ### write built contents (final SQL file contents) to the build output file
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
+
+
+
+
     ### SG - Clean up build file to make it Liquibase compatible ###
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
@@ -549,27 +573,14 @@ DELIMITER ;
     # Create a temporary file with the text to prepend
     temp_file=$(mktemp)
 
-    # Add create command text to the temporary file
+    # Add 'create database' command text to the temporary file
     echo "$create_target_db" > "$temp_file"
 
-    # Append use command text to the temporary file
+    # Append 'use database' command text to the temporary file
     echo "$use_target_db" >> "$temp_file"
 
     # Append the original file's content to the temporary file
     cat "$file_to_clean" >> "$temp_file"
-
-    #remove extra tild signs
-    input_file="create_stored_procedures.sql"
-
-    # Create a temporary file
-    temp_file=$(mktemp)
-
-    # Use sed to remove tildes from the input file and save the result to the temporary file
-    sed 's/~//g' "$input_file" > "$temp_file"
-
-    # Overwrite the original file with the content of the temporary file
-    mv "$temp_file" "$input_file"
-
 
     # Overwrite the original file with the contents of the temporary file
     mv "$temp_file" "$file_to_clean"
@@ -582,7 +593,7 @@ DELIMITER ;
 
     temp_file=$(mktemp)
 
-    # Use awk to perform the replacement
+    # Search for any occurrences of 'mamba_source_db' and  awk to perform the replacement
     awk -v search="mamba_source_db" -v replace="$source_database" '{ gsub(search, replace) }1' "$file_to_clean" > "$temp_file"
 
     # Overwrite the original file with the contents of the temporary file
@@ -591,9 +602,11 @@ DELIMITER ;
     # Remove the temporary file
     rm "$temp_file"
 
-
     cleaned_file="$BUILD_DIR/liquibase_$sp_out_file"
     make_buildfile_liquibase_compatible
+
+    #remove tildes
+    remove_tildes_in_create_stored_procedures_file
 fi
 
 if [ -n "$views" ]
