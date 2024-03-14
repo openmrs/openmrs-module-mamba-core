@@ -296,13 +296,13 @@
             <id>OpenMRS-MambaETL-MakSPH</id>
             <name>Arthur D. Mugume</name>
             <organization>MakSPH</organization>
-            <organizationUrl>https://ohri</organizationUrl>
+            <organizationUrl>https://mets.or.ug</organizationUrl>
         </developer>
         <developer>
-            <id>OpenMRS-Mamba-UCSF</id>
+            <id>OpenMRS-MambaETL-UCSF</id>
             <name>Laureen G. Omare</name>
             <organization>UCSF</organization>
-            <organizationUrl>https://ohri</organizationUrl>
+            <organizationUrl>http://ucglobalprograms.org/kenya</organizationUrl>
         </developer>
     </developers>
 
