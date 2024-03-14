@@ -42,6 +42,8 @@ public class MambaReportResource implements Searchable {
             String paramName = parameterNames.nextElement();
             String paramValue = context.getRequest().getParameter(paramName);
 
+            log.info("search API hit with param: " + paramName + " value: " + paramValue);
+
             if (paramName.equals("report_id")) {
                 searchCriteria.setReportId(paramValue);
             } else {
