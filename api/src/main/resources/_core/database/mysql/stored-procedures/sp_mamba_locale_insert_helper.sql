@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS sp_mamba_dim_locale_insert_helper;
+DROP PROCEDURE IF EXISTS sp_mamba_locale_insert_helper;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_dim_locale_insert_helper(
+CREATE PROCEDURE sp_mamba_locale_insert_helper(
     IN concepts_locale CHAR(4) CHARACTER SET UTF8MB4
 )
 BEGIN
