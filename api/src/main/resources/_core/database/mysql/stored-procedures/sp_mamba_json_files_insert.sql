@@ -19,6 +19,9 @@ BEGIN
         WHERE et.encounter_type_id NOT IN (SELECT DISTINCT encounter_type_id from mamba_dim_json)
         AND et.retired = 0;
 
+    SELECT DISTINCT(concepts_locale) INTO @concepts_locale
+    FROM mamba_dim_concepts_locale;
+
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     OPEN cursor_json_file;
@@ -48,8 +51,8 @@ BEGIN
                         et.name,
                         encounter_type_id,
                         concat(''mamba_flat_encounter_'',LOWER(LEFT(REPLACE(REGEXP_REPLACE(et.name, ''[^0-9a-z]'', ''''),'' '',''''),18))) AS table_name,
-                        et.uuid,
-                        ''en'' AS locale,
+                        et.uuid, ',
+                        @concepts_locale, ' AS locale,
                         (
                             SELECT
                                 DISTINCT CONCAT(''{'', GROUP_CONCAT(CONCAT(''"'', name, ''":"'', uuid, ''"'') SEPARATOR '','' ),''}'')x
@@ -68,7 +71,7 @@ BEGIN
                                     INNER JOIN openmrs.concept c
                                               ON cn.concept_id = c.concept_id
                                     WHERE et.name = ''', json_file, '''
-                                    AND cn.locale = ''en''
+                                    AND cn.locale = ''',@concepts_locale,'''
                                     AND cn.voided = 0
                                     AND cn.locale_preferred = 1
                                     AND et.retired = 0
