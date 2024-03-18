@@ -10,69 +10,71 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
 
-    SELECT JSON_EXTRACT(report_data, '$.flat_report_metadata') INTO @report_array;
-    SELECT JSON_LENGTH(@report_array) INTO @report_array_len;
+    SELECT fn_mamba_json_extract_array(report_data, 'flat_report_metadata') INTO @report_array;
+    SELECT fn_mamba_json_array_length(@report_array) INTO @report_array_len;
 
-    SET @report_count = 0;
-    WHILE @report_count < @report_array_len
-        DO
+    SET @report_count = 1;
+        WHILE @report_count <= @report_array_len
+            DO
+                SELECT fn_mamba_json_object_at_index(@report_array, @report_count) INTO @report;
+                SET @report =  CONCAT(@report,'}');
+                SELECT fn_mamba_json_extract(@report, 'report_name') INTO @report_name;
+                SELECT fn_mamba_json_extract(@report, 'flat_table_name') INTO @flat_table_name;
+                SELECT fn_mamba_json_extract(@report, 'encounter_type_uuid') INTO @encounter_type;
+                SELECT fn_mamba_json_extract(@report, 'concepts_locale') INTO @concepts_locale;
+                SELECT fn_mamba_json_extract_object(@report, 'table_columns') INTO @column_array;
 
-            SELECT JSON_EXTRACT(@report_array, CONCAT('$[', @report_count, ']')) INTO @report;
-            SELECT JSON_EXTRACT(@report, '$.report_name') INTO @report_name;
-            SELECT JSON_EXTRACT(@report, '$.flat_table_name') INTO @flat_table_name;
-            SELECT JSON_EXTRACT(@report, '$.encounter_type_uuid') INTO @encounter_type;
-            SELECT JSON_EXTRACT(@report, '$.concepts_locale') INTO @concepts_locale;
-            SELECT JSON_EXTRACT(@report, '$.table_columns') INTO @column_array;
+                SELECT fn_mamba_json_keys_array(@column_array) INTO @column_keys_array;
+                SELECT fn_mamba_array_length(@column_keys_array) INTO @column_keys_array_len;
 
-            SELECT JSON_KEYS(@column_array) INTO @column_keys_array;
-            SELECT JSON_LENGTH(@column_keys_array) INTO @column_keys_array_len;
+                SET @column_array = CONCAT('{',@column_array,'}');
+                IF @column_keys_array_len = 0 THEN
 
-            IF @column_keys_array_len = 0 THEN
+                     INSERT INTO mamba_dim_concept_metadata
+                        (
+                            report_name,
+                            flat_table_name,
+                            encounter_type_uuid,
+                            column_label,
+                            concept_uuid,
+                            concepts_locale
+                        )
+                     VALUES (fn_mamba_remove_quotes(@report_name),
+                            fn_mamba_remove_quotes(@flat_table_name),
+                            fn_mamba_remove_quotes(@encounter_type),
+                            'AUTO-GENERATE',
+                            'AUTO-GENERATE',
+                            fn_mamba_remove_quotes(@concepts_locale));
+                ELSE
 
-                 INSERT INTO mamba_dim_concept_metadata
-                    (
-                        report_name,
-                        flat_table_name,
-                        encounter_type_uuid,
-                        column_label,
-                        concept_uuid,
-                        concepts_locale
-                    )
-                 VALUES (JSON_UNQUOTE(@report_name),
-                        JSON_UNQUOTE(@flat_table_name),
-                        JSON_UNQUOTE(@encounter_type),
-                        'AUTO-GENERATE',
-                        'AUTO-GENERATE',
-                        JSON_UNQUOTE(@concepts_locale));
-            ELSE
-
-                SET @col_count = 0;
-                WHILE @col_count < @column_keys_array_len
-                    DO
-                            SELECT JSON_EXTRACT(@column_keys_array, CONCAT('$[', @col_count, ']')) INTO @field_name;
-                            SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
+                    SET @col_count = 1;
+                    -- SET @column_array = CONCAT('{',@column_array,'}');
+                    WHILE @col_count <= @column_keys_array_len
+                        DO
+                            SELECT fn_mamba_get_array_item_by_index(@column_keys_array, @col_count) INTO @field_name;
+                            SELECT fn_mamba_json_value_by_key(@column_array,  @field_name) INTO @concept_uuid;
 
                             SET @tbl_name = '';
                             INSERT INTO mamba_dim_concept_metadata
-                                (
-                                    report_name,
-                                    flat_table_name,
-                                    encounter_type_uuid,
-                                    column_label,
-                                    concept_uuid,
-                                    concepts_locale
-                                )
-                            VALUES (JSON_UNQUOTE(@report_name),
-                                    JSON_UNQUOTE(@flat_table_name),
-                                    JSON_UNQUOTE(@encounter_type),
-                                    JSON_UNQUOTE(@field_name),
-                                    JSON_UNQUOTE(@concept_uuid),
-                                    JSON_UNQUOTE(@concepts_locale));
+                            (
+                                report_name,
+                                flat_table_name,
+                                encounter_type_uuid,
+                                column_label,
+                                concept_uuid,
+                                concepts_locale
+                            )
+                            VALUES (fn_mamba_remove_quotes(@report_name),
+                                    fn_mamba_remove_quotes(@flat_table_name),
+                                    fn_mamba_remove_quotes(@encounter_type),
+                                    fn_mamba_remove_quotes(@field_name),
+                                    fn_mamba_remove_quotes(@concept_uuid),
+                                    fn_mamba_remove_quotes(@concepts_locale));
 
-                        SET @col_count = @col_count + 1;
+                            SET @col_count = @col_count + 1;
 
-                END WHILE;
-            END IF;
+                    END WHILE;
+                END IF;
 
             SET @report_count = @report_count + 1;
         END WHILE;

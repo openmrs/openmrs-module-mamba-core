@@ -7,6 +7,18 @@ functions/fn_mamba_get_obs_value_column.sql
 functions/fn_mamba_age_calculator.sql
 functions/fn_mamba_get_datatype_for_concept.sql
 functions/fn_mamba_generate_report_array_from_automated_json_table.sql
+functions/fn_mamba_array_length.sql
+functions/fn_mamba_get_array_item_by_index.sql
+functions/fn_mamba_json_array_length.sql
+functions/fn_mamba_json_extract.sql
+functions/fn_mamba_json_extract_array.sql
+functions/fn_mamba_json_extract_object.sql
+functions/fn_mamba_json_keys_array.sql
+functions/fn_mamba_json_length.sql
+functions/fn_mamba_json_object_at_index.sql
+functions/fn_mamba_json_value_by_key.sql
+functions/fn_mamba_remove_all_whitespace.sql
+functions/fn_mamba_remove_quotes.sql
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
