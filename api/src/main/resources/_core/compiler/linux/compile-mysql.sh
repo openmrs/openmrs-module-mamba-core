@@ -85,7 +85,6 @@ function read_config_metadata() {
                           CONCAT(
                               '\''{"report_name":'\'', json_data->'\''$.report_name'\'',
                               '\'',"flat_table_name":'\'', json_data->'\''$.flat_table_name'\'',
-                              '\'',"concepts_locale":'\'', json_data->'\''$.concepts_locale'\'',
                               '\'',"encounter_type_uuid":'\'', json_data->'\''$.encounter_type_uuid'\'',
                               '\'',"table_columns": '\'', json_data->'\''$.table_columns'\'',
                               '\''}'\''
@@ -113,20 +112,22 @@ function read_config_metadata() {
 #Read in the locale setting
 function read_locale_setting() {
 
-  SQL_CONTENTS="
+  LOCALE_SP_SQL_CONTENTS="
 
       -- \$BEGIN
           "$'
               SET @concepts_locale = '%s';
-              CALL sp_mamba_dim_locale_insert_helper(@concepts_locale);
+              CALL sp_mamba_locale_insert_helper(@concepts_locale);
           '"
       -- \$END
   "
 
   # Replace above placeholders in SQL_CONTENTS with actual values
-  SQL_CONTENTS=$(printf "$concepts_locale")
+  LOCALE_SP_SQL_CONTENTS=$(printf "$LOCALE_SP_SQL_CONTENTS" "'$concepts_locale'")
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
+  echo "SQL CONTENT: $LOCALE_SP_SQL_CONTENTS"
+
+  echo "$LOCALE_SP_SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
 }
 
 # Read in the JSON for Report Definition configuration metadata

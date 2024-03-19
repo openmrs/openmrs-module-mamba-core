@@ -19,10 +19,10 @@ BEGIN
         WHERE et.encounter_type_id NOT IN (SELECT DISTINCT encounter_type_id from mamba_dim_json)
         AND et.retired = 0;
 
-    SELECT DISTINCT(concepts_locale) INTO @concepts_locale
-    FROM mamba_dim_concepts_locale;
-
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    SELECT DISTINCT(locale) INTO @concepts_locale
+    FROM mamba_dim_locale;
 
     OPEN cursor_json_file;
     computations_loop:

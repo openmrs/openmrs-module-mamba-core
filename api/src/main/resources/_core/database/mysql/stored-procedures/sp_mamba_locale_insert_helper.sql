@@ -7,8 +7,8 @@ CREATE PROCEDURE sp_mamba_locale_insert_helper(
 )
 BEGIN
 
-    SET @locale = concepts_locale;
-    SET @insert_stmt = CONCAT('INSERT INTO mamba_dim_locale(locale) VALUES( ', @locale, ');');
+    SET @conc_locale = concepts_locale;
+    SET @insert_stmt = CONCAT('INSERT INTO mamba_dim_locale (locale) VALUES (''', @conc_locale, ''');');
 
     PREPARE inserttbl FROM @insert_stmt;
     EXECUTE inserttbl;

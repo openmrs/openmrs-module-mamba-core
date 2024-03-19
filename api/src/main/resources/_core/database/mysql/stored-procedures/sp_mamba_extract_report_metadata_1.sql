@@ -35,15 +35,13 @@ BEGIN
                         flat_table_name,
                         encounter_type_uuid,
                         column_label,
-                        concept_uuid,
-                        concepts_locale
+                        concept_uuid
                     )
                  VALUES (JSON_UNQUOTE(@report_name),
                         JSON_UNQUOTE(@flat_table_name),
                         JSON_UNQUOTE(@encounter_type),
                         'AUTO-GENERATE',
-                        'AUTO-GENERATE',
-                        JSON_UNQUOTE(@concepts_locale));
+                        'AUTO-GENERATE');
             ELSE
 
                 SET @col_count = 0;
@@ -59,15 +57,13 @@ BEGIN
                                     flat_table_name,
                                     encounter_type_uuid,
                                     column_label,
-                                    concept_uuid,
-                                    concepts_locale
+                                    concept_uuid
                                 )
                             VALUES (JSON_UNQUOTE(@report_name),
                                     JSON_UNQUOTE(@flat_table_name),
                                     JSON_UNQUOTE(@encounter_type),
                                     JSON_UNQUOTE(@field_name),
-                                    JSON_UNQUOTE(@concept_uuid),
-                                    JSON_UNQUOTE(@concepts_locale));
+                                    JSON_UNQUOTE(@concept_uuid));
 
                         SET @col_count = @col_count + 1;
 
