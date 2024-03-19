@@ -1,9 +1,5 @@
 package org.openmrs.module.mambacore.api.model;
 
-/**
- * date: 19/01/2024
- */
-
 import org.junit.Before;
 import org.junit.Test;
 
