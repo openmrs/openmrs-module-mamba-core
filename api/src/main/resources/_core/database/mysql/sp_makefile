@@ -50,6 +50,8 @@ stored-procedures/sp_mamba_generate_report_wrapper.sql
 #stored-procedures/sp_mamba_generate_report_columns_wrapper.sql
 stored-procedures/sp_mamba_write_automated_json_config.sql
 stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_table.sql
+stored-procedures/sp_mamba_locale_insert_helper.sql
+
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
@@ -154,6 +156,10 @@ dimensions/dim_json/sp_mamba_dim_json_create.sql
 dimensions/dim_json/sp_mamba_dim_json_insert.sql
 dimensions/dim_json/sp_mamba_dim_json_update.sql
 dimensions/dim_json/sp_mamba_dim_json.sql
+
+dimensions/dim_locale/sp_mamba_dim_locale_create.sql
+config/sp_mamba_dim_locale_insert.sql
+dimensions/dim_locale/sp_mamba_dim_locale.sql
 
 #############################################################################
 ### A single SP that invokes (CALLs) the above prepared stored procedures ###

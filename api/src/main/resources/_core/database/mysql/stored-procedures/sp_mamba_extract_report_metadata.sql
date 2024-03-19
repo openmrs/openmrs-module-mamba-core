@@ -21,7 +21,6 @@ BEGIN
                 SELECT fn_mamba_json_extract(@report, 'report_name') INTO @report_name;
                 SELECT fn_mamba_json_extract(@report, 'flat_table_name') INTO @flat_table_name;
                 SELECT fn_mamba_json_extract(@report, 'encounter_type_uuid') INTO @encounter_type;
-                SELECT fn_mamba_json_extract(@report, 'concepts_locale') INTO @concepts_locale;
                 SELECT fn_mamba_json_extract_object(@report, 'table_columns') INTO @column_array;
 
                 SELECT fn_mamba_json_keys_array(@column_array) INTO @column_keys_array;
@@ -36,15 +35,13 @@ BEGIN
                             flat_table_name,
                             encounter_type_uuid,
                             column_label,
-                            concept_uuid,
-                            concepts_locale
+                            concept_uuid
                         )
                      VALUES (fn_mamba_remove_quotes(@report_name),
                             fn_mamba_remove_quotes(@flat_table_name),
                             fn_mamba_remove_quotes(@encounter_type),
                             'AUTO-GENERATE',
-                            'AUTO-GENERATE',
-                            fn_mamba_remove_quotes(@concepts_locale));
+                            'AUTO-GENERATE');
                 ELSE
 
                     SET @col_count = 1;
@@ -61,15 +58,13 @@ BEGIN
                                 flat_table_name,
                                 encounter_type_uuid,
                                 column_label,
-                                concept_uuid,
-                                concepts_locale
+                                concept_uuid
                             )
                             VALUES (fn_mamba_remove_quotes(@report_name),
                                     fn_mamba_remove_quotes(@flat_table_name),
                                     fn_mamba_remove_quotes(@encounter_type),
                                     fn_mamba_remove_quotes(@field_name),
-                                    fn_mamba_remove_quotes(@concept_uuid),
-                                    fn_mamba_remove_quotes(@concepts_locale));
+                                    fn_mamba_remove_quotes(@concept_uuid));
 
                             SET @col_count = @col_count + 1;
 

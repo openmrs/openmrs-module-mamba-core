@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.mambacore.web.resource;
 
 import org.slf4j.Logger;
@@ -19,10 +28,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import java.util.Enumeration;
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report", supportedClass = MambaReportItem.class, supportedOpenmrsVersions = {"2.0 - 2.*"})
+@Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report",
+        supportedClass = MambaReportItem.class,
+        supportedOpenmrsVersions = {"2.0 - 2.*"})
 public class MambaReportResource implements Searchable {
 
-    private static Logger log = LoggerFactory.getLogger(MambaReportResource.class);
+    private static final Logger log = LoggerFactory.getLogger(MambaReportResource.class);
 
     private MambaReportService getService() {
         return Context.getService(MambaReportService.class);
@@ -42,7 +53,7 @@ public class MambaReportResource implements Searchable {
             String paramName = parameterNames.nextElement();
             String paramValue = context.getRequest().getParameter(paramName);
 
-            log.info("search API hit with param: " + paramName + " value: " + paramValue);
+            log.debug("search API hit with param: {} vale: {}", paramName, paramValue);
 
             if (paramName.equals("report_id")) {
                 searchCriteria.setReportId(paramValue);

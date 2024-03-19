@@ -6,7 +6,6 @@ CREATE TABLE mamba_dim_concept_metadata
     concept_id          INT          NULL,
     concept_uuid        CHAR(38)     NOT NULL,
     concept_name        VARCHAR(255) NULL,
-    concepts_locale     VARCHAR(20)  NOT NULL,
     column_number       INT,
     column_label        VARCHAR(50)  NOT NULL,
     concept_datatype    VARCHAR(255) NULL,
@@ -28,9 +27,6 @@ CREATE INDEX mamba_dim_concept_metadata_concept_uuid_index
 
 CREATE INDEX mamba_dim_concept_metadata_encounter_type_uuid_index
     ON mamba_dim_concept_metadata (encounter_type_uuid);
-
-CREATE INDEX mamba_dim_concept_metadata_concepts_locale_index
-    ON mamba_dim_concept_metadata (concepts_locale);
 
 CREATE INDEX mamba_dim_concept_metadata_row_num_index
     ON mamba_dim_concept_metadata (row_num);

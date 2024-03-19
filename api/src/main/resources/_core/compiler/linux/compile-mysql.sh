@@ -21,6 +21,7 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
     -c all                  clear all schema objects before run
     -c sp                   clear all stored procedures before run
     -c views                clear all views before run
+    -l locale               locale to use e.g 'en'
 
 EOF
 }
@@ -72,31 +73,10 @@ function read_config_metadata() {
               SET @report_data = '%s';
               SET @file_count = %d;
 
-              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added report JSON from config dir
-              CALL sp_mamba_dim_json_insert(); -- insert automatically generated report JSON from db
+              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
+              CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
 
-              -- SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
-              SET session group_concat_max_len = 200000;
-              SET @report_data = (
-                  SELECT CONCAT(
-                      '\''{"flat_report_metadata":['\'',
-                      GROUP_CONCAT(
-                          CONCAT(
-                              '\''{"report_name":'\'', json_data->'\''$.report_name'\'',
-                              '\'',"flat_table_name":'\'', json_data->'\''$.flat_table_name'\'',
-                              '\'',"concepts_locale":'\'', json_data->'\''$.concepts_locale'\'',
-                              '\'',"encounter_type_uuid":'\'', json_data->'\''$.encounter_type_uuid'\'',
-                              '\'',"table_columns": '\'', json_data->'\''$.table_columns'\'',
-                              '\''}'\''
-                          )
-                          SEPARATOR '\'','\''
-                      ),
-                      '\'']}'\''
-                  )
-                  FROM mamba_dim_json
-              );
-
-
+              SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
               CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
           '"
       -- \$END
@@ -107,6 +87,27 @@ function read_config_metadata() {
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
 
+}
+
+#Read in the locale setting
+function read_locale_setting() {
+
+  LOCALE_SP_SQL_CONTENTS="
+
+  -- \$BEGIN
+      "$'
+          SET @concepts_locale = '%s';
+          CALL sp_mamba_locale_insert_helper(@concepts_locale);
+      '"
+  -- \$END
+"
+
+  # Replace above placeholders in SQL_CONTENTS with actual values
+  LOCALE_SP_SQL_CONTENTS=$(printf "$LOCALE_SP_SQL_CONTENTS" "'$concepts_locale'")
+
+  echo "SQL CONTENT: $LOCALE_SP_SQL_CONTENTS"
+
+  echo "$LOCALE_SP_SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
 }
 
 # Read in the JSON for Report Definition configuration metadata
@@ -385,6 +386,7 @@ vw_out_file="create_views.sql"
 makefile=""
 source_database=""
 analysis_database=""
+concepts_locale=""
 config_dir=""
 cleaned_file=""
 file_to_clean=""
@@ -397,7 +399,7 @@ OPTIND=1
 IFS='
 '
 
-while getopts ":h:t:n:d:a:v:s:k:o:c:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:c:l:" opt; do
     case "${opt}" in
         h)
             show_help
@@ -420,6 +422,8 @@ while getopts ":h:t:n:d:a:v:s:k:o:c:" opt; do
         o)  out_file="$OPTARG"
             ;;
         c)  objects="$OPTARG"
+            ;;
+        l)  concepts_locale="$OPTARG"
             ;;
         *)
             show_help >&2
@@ -475,6 +479,9 @@ elif [ "$objects_to_clear" == "views" ] || [ "$objects_to_clear" == "view" ] || 
     clear_message="clearing all views in $schema_name"
     clear_objects_sql="CALL dbo.sp_xf_system_drop_all_views_in_schema '$schema_name' "
 fi
+
+# Read in the concepts locale setting
+read_locale_setting
 
 # Read in the JSON for Report Definition configuration metadata
 read_config_report_definition_metadata
@@ -577,9 +584,6 @@ DELIMITER ;
     all_stored_procedures+="$create_report_procedure"
     ### write built contents (final SQL file contents) to the build output file
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
-
-
-
 
 
     ### SG - Clean up build file to make it Liquibase compatible ###
@@ -687,7 +691,6 @@ $vw_header
 $vw_body
 
 "
-
     done
 
     echo "$views_body" > "$BUILD_DIR/$vw_out_file"

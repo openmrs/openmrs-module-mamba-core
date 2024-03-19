@@ -22,7 +22,8 @@ import java.util.Calendar;
 import java.util.UUID;
 
 /**
- * This class contains the logic that is run every time this module is either started or shutdown
+ * This class contains the logic that is run every time
+ * this module is either started or shutdown
  */
 public class MambaCoreActivator extends BaseModuleActivator {
 
@@ -32,20 +33,10 @@ public class MambaCoreActivator extends BaseModuleActivator {
         super();
     }
 
-    /**
-     * @see #started()
-     */
     public void started() {
         log.info("Registering MambaETL Task...");
         registerTask("Mamba-ETL Task", "MambaETL Task - To Flatten and Prepare Reporting Data.", FlattenTableTask.class,
                 60 * 60 * 12L, true);
-    }
-
-    /**
-     * @see #shutdown()
-     */
-
-    public void shutdown() {
     }
 
     @Override
@@ -101,9 +92,9 @@ public class MambaCoreActivator extends BaseModuleActivator {
                 taskDef.setDescription(description);
                 Context.getSchedulerService().scheduleTask(taskDef);
             }
-            log.info("A Task '" + name + "' has been Registered Successfully!");
+            log.info("Task {} has been successfully registered", name);
         } catch (SchedulerException ex) {
-            log.warn("Unable to register task '" + name + "' with scheduler", ex);
+            log.error("Unable to register Task", ex);
             return false;
         } finally {
             Context.removeProxyPrivilege("Manage Scheduler");

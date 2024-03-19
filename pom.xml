@@ -103,6 +103,7 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jacksonCoreVersion}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>

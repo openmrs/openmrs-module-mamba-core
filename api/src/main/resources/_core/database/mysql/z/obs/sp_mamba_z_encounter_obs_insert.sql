@@ -45,7 +45,7 @@ SELECT
     o.voided,
     row_num
 FROM
-    openmrs.obs o
+    mamba_source_db.obs o
         INNER JOIN
     mamba_dim_encounter e ON o.encounter_id = e.encounter_id
         INNER JOIN
@@ -62,7 +62,7 @@ FROM
         @prev_encounter_id := o.encounter_id,
         @prev_concept_id := concept_id
      FROM
-         openmrs.obs o
+         mamba_source_db.obs o
      WHERE
          o.encounter_id IS NOT NULL
      ORDER BY

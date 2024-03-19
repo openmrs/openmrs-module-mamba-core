@@ -11,72 +11,72 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
 
     DECLARE cursor_json_file CURSOR FOR
-        SELECT 
-            DISTINCT et.name 
+        SELECT DISTINCT et.name
         FROM mamba_source_db.obs o
-        INNER JOIN mamba_source_db.encounter e ON e.encounter_id = o.encounter_id
-        INNER JOIN mamba_source_db.encounter_type et ON e.encounter_type = et.encounter_type_id
+                 INNER JOIN mamba_source_db.encounter e ON e.encounter_id = o.encounter_id
+                 INNER JOIN mamba_source_db.encounter_type et ON e.encounter_type = et.encounter_type_id
         WHERE et.encounter_type_id NOT IN (SELECT DISTINCT encounter_type_id from mamba_dim_json)
-        AND et.retired = 0;
+          AND et.retired = 0;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
+    SELECT DISTINCT(locale)
+    INTO @concepts_locale
+    FROM mamba_dim_locale;
+
     OPEN cursor_json_file;
     computations_loop:
-        LOOP
-            FETCH cursor_json_file INTO json_file;
+    LOOP
+        FETCH cursor_json_file INTO json_file;
 
-            IF done THEN
-                LEAVE computations_loop;
-    END IF;
+        IF done THEN
+            LEAVE computations_loop;
+        END IF;
 
-    SET @insert_stmt = CONCAT(
-            'INSERT INTO mamba_dim_json(report_name,encounter_type_id,Json_data,uuid)
-                SELECT
-                    name,
-                    encounter_type_id,
-                     CONCAT(''{'',
-                        ''"report_name": "'', name, ''", '',
-                        ''"flat_table_name": "'', table_name, ''", '',
-                        ''"encounter_type_uuid": "'', uuid, ''", '',
-                        ''"concepts_locale": "'', locale, ''", '',
-                        ''"table_columns": '', json_obj, '' '',
-                          ''}'')AS json_data,
-                    encounter_type_uuid
-                FROM (
-                    SELECT DISTINCT
-                        et.name,
+        SET @insert_stmt = CONCAT(
+                'INSERT INTO mamba_dim_json(report_name,encounter_type_id,Json_data,uuid)
+                    SELECT
+                        name,
                         encounter_type_id,
-                        concat(''mamba_flat_encounter_'',LOWER(LEFT(REPLACE(REGEXP_REPLACE(et.name, ''[^0-9a-z]'', ''''),'' '',''''),18))) AS table_name,
-                        et.uuid,
-                        ''en'' AS locale,
-                        (
-                            SELECT
-                                DISTINCT CONCAT(''{'', GROUP_CONCAT(CONCAT(''"'', name, ''":"'', uuid, ''"'') SEPARATOR '','' ),''}'')x
-                            FROM (
-                                    SELECT
-                                        DISTINCT et.encounter_type_id,
-                                        LOWER(LEFT(REPLACE(REPLACE(REGEXP_REPLACE(cn.name, ''[^0-9a-z]'', ''''), '' '', ''_''),''__'', ''_''),35)) name,
-                                        c.uuid
-                                    FROM openmrs.obs o
-                                    INNER JOIN openmrs.encounter e
-                                              ON e.encounter_id = o.encounter_id
-                                    INNER JOIN openmrs.encounter_type et
-                                              ON e.encounter_type = et.encounter_type_id
-                                    INNER JOIN openmrs.concept_name cn
-                                              ON cn.concept_id = o.concept_id
-                                    INNER JOIN openmrs.concept c
-                                              ON cn.concept_id = c.concept_id
-                                    WHERE et.name = ''', json_file, '''
-                                    AND cn.locale = ''en''
+                         CONCAT(''{'',
+                            ''"report_name": "'', name, ''", '',
+                            ''"flat_table_name": "'', table_name, ''", '',
+                            ''"encounter_type_uuid": "'', uuid, ''", '',
+                            ''"table_columns": '', json_obj, '' '',
+                            ''}'') AS json_data,
+                        encounter_type_uuid
+                    FROM (
+                        SELECT DISTINCT
+                            et.name,
+                            encounter_type_id,
+                            concat(''mamba_flat_encounter_'',LOWER(LEFT(REPLACE(REGEXP_REPLACE(et.name, ''[^0-9a-z]'', ''''),'' '',''''),18))) AS table_name,
+                            et.uuid, ',
+                '(
+                SELECT DISTINCT CONCAT(''{'', GROUP_CONCAT(CONCAT(''"'', name, ''":"'', uuid, ''"'') SEPARATOR '','' ),''}'') x
+                FROM (
+                        SELECT
+                            DISTINCT et.encounter_type_id,
+                            LOWER(LEFT(REPLACE(REPLACE(REGEXP_REPLACE(cn.name, ''[^0-9a-z]'', ''''), '' '', ''_''),''__'', ''_''),35)) name,
+                            c.uuid
+                        FROM mamba_source_db.obs o
+                        INNER JOIN mamba_source_db.encounter e
+                                  ON e.encounter_id = o.encounter_id
+                        INNER JOIN mamba_source_db.encounter_type et
+                                  ON e.encounter_type = et.encounter_type_id
+                        INNER JOIN mamba_source_db.concept_name cn
+                                  ON cn.concept_id = o.concept_id
+                        INNER JOIN mamba_source_db.concept c
+                                  ON cn.concept_id = c.concept_id
+                        WHERE et.name = ''', json_file, '''
+                                    AND cn.locale = ''', @concepts_locale, '''
                                     AND cn.voided = 0
                                     AND cn.locale_preferred = 1
                                     AND et.retired = 0
                                 ) json_obj
                         ) json_obj,
                        et.uuid as encounter_type_uuid
-                    FROM openmrs.encounter_type et
-                    INNER JOIN openmrs.encounter e
+                    FROM mamba_source_db.encounter_type et
+                    INNER JOIN mamba_source_db.encounter e
                         ON e.encounter_type = et.encounter_type_id
                     WHERE et.name = ''', json_file, '''
                 ) X  ;   ');
