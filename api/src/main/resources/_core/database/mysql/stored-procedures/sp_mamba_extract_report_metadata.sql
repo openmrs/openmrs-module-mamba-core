@@ -21,7 +21,6 @@ BEGIN
                 SELECT fn_mamba_json_extract(@report, 'report_name') INTO @report_name;
                 SELECT fn_mamba_json_extract(@report, 'flat_table_name') INTO @flat_table_name;
                 SELECT fn_mamba_json_extract(@report, 'encounter_type_uuid') INTO @encounter_type;
-                SELECT fn_mamba_json_extract(@report, 'concepts_locale') INTO @concepts_locale;
                 SELECT fn_mamba_json_extract_object(@report, 'table_columns') INTO @column_array;
 
                 SELECT fn_mamba_json_keys_array(@column_array) INTO @column_keys_array;

@@ -21,7 +21,6 @@ BEGIN
             SELECT JSON_EXTRACT(@report, '$.report_name') INTO @report_name;
             SELECT JSON_EXTRACT(@report, '$.flat_table_name') INTO @flat_table_name;
             SELECT JSON_EXTRACT(@report, '$.encounter_type_uuid') INTO @encounter_type;
-            SELECT JSON_EXTRACT(@report, '$.concepts_locale') INTO @concepts_locale;
             SELECT JSON_EXTRACT(@report, '$.table_columns') INTO @column_array;
 
             SELECT JSON_KEYS(@column_array) INTO @column_keys_array;

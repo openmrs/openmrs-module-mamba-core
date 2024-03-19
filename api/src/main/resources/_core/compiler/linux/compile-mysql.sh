@@ -73,30 +73,10 @@ function read_config_metadata() {
               SET @report_data = '%s';
               SET @file_count = %d;
 
-              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added report JSON from config dir
-              CALL sp_mamba_dim_json_insert(); -- insert automatically generated report JSON from db
+              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
+              CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
 
-              -- SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
-              SET session group_concat_max_len = 200000;
-              SET @report_data = (
-                  SELECT CONCAT(
-                      '\''{"flat_report_metadata":['\'',
-                      GROUP_CONCAT(
-                          CONCAT(
-                              '\''{"report_name":'\'', json_data->'\''$.report_name'\'',
-                              '\'',"flat_table_name":'\'', json_data->'\''$.flat_table_name'\'',
-                              '\'',"encounter_type_uuid":'\'', json_data->'\''$.encounter_type_uuid'\'',
-                              '\'',"table_columns": '\'', json_data->'\''$.table_columns'\'',
-                              '\''}'\''
-                          )
-                          SEPARATOR '\'','\''
-                      ),
-                      '\'']}'\''
-                  )
-                  FROM mamba_dim_json
-              );
-
-
+              SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
               CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
           '"
       -- \$END
@@ -114,13 +94,13 @@ function read_locale_setting() {
 
   LOCALE_SP_SQL_CONTENTS="
 
-      -- \$BEGIN
-          "$'
-              SET @concepts_locale = '%s';
-              CALL sp_mamba_locale_insert_helper(@concepts_locale);
-          '"
-      -- \$END
-  "
+  -- \$BEGIN
+      "$'
+          SET @concepts_locale = '%s';
+          CALL sp_mamba_locale_insert_helper(@concepts_locale);
+      '"
+  -- \$END
+"
 
   # Replace above placeholders in SQL_CONTENTS with actual values
   LOCALE_SP_SQL_CONTENTS=$(printf "$LOCALE_SP_SQL_CONTENTS" "'$concepts_locale'")
@@ -606,9 +586,6 @@ DELIMITER ;
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
 
-
-
-
     ### SG - Clean up build file to make it Liquibase compatible ###
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
@@ -714,7 +691,6 @@ $vw_header
 $vw_body
 
 "
-
     done
 
     echo "$views_body" > "$BUILD_DIR/$vw_out_file"
