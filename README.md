@@ -121,38 +121,20 @@ For Extra analysis on the data, one can opt to create dimension and fact tables 
 
 <span style='color: red;'>Step 7:</span>  
 
-`/omod/../resources/config.xml`  
+`.../<server_root_dir>/openmrs-runtime.properties`  
 
-Add the MambaETL database configuration default properties to the config xml file.  
-These properties can also be added via the legacy admin UI as global properties.  
+Add the MambaETL database configuration properties to your OpenMRs runtime properties file.  
+The property file name is: `openmrs-runtime.properties` and can be found under your server root folder.  
 
-MambaETL depends on this database configuration to connect to the **ETL** database for processing.  
+MambaETL depends on this database configuration details to connect to the **ETL** database for processing.  
 Note: the **ETL** database name is configured in the parent `pom.xml` file of your project. More on this file configurations later.
+Also make sure to escape any special characters when adding entries to the runtime properties.
 
-    <globalProperty>
-        <property>mambaetl.analysis.db.url</property>
-        <defaultValue>jdbc:mysql://db:3306/analysis_db?autoReconnect=true</defaultValue>
-        <description>MambaETL JDBC Connection string
-        </description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>mambaetl.analysis.db.username</property>
-        <defaultValue>root</defaultValue>
-        <description>MambaETL username</description>
-    </globalProperty>
-   
-    <globalProperty>
-        <property>mambaetl.analysis.db.password</property>
-        <defaultValue>openmrs</defaultValue>
-        <description>MambaETL user password</description>
-    </globalProperty>
-   
-    <globalProperty>
-        <property>mambaetl.analysis.db.driver</property>
-        <defaultValue>com.mysql.jdbc.Driver</defaultValue>
-        <description>MambaETL JDBC driver</description>
-    </globalProperty>
+      #MambaETL related properties
+      mambaetl.analysis.db.driver=com.mysql.cj.jdbc.Driver
+      mambaetl.analysis.db.url=jdbc\:mysql\://localhost\:3306/analysis_db?useSSL\=false&autoReconnect\=true
+      mambaetl.analysis.db.username=mamba
+      mambaetl.analysis.db.password=7\#ehy65ed?
 
 The configured database user above must have super access to the **ETL** database to drop and create stored-procedures/views, functions, tables etc.  
 They also need select grant access to the transactional (openmrs) database.
@@ -263,6 +245,9 @@ Notably, don't forget to specify the names of your OpenMRS source database and t
       <!-- The target or analysis Database where the ETL data is stored -->
       <argument>-a analysis_db</argument>
 
+      <!-- Set the concepts locale name here -->
+      <argument>-l en</argument>
+
 
 <span style='color: red;'>Step 11:</span>
 
@@ -286,7 +271,8 @@ That's all you need to do to prepare your deployment scripts.
 
 Copy the OWA file to openmrs folder
 
-MambaETL will be scheduled to run automatically every 12 hours after deploying the scripts.
+MambaETL can be scheduled to run automatically every 12 hours after deploying the scripts.
+Schedulable Class name: `org.openmrs.module.mambacore.task.FlattenTableTask`
 
 ![Scheduler.png](_markdown%2FScheduler.png)
 

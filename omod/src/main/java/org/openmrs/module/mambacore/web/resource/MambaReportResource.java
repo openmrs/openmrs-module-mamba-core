@@ -30,7 +30,7 @@ import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report",
         supportedClass = MambaReportItem.class,
-        supportedOpenmrsVersions = {"2.0 - 2.*"})
+        supportedOpenmrsVersions = {"2.0 - 9.*"})
 public class MambaReportResource implements Searchable {
 
     private static final Logger log = LoggerFactory.getLogger(MambaReportResource.class);

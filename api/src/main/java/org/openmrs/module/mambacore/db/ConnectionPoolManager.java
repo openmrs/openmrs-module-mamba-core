@@ -11,18 +11,35 @@ package org.openmrs.module.mambacore.db;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.openmrs.api.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 public class ConnectionPoolManager {
+	
+	private static final Logger log = LoggerFactory.getLogger(ConnectionPoolManager.class);
 	
 	private static ConnectionPoolManager instance = null;
 	
 	private static final BasicDataSource dataSource = new BasicDataSource();
 	
 	private ConnectionPoolManager() {
-		dataSource.setDriverClassName(Context.getAdministrationService().getGlobalProperty("mambaetl.analysis.db.driver"));
-		dataSource.setUrl(Context.getAdministrationService().getGlobalProperty("mambaetl.analysis.db.url"));
-		dataSource.setUsername(Context.getAdministrationService().getGlobalProperty("mambaetl.analysis.db.username"));
-		dataSource.setPassword(Context.getAdministrationService().getGlobalProperty("mambaetl.analysis.db.password"));
+		Properties omrsRuntimeProperties = Context.getRuntimeProperties();
+		
+		System.out.println("mambaetl.analysis.db.driver  : "
+		        + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.driver"));
+		System.out
+		        .println("mambaetl.analysis.db.url     : " + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.url"));
+		System.out.println("mambaetl.analysis.db.username: "
+		        + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.username"));
+		System.out.println("mambaetl.analysis.db.password: "
+		        + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.password"));
+		
+		dataSource.setDriverClassName(omrsRuntimeProperties.getProperty("mambaetl.analysis.db.driver"));
+		dataSource.setUrl(omrsRuntimeProperties.getProperty("mambaetl.analysis.db.url"));
+		dataSource.setUsername(omrsRuntimeProperties.getProperty("mambaetl.analysis.db.username"));
+		dataSource.setPassword(omrsRuntimeProperties.getProperty("mambaetl.analysis.db.password"));
 		dataSource.setInitialSize(4); // Initial number of connections
 		dataSource.setMaxTotal(20); // Maximum number of connections
 	}
