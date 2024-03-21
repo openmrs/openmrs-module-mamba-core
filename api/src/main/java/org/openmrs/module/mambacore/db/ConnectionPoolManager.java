@@ -27,15 +27,6 @@ public class ConnectionPoolManager {
 	private ConnectionPoolManager() {
 		Properties omrsRuntimeProperties = Context.getRuntimeProperties();
 		
-		System.out.println("mambaetl.analysis.db.driver  : "
-		        + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.driver"));
-		System.out
-		        .println("mambaetl.analysis.db.url     : " + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.url"));
-		System.out.println("mambaetl.analysis.db.username: "
-		        + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.username"));
-		System.out.println("mambaetl.analysis.db.password: "
-		        + omrsRuntimeProperties.getProperty("mambaetl.analysis.db.password"));
-		
 		dataSource.setDriverClassName(omrsRuntimeProperties.getProperty("mambaetl.analysis.db.driver"));
 		dataSource.setUrl(omrsRuntimeProperties.getProperty("mambaetl.analysis.db.url"));
 		dataSource.setUsername(omrsRuntimeProperties.getProperty("mambaetl.analysis.db.username"));
