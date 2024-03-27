@@ -11,14 +11,10 @@ package org.openmrs.module.mambacore.db;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.openmrs.api.context.Context;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 public class ConnectionPoolManager {
-	
-	private static final Logger log = LoggerFactory.getLogger(ConnectionPoolManager.class);
 	
 	private static ConnectionPoolManager instance = null;
 	

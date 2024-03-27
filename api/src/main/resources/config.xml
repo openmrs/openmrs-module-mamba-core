@@ -19,7 +19,7 @@
     <!-- Required Privileges  -->
     <privilege>
         <name>View MambaReport</name>
-        <description>Base privilege to view MambaETL Reports served via the API Service layer</description>
+        <description>Privilege to view MambaETL reports served via the API Service layer</description>
     </privilege>
 
     <messages>
