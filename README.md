@@ -42,7 +42,13 @@ Pre-requisites:
    This is so because the MambaETL engine is currently built in bash and has not been ported to other environments i.e. Windows.  
    However, note that **you do not need Linux to run MambaETL** only for developing or building the omod.  
 
+
 3. Currently, MambaETL only supports MySQL database engine; and has been successfuly tested on versions 5.6 and above.
+
+
+4. On startup, the MambaETL module needs a databae user with enough permissions to create a database (`analysis_db`) and its stored procedues and functions.
+This means that, if you have created your OpenMRs instance using the default `Simple` option in the wizard, MambaETL will not be able to work since the wizard creates a database User with less privilidges than is required for MambaETL.
+However, you can solve this by elevating the user rights to be able to create databases, stored procedures and functions.
 
 <span style='color: red;'>Step 1:</span>
 
