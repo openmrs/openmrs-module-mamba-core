@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 public class MambaReportItemColumn implements Serializable {
 	
-	private static final long serialVersionUID = -4302112399990406163L;
+	private static final long serialVersionUID = -4302112399990436163L;
 	
 	private String column;
 	

@@ -9,9 +9,11 @@
  */
 package org.openmrs.module.mambacore.api;
 
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 
 public interface FlattenDatabaseService extends OpenmrsService {
-	
+
+	 @Authorized({MambaReportsConstants.VIEW_MAMBA_REPORT})
 	void flattenDatabase();
 }
