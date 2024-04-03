@@ -34,7 +34,6 @@ public class MambaCoreActivator extends BaseModuleActivator {
     }
 
     public void started() {
-        log.info("Registering MambaETL Task...");
         registerTask("Mamba-ETL Task", "MambaETL Task - To Flatten and Prepare Reporting Data.", FlattenTableTask.class,
                 60 * 60 * 12L, true);
     }
@@ -91,8 +90,8 @@ public class MambaCoreActivator extends BaseModuleActivator {
                 taskDef.setUuid(UUID.randomUUID().toString());
                 taskDef.setDescription(description);
                 Context.getSchedulerService().scheduleTask(taskDef);
+                log.info("Task {} has been successfully registered", name);
             }
-            log.info("Task {} has been successfully registered", name);
         } catch (SchedulerException ex) {
             log.error("Unable to register Task", ex);
             return false;

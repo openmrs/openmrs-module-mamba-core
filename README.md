@@ -42,9 +42,17 @@ Pre-requisites:
    This is so because the MambaETL engine is currently built in bash and has not been ported to other environments i.e. Windows.  
    However, note that **you do not need Linux to run MambaETL** only for developing or building the omod.  
 
+
+3. Currently, MambaETL only supports MySQL database engine; and has been successfuly tested on versions 5.6 and above.
+
+
+4. On startup, the MambaETL module needs a databae user with enough permissions to create a database (`analysis_db`) and its stored procedues and functions.
+This means that, if you have created your OpenMRs instance using the default `Simple` option in the wizard, MambaETL will not be able to work since the wizard creates a database User with less privilidges than is required for MambaETL.
+However, you can solve this by elevating the user rights to be able to create databases, stored procedures and functions.
+
 <span style='color: red;'>Step 1:</span>
 
-Create or go to your custom Reporting module, or clone [MambaETL reference/template](https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba) as a starter project.  
+Create or go to your custom Reporting module, or clone and use [MambaETL reference/template](https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba) as a starter project.  
 
 Below is an example folder structure of your project when you have added all the relevant folders and files required to support MambaETL in your project.  
 
@@ -286,5 +294,58 @@ Under Administration go to scheduler and then click on manage scheduler
 Click on Schedule and then modify the timings.
 
 ![Schedule time.png](_markdown%2FSchedule%20time.png)
+
+## **The MambaETL service/API layer**
+MambaETL has a service or API layer that enables users to pull out ETL or reporting data via this interface.
+It is an HTTP Rest webservice interface and can be accessed via the base URL:
+`<EMR_URL>/openmrs/ws/rest/v1/mamba/report`
+
+for example:
+`http://ohri-demo.globalhealthapp.net/openmrs/ws/rest/v1/mamba/report?report_id=total_deliveries`
+
+To configure this to work, you need to add your reporting queries or entries to the <span style='color: red;'>reports.json</span> file found under
+the `etl module / omod (submodule) resources / etl / config (folder) / reports.json`.
+
+An example entry can look like this:
+
+`{
+  "report_definitions": [
+    {
+      "report_name": "MCH Mother HIV Status",
+      "report_id": "mother_hiv_status",
+      "report_sql": {
+        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+        "query_params": [
+          {
+            "name": "ptracker_id",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "person_uuid",
+            "type": "VARCHAR(255)"
+          }
+        ]
+      }
+    },
+    {
+      "report_name": "MCH Total Deliveries",
+      "report_id": "total_deliveries",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = '6dc5308d-27c9-4d49-b16f-2c5e3c759757' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH HIV-Exposed Infants",
+      "report_id": "total_hiv_exposed_infants",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW()",
+        "query_params": []
+      }
+    }
+   ]
+}`
+
+**Note that** the `report_id` value in the report.json configuration file is the same value passed to the URL parameter (report_id) in order to fetch the report corresponding to this id.
 
 Enjoy `MambaETL` at work!

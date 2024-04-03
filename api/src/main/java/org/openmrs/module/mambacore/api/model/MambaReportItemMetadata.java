@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 public class MambaReportItemMetadata implements Serializable {
 	
-	private static final long serialVersionUID = 4717202824335181555L;
+	private static final long serialVersionUID = 4717202824335189555L;
 	
 	private Integer serialId;
 	

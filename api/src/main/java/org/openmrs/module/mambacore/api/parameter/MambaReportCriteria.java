@@ -17,6 +17,8 @@ import java.util.List;
 
 public class MambaReportCriteria implements Serializable {
 
+    private static final long serialVersionUID = 6717202824335189575L;
+
     @JsonProperty("report_id")
     private String reportId;
 
