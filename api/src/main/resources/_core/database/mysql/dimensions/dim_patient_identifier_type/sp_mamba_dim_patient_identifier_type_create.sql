@@ -5,7 +5,7 @@ CREATE TABLE mamba_dim_patient_identifier_type
     id                         INT         NOT NULL AUTO_INCREMENT,
     patient_identifier_type_id INT         NOT NULL,
     name                       VARCHAR(50) NOT NULL,
-    description                TEXT        NULL,
+    description                VARCHAR(65535)        NULL,
     uuid                       CHAR(38)    NOT NULL,
 
     PRIMARY KEY (id)
