@@ -22,18 +22,19 @@ ALTER TABLE mamba_z_encounter_obs
 ADD obs_value_boolean boolean;
 
 UPDATE   mamba_z_encounter_obs z
-INNER JOIN mamba_dim_concept_name cn
-    ON z.obs_value_coded = cn.concept_id
-INNER JOIN mamba_dim_concept c
-    ON c.concept_id = cn.concept_id
-INNER JOIN mamba_dim_concept_datatype cd
-    ON c.datatype_id = cd.concept_datatype_id
 SET obs_value_boolean =
     CASE
-        WHEN obs_value_coded in (SELECT DISTINCT concept_id FROM mamba_dim_concept c where c.uuid in ('cf82933b-3f3f-45e7-a5ab-5d31aaee3da3','1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')) THEN TRUE
-        WHEN obs_value_coded in (SELECT DISTINCT concept_id FROM mamba_dim_concept c where c.uuid in ('488b58ff-64f5-4f8a-8979-fa79940b1594','1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')) THEN FALSE
+        WHEN obs_value_text IN ('FALSE','No') THEN 0
+        WHEN obs_value_text IN ('TRUE','Yes') THEN 1
+        ELSE NULL
     END
-WHERE z.obs_value_coded IS NOT NULL;
+WHERE z.obs_value_coded IS NOT NULL
+AND  obs_question_concept_id in (SELECT
+    DISTINCT concept_id
+FROM mamba_dim_concept c
+    INNER JOIN mamba_dim_concept_datatype cd
+ON c.datatype_id = cd.concept_datatype_id
+WHERE cd.datatype_name = 'Boolean');
 
 
 -- $END
