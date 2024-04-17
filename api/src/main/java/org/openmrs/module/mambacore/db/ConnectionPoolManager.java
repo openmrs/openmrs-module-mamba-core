@@ -22,18 +22,17 @@ public class ConnectionPoolManager {
 
     private ConnectionPoolManager() {
 
-        Properties omrsRuntimeProperties = Context.getRuntimeProperties();
+        Properties properties = Context.getRuntimeProperties();
 
-        String driver = omrsRuntimeProperties.getProperty("mambaetl.analysis.db.driver");
-        String url = omrsRuntimeProperties.getProperty("mambaetl.analysis.db.url");
-        String userName = omrsRuntimeProperties.getProperty("mambaetl.analysis.db.username");
-        String password = omrsRuntimeProperties.getProperty("mambaetl.analysis.db.password");
+        String driver = properties.getProperty("mambaetl.analysis.db.driver");
+        String url = properties.getProperty("mambaetl.analysis.db.url");
+        String userName = properties.getProperty("mambaetl.analysis.db.username");
+        String password = properties.getProperty("mambaetl.analysis.db.password");
         String defaultUrl = "jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&useSSL=false";
 
-        dataSource
-                .setDriverClassName(driver != null ? driver : omrsRuntimeProperties.getProperty("connection.driver_class"));
-        dataSource.setUsername(userName != null ? userName : omrsRuntimeProperties.getProperty("connection.username"));
-        dataSource.setPassword((password != null ? password : omrsRuntimeProperties.getProperty("connection.password")));
+        dataSource.setDriverClassName(driver != null ? driver : properties.getProperty("connection.driver_class"));
+        dataSource.setUsername(userName != null ? userName : properties.getProperty("connection.username"));
+        dataSource.setPassword((password != null ? password : properties.getProperty("connection.password")));
         dataSource.setUrl(url != null ? url : defaultUrl);
 
         dataSource.setInitialSize(4); // Initial number of connections
