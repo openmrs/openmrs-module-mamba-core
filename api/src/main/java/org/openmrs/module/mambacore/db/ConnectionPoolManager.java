@@ -35,8 +35,8 @@ public class ConnectionPoolManager {
         dataSource.setPassword((password != null ? password : properties.getProperty("connection.password")));
         dataSource.setUrl(url != null ? url : defaultUrl);
 
-        dataSource.setInitialSize(4); // Initial number of connections
-        dataSource.setMaxTotal(20); // Maximum number of connections
+        dataSource.setInitialSize(4);
+        dataSource.setMaxTotal(20);
     }
 
     public static ConnectionPoolManager getInstance() {
