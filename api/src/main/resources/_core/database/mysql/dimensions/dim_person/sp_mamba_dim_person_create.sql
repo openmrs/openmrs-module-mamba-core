@@ -13,7 +13,7 @@ CREATE TABLE mamba_dim_person
     gender              VARCHAR(50)  NULL,
     date_created        DATETIME     NOT NULL,
     person_name_short   VARCHAR(255) NULL,
-    person_name_long    VARCHAR(1000)         NULL,
+    person_name_long    TEXT         NULL,
     uuid                CHAR(38)     NOT NULL,
     voided              TINYINT(1)   NOT NULL,
 
