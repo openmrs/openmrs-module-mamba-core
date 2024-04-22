@@ -45,13 +45,17 @@ BEGIN
                 ELSE
 
                     SET @col_count = 1;
-                    -- SET @column_array = CONCAT('{',@column_array,'}');
+                    SET @table_name = fn_mamba_remove_quotes(@flat_table_name);
+                    SET @current_table_count = 1;
+
                     WHILE @col_count <= @column_keys_array_len
                         DO
                             SELECT fn_mamba_get_array_item_by_index(@column_keys_array, @col_count) INTO @field_name;
                             SELECT fn_mamba_json_value_by_key(@column_array,  @field_name) INTO @concept_uuid;
 
-                            SET @tbl_name = '';
+                            IF @col_count > 100 THEN
+                                SET @table_name = CONCAT(fn_mamba_remove_quotes(@flat_table_name), '_', @current_table_count);
+                                SET @current_table_count = @current_table_count;
                             INSERT INTO mamba_dim_concept_metadata
                             (
                                 report_name,
@@ -61,18 +65,35 @@ BEGIN
                                 concept_uuid
                             )
                             VALUES (fn_mamba_remove_quotes(@report_name),
-                                    fn_mamba_remove_quotes(@flat_table_name),
+                                    fn_mamba_remove_quotes(@table_name),
                                     fn_mamba_remove_quotes(@encounter_type),
                                     fn_mamba_remove_quotes(@field_name),
                                     fn_mamba_remove_quotes(@concept_uuid));
 
+                            ELSE
+                                INSERT INTO mamba_dim_concept_metadata
+                                (
+                                    report_name,
+                                    flat_table_name,
+                                    encounter_type_uuid,
+                                    column_label,
+                                    concept_uuid
+                                )
+                                VALUES (fn_mamba_remove_quotes(@report_name),
+                                        fn_mamba_remove_quotes(@flat_table_name),
+                                        fn_mamba_remove_quotes(@encounter_type),
+                                        fn_mamba_remove_quotes(@field_name),
+                                        fn_mamba_remove_quotes(@concept_uuid));
+                            END IF;
+
+
                             SET @col_count = @col_count + 1;
 
-                    END WHILE;
+                        END WHILE;
                 END IF;
 
-            SET @report_count = @report_count + 1;
-        END WHILE;
+                    SET @report_count = @report_count + 1;
+            END WHILE;
 
 END //
 
