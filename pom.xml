@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -30,7 +31,6 @@
 
     <modules>
         <module>api</module>
-        <module>omod</module>
     </modules>
 
     <dependencyManagement>
@@ -103,12 +103,23 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jacksonCoreVersion}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-dbcp2</artifactId>
                 <version>${apache.commons.dbcp}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>jakarta.transaction</groupId>
+                        <artifactId>jakarta.transaction-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
         </dependencies>
@@ -296,13 +307,19 @@
             <id>OpenMRS-MambaETL-MakSPH</id>
             <name>Arthur D. Mugume</name>
             <organization>MakSPH</organization>
-            <organizationUrl>https://ohri</organizationUrl>
+            <organizationUrl>https://mets.or.ug</organizationUrl>
         </developer>
         <developer>
-            <id>OpenMRS-Mamba-UCSF</id>
+            <id>OpenMRS-MambaETL-UCSF</id>
             <name>Laureen G. Omare</name>
             <organization>UCSF</organization>
-            <organizationUrl>https://ohri</organizationUrl>
+            <organizationUrl>http://ucglobalprograms.org/kenya</organizationUrl>
+        </developer>
+        <developer>
+            <id>OpenMRS-MambaETL-UoN</id>
+            <name>Amos Laboso</name>
+            <organization>UoN</organization>
+            <organizationUrl>https://www.uonbi.ac.ke</organizationUrl>
         </developer>
     </developers>
 

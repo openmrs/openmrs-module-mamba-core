@@ -21,6 +21,7 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
     -c all                  clear all schema objects before run
     -c sp                   clear all stored procedures before run
     -c views                clear all views before run
+    -l locale               locale to use e.g 'en'
 
 EOF
 }
@@ -72,8 +73,8 @@ function read_config_metadata() {
               SET @report_data = '%s';
               SET @file_count = %d;
 
-              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added report JSON from config dir
-              CALL sp_mamba_dim_json_insert(); -- insert automatically generated report JSON from db
+              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
+              CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
 
               SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
               CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
@@ -86,6 +87,27 @@ function read_config_metadata() {
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
 
+}
+
+#Read in the locale setting
+function read_locale_setting() {
+
+  LOCALE_SP_SQL_CONTENTS="
+
+  -- \$BEGIN
+      "$'
+          SET @concepts_locale = '%s';
+          CALL sp_mamba_locale_insert_helper(@concepts_locale);
+      '"
+  -- \$END
+"
+
+  # Replace above placeholders in SQL_CONTENTS with actual values
+  LOCALE_SP_SQL_CONTENTS=$(printf "$LOCALE_SP_SQL_CONTENTS" "'$concepts_locale'")
+
+  echo "SQL CONTENT: $LOCALE_SP_SQL_CONTENTS"
+
+  echo "$LOCALE_SP_SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
 }
 
 # Read in the JSON for Report Definition configuration metadata
@@ -338,12 +360,33 @@ function exit_if_file_absent(){
     fi
 }
 
+# Remove tildes
+function remove_tildes_in_create_stored_procedures_file (){
+
+     build_file="$BUILD_DIR/$sp_out_file"
+
+     # Create a temporary file to write contents without tildes
+    temp_file_no_tildes=$(mktemp)
+
+    # Use sed to remove tildes and save the result to the temporary file created above
+    sed 's/~//g' "$build_file" > "$temp_file_no_tildes"
+
+    # Overwrite the original file with the content of the temporary file
+    mv "$temp_file_no_tildes" "$build_file"
+
+    # Remove the temporary file
+    rm "$temp_file_no_tildes"
+}
+
+
+
 BUILD_DIR=""
 sp_out_file="create_stored_procedures.sql"
 vw_out_file="create_views.sql"
 makefile=""
 source_database=""
 analysis_database=""
+concepts_locale=""
 config_dir=""
 cleaned_file=""
 file_to_clean=""
@@ -356,7 +399,7 @@ OPTIND=1
 IFS='
 '
 
-while getopts ":h:t:n:d:a:v:s:k:o:c:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:c:l:" opt; do
     case "${opt}" in
         h)
             show_help
@@ -379,6 +422,8 @@ while getopts ":h:t:n:d:a:v:s:k:o:c:" opt; do
         o)  out_file="$OPTARG"
             ;;
         c)  objects="$OPTARG"
+            ;;
+        l)  concepts_locale="$OPTARG"
             ;;
         *)
             show_help >&2
@@ -434,6 +479,9 @@ elif [ "$objects_to_clear" == "views" ] || [ "$objects_to_clear" == "view" ] || 
     clear_message="clearing all views in $schema_name"
     clear_objects_sql="CALL dbo.sp_xf_system_drop_all_views_in_schema '$schema_name' "
 fi
+
+# Read in the concepts locale setting
+read_locale_setting
 
 # Read in the JSON for Report Definition configuration metadata
 read_config_report_definition_metadata
@@ -537,6 +585,7 @@ DELIMITER ;
     ### write built contents (final SQL file contents) to the build output file
     echo "$all_stored_procedures" > "$BUILD_DIR/$sp_out_file"
 
+
     ### SG - Clean up build file to make it Liquibase compatible ###
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
@@ -549,10 +598,10 @@ DELIMITER ;
     # Create a temporary file with the text to prepend
     temp_file=$(mktemp)
 
-    # Add create command text to the temporary file
+    # Add 'create database' command text to the temporary file
     echo "$create_target_db" > "$temp_file"
 
-    # Append use command text to the temporary file
+    # Append 'use database' command text to the temporary file
     echo "$use_target_db" >> "$temp_file"
 
     # Append the original file's content to the temporary file
@@ -569,7 +618,7 @@ DELIMITER ;
 
     temp_file=$(mktemp)
 
-    # Use awk to perform the replacement
+    # Search for any occurrences of 'mamba_source_db' and  awk to perform the replacement
     awk -v search="mamba_source_db" -v replace="$source_database" '{ gsub(search, replace) }1' "$file_to_clean" > "$temp_file"
 
     # Overwrite the original file with the contents of the temporary file
@@ -578,9 +627,11 @@ DELIMITER ;
     # Remove the temporary file
     rm "$temp_file"
 
-
     cleaned_file="$BUILD_DIR/liquibase_$sp_out_file"
     make_buildfile_liquibase_compatible
+
+    #remove tildes
+    remove_tildes_in_create_stored_procedures_file
 fi
 
 if [ -n "$views" ]
@@ -640,7 +691,6 @@ $vw_header
 $vw_body
 
 "
-
     done
 
     echo "$views_body" > "$BUILD_DIR/$vw_out_file"

@@ -12,14 +12,14 @@
     <activator>org.openmrs.module.mambacore.MambaCoreActivator</activator>
     <require_version>${openmrsPlatformVersion}</require_version>
 
-    <require_modules>
-        <require_module>org.openmrs.module.webservices.rest</require_module>
-    </require_modules>
+    <aware_of_modules>
+        <aware_of_module>org.openmrs.module.webservices.rest</aware_of_module>
+    </aware_of_modules>
 
     <!-- Required Privileges  -->
     <privilege>
         <name>View MambaReport</name>
-        <description>Base privilege to view MambaETL Reports served via the Service layer</description>
+        <description>Privilege to view MambaETL reports served via the API Service layer</description>
     </privilege>
 
     <messages>
