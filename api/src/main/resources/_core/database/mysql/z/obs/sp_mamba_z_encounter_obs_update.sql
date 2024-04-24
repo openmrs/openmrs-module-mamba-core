@@ -17,5 +17,24 @@ SET z.obs_value_text       = cn.name,
     z.obs_value_coded_uuid = c.uuid
 WHERE z.obs_value_coded IS NOT NULL;
 
+-- Add and update column obs_value_boolean (Concept values)
+ALTER TABLE mamba_z_encounter_obs
+ADD obs_value_boolean boolean;
+
+UPDATE   mamba_z_encounter_obs z
+SET obs_value_boolean =
+    CASE
+        WHEN obs_value_text IN ('FALSE','No') THEN 0
+        WHEN obs_value_text IN ('TRUE','Yes') THEN 1
+        ELSE NULL
+    END
+WHERE z.obs_value_coded IS NOT NULL
+AND  obs_question_concept_id in (SELECT
+    DISTINCT concept_id
+FROM mamba_dim_concept c
+    INNER JOIN mamba_dim_concept_datatype cd
+ON c.datatype_id = cd.concept_datatype_id
+WHERE cd.datatype_name = 'Boolean');
+
 
 -- $END
