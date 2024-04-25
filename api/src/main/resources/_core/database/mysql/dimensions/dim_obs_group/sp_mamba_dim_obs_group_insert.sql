@@ -4,7 +4,7 @@ INSERT INTO mamba_dim_obs_group (obs_group_concept_id,
                                  obs_group_name,
                                  obs_id)
 SELECT DISTINCT o.obs_question_concept_id,
-                LOWER(LEFT(REPLACE(REPLACE(REPLACE(cn.name, '&', ''), ' ', '_'), '__', '_'), 12)) name,
+                LOWER(LEFT(REPLACE(REGEXP_REPLACE(cn.name, '[^0-9a-z]', ''), ' ', '_'), 12)) name,
                 obs_id
 FROM mamba_z_encounter_obs o
          INNER JOIN mamba_dim_concept_name cn
