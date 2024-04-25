@@ -34,9 +34,4 @@ CREATE INDEX mamba_dim_concept_metadata_row_num_index
 CREATE INDEX mamba_dim_concept_metadata_flat_table_name_index
     ON mamba_dim_concept_metadata (flat_table_name);
 
--- ALTER TABLE `mamba_dim_concept_metadata`
---     ADD COLUMN `encounter_type_id` INT NULL AFTER `output_table_name`,
---     ADD CONSTRAINT `fk_encounter_type_id`
---         FOREIGN KEY (`encounter_type_id`) REFERENCES `mamba_dim_encounter_type` (`encounter_type_id`);
-
 -- $END

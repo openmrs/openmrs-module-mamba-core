@@ -15,38 +15,38 @@ import org.openmrs.api.context.Context;
 import java.util.Properties;
 
 public class ConnectionPoolManager {
-
-    private static ConnectionPoolManager instance = null;
-
-    private static final BasicDataSource dataSource = new BasicDataSource();
-
-    private ConnectionPoolManager() {
-
-        Properties properties = Context.getRuntimeProperties();
-
-        String driver = properties.getProperty("mambaetl.analysis.db.driver");
-        String url = properties.getProperty("mambaetl.analysis.db.url");
-        String userName = properties.getProperty("mambaetl.analysis.db.username");
-        String password = properties.getProperty("mambaetl.analysis.db.password");
-        String defaultUrl = "jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&useSSL=false";
-
-        dataSource.setDriverClassName(driver != null ? driver : properties.getProperty("connection.driver_class"));
-        dataSource.setUsername(userName != null ? userName : properties.getProperty("connection.username"));
-        dataSource.setPassword((password != null ? password : properties.getProperty("connection.password")));
-        dataSource.setUrl(url != null ? url : defaultUrl);
-
-        dataSource.setInitialSize(4);
-        dataSource.setMaxTotal(20);
-    }
-
-    public static ConnectionPoolManager getInstance() {
-        if (instance == null) {
-            instance = new ConnectionPoolManager();
-        }
-        return instance;
-    }
-
-    public BasicDataSource getDataSource() {
-        return dataSource;
-    }
+	
+	private static ConnectionPoolManager instance = null;
+	
+	private static final BasicDataSource dataSource = new BasicDataSource();
+	
+	private ConnectionPoolManager() {
+		
+		Properties properties = Context.getRuntimeProperties();
+		
+		String driver = properties.getProperty("mambaetl.analysis.db.driver");
+		String url = properties.getProperty("mambaetl.analysis.db.url");
+		String userName = properties.getProperty("mambaetl.analysis.db.username");
+		String password = properties.getProperty("mambaetl.analysis.db.password");
+		String defaultUrl = "jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&useSSL=false";
+		
+		dataSource.setDriverClassName(driver != null ? driver : properties.getProperty("connection.driver_class"));
+		dataSource.setUsername(userName != null ? userName : properties.getProperty("connection.username"));
+		dataSource.setPassword((password != null ? password : properties.getProperty("connection.password")));
+		dataSource.setUrl(url != null ? url : defaultUrl);
+		
+		dataSource.setInitialSize(4);
+		dataSource.setMaxTotal(20);
+	}
+	
+	public static ConnectionPoolManager getInstance() {
+		if (instance == null) {
+			instance = new ConnectionPoolManager();
+		}
+		return instance;
+	}
+	
+	public BasicDataSource getDataSource() {
+		return dataSource;
+	}
 }
