@@ -56,19 +56,19 @@ BEGIN
                             IF @col_count > 100 THEN
                                 SET @table_name = CONCAT(fn_mamba_remove_quotes(@flat_table_name), '_', @current_table_count);
                                 SET @current_table_count = @current_table_count;
-                            INSERT INTO mamba_dim_concept_metadata
-                            (
-                                report_name,
-                                flat_table_name,
-                                encounter_type_uuid,
-                                column_label,
-                                concept_uuid
-                            )
-                            VALUES (fn_mamba_remove_quotes(@report_name),
-                                    fn_mamba_remove_quotes(@table_name),
-                                    fn_mamba_remove_quotes(@encounter_type),
-                                    fn_mamba_remove_quotes(@field_name),
-                                    fn_mamba_remove_quotes(@concept_uuid));
+                                INSERT INTO mamba_dim_concept_metadata
+                                (
+                                    report_name,
+                                    flat_table_name,
+                                    encounter_type_uuid,
+                                    column_label,
+                                    concept_uuid
+                                )
+                                VALUES (fn_mamba_remove_quotes(@report_name),
+                                        fn_mamba_remove_quotes(@table_name),
+                                        fn_mamba_remove_quotes(@encounter_type),
+                                        fn_mamba_remove_quotes(@field_name),
+                                        fn_mamba_remove_quotes(@concept_uuid));
 
                             ELSE
                                 INSERT INTO mamba_dim_concept_metadata
