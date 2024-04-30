@@ -82,7 +82,6 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             statement.setString("parameter_list", argumentsJson);
 
             boolean hasResults = statement.execute();
-            int updateCount = statement.getUpdateCount();
 
             if (!hasResults) {
 
