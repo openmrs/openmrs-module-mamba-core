@@ -7,35 +7,35 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE proc_name VARCHAR(255);
     DECLARE cur CURSOR FOR SELECT DISTINCT report_columns_procedure_name FROM mamba_dim_report_definition;
-DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-OPEN cur;
+    OPEN cur;
 
-read_loop: LOOP
+    read_loop: LOOP
         FETCH cur INTO proc_name;
         IF done THEN
             LEAVE read_loop;
-END IF;
+        END IF;
 
-        -- Fetch the parameters for the procedure
+        -- Fetch the parameters for the procedure and provide empty string values for each
         SET @params = NULL;
-SELECT GROUP_CONCAT(parameter_name SEPARATOR ', ') INTO @params
-FROM mamba_dim_report_definition_parameters
-WHERE report_columns_procedure_name = proc_name;
+        SELECT GROUP_CONCAT(CONCAT(parameter_name, ' = \'\'') SEPARATOR ', ') INTO @params
+        FROM mamba_dim_report_definition_parameters
+        WHERE report_columns_procedure_name = proc_name;
 
--- If there are no parameters, call the procedure without parameters
-IF @params IS NULL THEN
+        -- If there are no parameters, call the procedure without parameters
+        IF @params IS NULL THEN
             SET @s = CONCAT('CALL ', proc_name, '()');
-ELSE
+        ELSE
             SET @s = CONCAT('CALL ', proc_name, '(', @params, ')');
-END IF;
+        END IF;
 
-PREPARE stmt FROM @s;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-END LOOP;
+        PREPARE stmt FROM @s;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END LOOP;
 
-CLOSE cur;
+    CLOSE cur;
 END //
 
 DELIMITER ;
