@@ -55,7 +55,7 @@ BEGIN
                 FROM (
                      SELECT
                           DISTINCT et.encounter_type_id,
-                          LOWER(LEFT(REPLACE(REPLACE(REGEXP_REPLACE(cn.name, ''[^0-9a-z]'', ''''), '' '', ''_''),''__'', ''_''),35)) field_name,
+                          LOWER(LEFT(REPLACE(REPLACE(fn_mamba_remove_special_characters(cn.name), '' '', ''_''),''__'', ''_''),35)) field_name,
                           c.uuid AS concept_uuid
                      FROM mamba_source_db.obs o
                           INNER JOIN mamba_source_db.encounter e
