@@ -8,12 +8,10 @@ BEGIN
     DECLARE mysqlDatatype VARCHAR(20);
 
 
-    IF conceptDatatype = 'Text' THEN
+    IF conceptDatatype = 'Coded'
+       OR conceptDatatype = 'N/A'
+       OR conceptDatatype = 'Text' THEN
         SET mysqlDatatype = 'TEXT';
-
-    ELSEIF conceptDatatype = 'Coded'
-       OR conceptDatatype = 'N/A' THEN
-        SET mysqlDatatype = 'NVarchar(250)';
 
     ELSEIF conceptDatatype = 'Boolean' THEN
         SET mysqlDatatype = 'Boolean';

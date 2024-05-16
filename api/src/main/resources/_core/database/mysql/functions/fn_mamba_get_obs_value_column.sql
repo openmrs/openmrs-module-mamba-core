@@ -7,10 +7,8 @@ CREATE FUNCTION fn_mamba_get_obs_value_column(conceptDatatype VARCHAR(20)) RETUR
 BEGIN
     DECLARE obsValueColumn VARCHAR(20);
 
-        IF conceptDatatype = 'Text' THEN
-            SET obsValueColumn = 'obs_value_text';
-
-        ELSEIF conceptDatatype = 'Coded'
+        IF conceptDatatype = 'Text'
+           OR  conceptDatatype = 'Coded'
            OR conceptDatatype = 'N/A' THEN
             SET obsValueColumn = 'obs_value_text';
 
