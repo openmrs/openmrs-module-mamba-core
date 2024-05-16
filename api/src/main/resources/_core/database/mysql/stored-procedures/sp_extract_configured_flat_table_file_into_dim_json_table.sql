@@ -18,7 +18,7 @@ BEGIN
     SELECT fn_mamba_json_array_length(@report_array) INTO @report_array_len;
 
     SET @report_count = 1;
-    WHILE @report_count < @report_array_len
+    WHILE @report_count <= @report_array_len
         DO
 
             SELECT fn_mamba_json_object_at_index(@report_array, @report_count) INTO @report_data_item;
