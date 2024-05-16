@@ -82,6 +82,7 @@ dimensions/dim_concept_answer/sp_mamba_dim_concept_answer.sql
 
 dimensions/dim_concept_name/sp_mamba_dim_concept_name_create.sql
 dimensions/dim_concept_name/sp_mamba_dim_concept_name_insert.sql
+dimensions/dim_concept_name/sp_mamba_dim_concept_name_update.sql
 dimensions/dim_concept_name/sp_mamba_dim_concept_name.sql
 
 dimensions/dim_encounter_type/sp_mamba_dim_encounter_type_create.sql
