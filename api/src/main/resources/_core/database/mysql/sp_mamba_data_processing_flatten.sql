@@ -55,4 +55,5 @@ CALL sp_mamba_flat_encounter_table_insert_all;
 CALL sp_mamba_flat_encounter_obs_group_table_create_all;
 
 CALL sp_mamba_flat_encounter_obs_group_table_insert_all;
+
 -- $END
