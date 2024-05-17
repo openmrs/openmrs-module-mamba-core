@@ -3,6 +3,7 @@ DELIMITER //
 
 CREATE FUNCTION fn_mamba_remove_all_whitespace(input_string TEXT) RETURNS TEXT
     DETERMINISTIC
+
 BEGIN
   DECLARE cleaned_string TEXT;
   SET cleaned_string = input_string;

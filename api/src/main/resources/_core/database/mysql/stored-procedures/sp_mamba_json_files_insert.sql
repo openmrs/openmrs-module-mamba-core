@@ -49,14 +49,14 @@ BEGIN
                         SELECT DISTINCT
                             et.name,
                             encounter_type_id,
-                            concat(''mamba_flat_encounter_'',LOWER(LEFT(REPLACE(REGEXP_REPLACE(et.name, ''[^0-9a-z]'', ''''),'' '',''''),18))) AS table_name,
+                            concat(''mamba_flat_encounter_'',LOWER(LEFT(REPLACE(fn_mamba_remove_special_characters(et.name),'' '',''''),18))) AS table_name,
                             et.uuid, ',
                 '(
                 SELECT DISTINCT CONCAT(''{'', GROUP_CONCAT(CONCAT(''"'', name, ''":"'', uuid, ''"'') SEPARATOR '','' ),''}'') x
                 FROM (
                         SELECT
                             DISTINCT et.encounter_type_id,
-                            LOWER(LEFT(REPLACE(REPLACE(REGEXP_REPLACE(cn.name, ''[^0-9a-z]'', ''''), '' '', ''_''),''__'', ''_''),35)) name,
+                            LOWER(LEFT(REPLACE(REPLACE(fn_mamba_remove_special_characters(cn.name), '' '', ''_''),''__'', ''_''),35)) name,
                             c.uuid
                         FROM mamba_source_db.obs o
                         INNER JOIN mamba_source_db.encounter e
