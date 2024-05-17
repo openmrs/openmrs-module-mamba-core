@@ -12,7 +12,11 @@ FROM mamba_z_encounter_obs o
 WHERE obs_id in
       (SELECT obs_group_id
        FROM (SELECT DISTINCT obs_group_id,
-                             COUNT(*) OVER (PARTITION BY person_id,encounter_id,obs_group_id) row_num
+                             (SELECT COUNT(*)
+                              FROM mamba_z_encounter_obs o2
+                              WHERE o2.obs_group_id = o.obs_group_id
+                                AND o2.person_id = o.person_id
+                                AND o2.encounter_id = o.encounter_id) AS row_num
              FROM mamba_z_encounter_obs o
              WHERE obs_group_id IS NOT NULL) a
        WHERE row_num > 1)
