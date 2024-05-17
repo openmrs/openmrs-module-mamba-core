@@ -4,6 +4,8 @@ CALL sp_xf_system_drop_all_tables_in_schema();
 
 CALL sp_mamba_dim_locale;
 
+CALL sp_mamba_dim_table_partition;
+
 CALL sp_mamba_dim_location;
 
 CALL sp_mamba_dim_patient_identifier_type;

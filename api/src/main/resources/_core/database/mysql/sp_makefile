@@ -51,6 +51,7 @@ stored-procedures/sp_mamba_generate_report_wrapper.sql
 stored-procedures/sp_mamba_write_automated_json_config.sql
 stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_table.sql
 stored-procedures/sp_mamba_locale_insert_helper.sql
+stored-procedures/sp_mamba_table_partition_insert_helper.sql
 stored-procedures/sp_mamba_extract_report_column_names.sql
 
 
@@ -161,6 +162,10 @@ dimensions/dim_json/sp_mamba_dim_json.sql
 dimensions/dim_locale/sp_mamba_dim_locale_create.sql
 config/sp_mamba_dim_locale_insert.sql
 dimensions/dim_locale/sp_mamba_dim_locale.sql
+
+dimensions/dim_table_partition/sp_mamba_dim_table_partition_create.sql
+config/sp_mamba_dim_table_partition_insert.sql
+dimensions/dim_table_partition/sp_mamba_dim_table_partition.sql
 
 #############################################################################
 ### A single SP that invokes (CALLs) the above prepared stored procedures ###

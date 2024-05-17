@@ -10,6 +10,10 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
 
+    SELECT DISTINCT(table_partition_number)
+    INTO @table_partition_number
+    FROM mamba_dim_table_partition;
+
     SELECT fn_mamba_json_extract_array(report_data, 'flat_report_metadata') INTO @report_array;
     SELECT fn_mamba_json_array_length(@report_array) INTO @report_array_len;
 
@@ -53,7 +57,7 @@ BEGIN
                             SELECT fn_mamba_get_array_item_by_index(@column_keys_array, @col_count) INTO @field_name;
                             SELECT fn_mamba_json_value_by_key(@column_array,  @field_name) INTO @concept_uuid;
 
-                            IF @col_count > 100 THEN
+                            IF @col_count > @table_partition_number THEN
                                 SET @table_name = CONCAT(fn_mamba_remove_quotes(@flat_table_name), '_', @current_table_count);
                                 SET @current_table_count = @current_table_count;
                                 INSERT INTO mamba_dim_concept_metadata
