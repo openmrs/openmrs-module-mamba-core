@@ -8,6 +8,7 @@ CREATE TABLE mamba_dim_concept
     datatype_id INT          NOT NULL, -- make it a FK
     datatype    VARCHAR(100) NULL,
     retired     TINYINT(1)   NOT NULL,
+    concept_name    VARCHAR(100) NULL,
 
     PRIMARY KEY (id)
 )

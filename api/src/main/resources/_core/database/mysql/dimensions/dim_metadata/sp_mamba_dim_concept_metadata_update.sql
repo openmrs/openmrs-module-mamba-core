@@ -8,7 +8,7 @@ UPDATE mamba_dim_concept_metadata md
     ON c.concept_id = cn.concept_id
 SET md.concept_datatype = c.datatype,
     md.concept_id       = c.concept_id,
-    md.concept_name     = cn.name
+    md.concept_name     = c.name
 WHERE md.id > 0
   AND cn.locale IN (SELECT DISTINCT(locale) FROM mamba_dim_locale)
   AND IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED');
