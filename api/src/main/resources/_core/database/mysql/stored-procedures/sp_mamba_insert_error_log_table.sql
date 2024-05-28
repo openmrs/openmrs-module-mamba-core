@@ -10,7 +10,7 @@ CREATE PROCEDURE sp_mamba_insert_error_log_table(
 )
 BEGIN
     INSERT INTO mamba_error_log (procedure_name, error_message, error_code, sql_state)
-    VALUES (error_message, procedure_name, error_code, sql_state);
+    VALUES (procedure_name, error_message, error_code, sql_state);
 
 END //
 
