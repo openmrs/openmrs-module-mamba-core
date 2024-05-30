@@ -5,7 +5,7 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_etl_schedule_table_create()
 BEGIN
 
-    CREATE TABLE IF NOT EXISTS students
+    CREATE TABLE IF NOT EXISTS mmamba_etl_schedule
     (
         id                            INT      NOT NULL AUTO_INCREMENT,
         start_time                    DATETIME NOT NULL,
