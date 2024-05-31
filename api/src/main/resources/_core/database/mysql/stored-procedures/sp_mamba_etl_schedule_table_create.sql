@@ -5,16 +5,17 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_etl_schedule_table_create()
 BEGIN
 
-    CREATE TABLE IF NOT EXISTS mmamba_etl_schedule
+    CREATE TABLE IF NOT EXISTS _mamba_etl_schedule
     (
-        id                            INT      NOT NULL AUTO_INCREMENT,
-        start_time                    DATETIME NOT NULL,
-        end_time                      DATETIME NOT NULL,
-        next_scheduled_time           DATETIME NOT NULL,
-        execution_duration_in_seconds BIGINT   NOT NULL,
-        scheduled_interval_in_seconds BIGINT   NOT NULL,
-        completion_status             CHAR(10),
-        success_or_error_message      VARCHAR(255),
+        id                         INT      NOT NULL AUTO_INCREMENT,
+        schedule_interval_seconds  BIGINT   NOT NULL         DEFAULT 300, -- 5 Seconds
+        start_time                 DATETIME NOT NULL         DEFAULT NOW(),
+        end_time                   DATETIME,
+        next_schedule              DATETIME,
+        execution_duration_seconds BIGINT,
+        missed_schedule_by_seconds BIGINT,
+        completion_status          ENUM ('SUCCESS', 'ERROR') DEFAULT 'SUCCESS',
+        success_or_error_message   MEDIUMTEXT,
 
         PRIMARY KEY (id)
     )
