@@ -12,6 +12,7 @@ CREATE TABLE mamba_dim_encounter
     date_created        DATETIME NOT NULL,
     voided              TINYINT  NOT NULL,
     visit_id            INT      NULL,
+    flag                INT      NULL,
 
     CONSTRAINT encounter_encounter_id_index
         UNIQUE (encounter_id),

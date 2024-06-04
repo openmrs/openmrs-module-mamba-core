@@ -17,6 +17,7 @@ CREATE TABLE mamba_dim_relationship
     date_voided     DATETIME     NULL,
     void_reason     VARCHAR(255) NULL,
     uuid            CHAR(38)     NOT NULL,
+    flag            INT          NULL,
 
     PRIMARY KEY (relationship_id)
 

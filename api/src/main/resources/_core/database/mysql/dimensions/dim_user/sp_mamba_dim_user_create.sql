@@ -16,6 +16,7 @@
         retire_reason VARCHAR(255) NULL,
         uuid          CHAR(38)     NOT NULL,
         email         VARCHAR(255) NULL,
+        flag          INT          NULL,
 
         PRIMARY KEY (id)
     )

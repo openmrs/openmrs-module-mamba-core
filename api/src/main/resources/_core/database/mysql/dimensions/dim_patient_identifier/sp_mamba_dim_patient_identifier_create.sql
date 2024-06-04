@@ -12,6 +12,7 @@ CREATE TABLE mamba_dim_patient_identifier
     date_created          DATETIME    NOT NULL,
     uuid                  CHAR(38)    NOT NULL,
     voided                TINYINT     NOT NULL,
+    flag                  INT          NULL,
 
     PRIMARY KEY (id)
 )
