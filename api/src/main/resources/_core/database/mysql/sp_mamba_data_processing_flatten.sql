@@ -2,6 +2,8 @@
 -- CALL sp_xf_system_drop_all_tables_in_schema($target_database);
 CALL sp_xf_system_drop_all_tables_in_schema();
 
+CALL sp_mamba_create_error_log_table();
+
 CALL sp_mamba_dim_locale;
 
 CALL sp_mamba_dim_table_partition;

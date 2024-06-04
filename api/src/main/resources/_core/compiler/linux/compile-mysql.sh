@@ -594,6 +594,15 @@ DELIMITER //
 
 CREATE PROCEDURE $sp_name()
 BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+    @message_text = MESSAGE_TEXT, @mysql_errno = MYSQL_ERRNO, @returned_sqlstate = RETURNED_SQLSTATE;
+    CALL sp_mamba_insert_error_log_table('$sp_name', @message_text, @mysql_errno, @returned_sqlstate);
+    RESIGNAL;
+END;
+
 $sp_body
 END //
 
