@@ -1,8 +1,9 @@
 -- $BEGIN
 -- CALL sp_xf_system_drop_all_tables_in_schema($target_database);
-CALL sp_xf_system_drop_all_tables_in_schema();
 
-CALL sp_mamba_etl_schedule_table_create();
+CALL sp_xf_system_drop_all_tables_in_schema;
+
+CALL sp_mamba_etl_schedule_table_create;
 
 CALL sp_mamba_dim_locale;
 
@@ -46,16 +47,16 @@ CALL sp_mamba_dim_orders;
 
 CALL sp_mamba_dim_agegroup;
 
--- CALL sp_mamba_z_encounter_obs;
+CALL sp_mamba_z_encounter_obs;
 
--- CALL sp_mamba_dim_obs_group;
+CALL sp_mamba_dim_obs_group;
 
--- CALL sp_mamba_flat_encounter_table_create_all;
+CALL sp_mamba_flat_encounter_table_create_all;
 
--- CALL sp_mamba_flat_encounter_table_insert_all;
+CALL sp_mamba_flat_encounter_table_insert_all;
 
--- CALL sp_mamba_flat_encounter_obs_group_table_create_all;
+CALL sp_mamba_flat_encounter_obs_group_table_create_all;
 
--- CALL sp_mamba_flat_encounter_obs_group_table_insert_all;
+CALL sp_mamba_flat_encounter_obs_group_table_insert_all;
 
 -- $END

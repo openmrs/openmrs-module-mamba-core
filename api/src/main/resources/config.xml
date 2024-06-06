@@ -37,5 +37,11 @@
         <file>messages_es.properties</file>
     </messages>
 
+    <globalProperty>
+        <property>mambaetl.schedule.interval.minutes</property>
+        <defaultValue>10</defaultValue>
+        <description>MambaETL Scheduling interval in minutes</description>
+    </globalProperty>
+
 </module>
 
