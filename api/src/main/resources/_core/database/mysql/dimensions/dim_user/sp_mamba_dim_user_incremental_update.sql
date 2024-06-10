@@ -1,4 +1,12 @@
 -- $BEGIN
+DECLARE starttime DATETIME;
+SELECT  start_time INTO starttime
+FROM _mamba_etl_schedule sch
+WHERE end_time IS NOT NULL
+  AND transaction_status ='COMPLETED'
+ORDER BY id DESC
+    LIMIT 1;
+
 -- Insert only new records
 INSERT INTO mamba_dim_users
 (
@@ -34,7 +42,7 @@ SELECT
                             email,
                             1  flag
 FROM mamba_source_db.users u
-WHERE u.date_created >= '2023-11-30 00:00:00';
+WHERE u.date_created >= starttime;
 
 
 -- Update only modified records
@@ -47,7 +55,7 @@ UPDATE mamba_dim_user u
         u.date_changed = us.date_changed,
         u.changed_by = us.changed_by,
         u.flag = 2
-WHERE us.date_changed >= '2023-11-30 00:00:00';
+WHERE us.date_changed >= starttime;
 
 
 
