@@ -26,8 +26,9 @@ where c.date_created >= starttime;
 -- Update only modified records
 UPDATE mamba_dim_concept dc
     INNER JOIN mamba_source_db.concept c
-    SET dc.uuid = dc.uuid ,
-        dc.concept_id = c.concept_id,
+ON dc.concept_id = c.concept_id
+    SET dc.uuid = c.uuid ,
+        dc.name = c.name,
         dc.datatype_id = c.datatype_id,
         dc.retired = c.retired,
         dc.flag = 2
