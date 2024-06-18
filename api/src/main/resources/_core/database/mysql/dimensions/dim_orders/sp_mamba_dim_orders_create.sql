@@ -34,6 +34,7 @@ CREATE TABLE mamba_dim_orders
     sort_weight            DOUBLE        NULL,
     fulfiller_comment      VARCHAR(1024) NULL,
     fulfiller_status       VARCHAR(50)   NULL,
+    flag                   INT          NULL,
 
     PRIMARY KEY (id)
 )

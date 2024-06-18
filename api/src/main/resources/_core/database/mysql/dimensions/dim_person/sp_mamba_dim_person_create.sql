@@ -16,6 +16,7 @@ CREATE TABLE mamba_dim_person
     person_name_long    TEXT         NULL,
     uuid                CHAR(38)     NOT NULL,
     voided              TINYINT(1)   NOT NULL,
+    flag                INT          NULL,
 
     PRIMARY KEY (id)
 ) CHARSET = UTF8MB4;

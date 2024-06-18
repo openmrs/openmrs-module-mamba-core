@@ -28,6 +28,7 @@ CREATE TABLE mamba_dim_location
     address13       VARCHAR(255) NULL,
     address14       VARCHAR(255) NULL,
     address15       VARCHAR(255) NULL,
+    flag            INT          NULL,
 
     PRIMARY KEY (id)
 )

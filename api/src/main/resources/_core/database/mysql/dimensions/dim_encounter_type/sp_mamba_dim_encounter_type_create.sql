@@ -6,6 +6,7 @@ CREATE TABLE mamba_dim_encounter_type
     encounter_type_id INT         NOT NULL,
     uuid              CHAR(38)    NOT NULL,
     name              VARCHAR(50) NOT NULL,
+    flag              INT          NULL,
 
     PRIMARY KEY (id)
 )

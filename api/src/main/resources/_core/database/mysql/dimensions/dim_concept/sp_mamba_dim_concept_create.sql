@@ -9,6 +9,7 @@ CREATE TABLE mamba_dim_concept
     datatype    VARCHAR(100) NULL,
     retired     TINYINT(1)   NOT NULL,
     name        VARCHAR(256) NULL,
+    flag        INT          NULL,
 
     PRIMARY KEY (id)
 )

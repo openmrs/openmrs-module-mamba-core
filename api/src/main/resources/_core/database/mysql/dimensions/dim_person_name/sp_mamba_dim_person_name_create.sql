@@ -15,7 +15,7 @@ CREATE TABLE mamba_dim_person_name
     family_name_suffix VARCHAR(50) NULL,
     degree             VARCHAR(50) NULL,
     voided             TINYINT(1)  NOT NULL,
-
+    flag               INT          NULL,
     PRIMARY KEY (id)
 )
     CHARSET = UTF8MB4;
