@@ -1,4 +1,5 @@
 -- $BEGIN
+DROP TABLE IF EXISTS mamba_dim_json_incremental;
 
 CREATE TABLE mamba_dim_json_incremental
 (
@@ -24,5 +25,7 @@ CREATE INDEX mamba_dim_json_incremental_uuid_index
 
 CREATE INDEX mamba_dim_json_incremental_Json_data_hash_index
     ON mamba_dim_json_incremental (Json_data_hash);
+
+DROP TABLE IF EXISTS mamba_dim_concept_metadata;
 
 -- $END
