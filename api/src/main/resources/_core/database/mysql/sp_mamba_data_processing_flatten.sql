@@ -26,6 +26,8 @@ CALL sp_mamba_dim_json_create;
 
 CALL sp_mamba_dim_concept_metadata;
 
+CALL sp_mamba_dim_json_update;
+
 CALL sp_mamba_dim_report_definition;
 
 CALL sp_mamba_dim_encounter;
