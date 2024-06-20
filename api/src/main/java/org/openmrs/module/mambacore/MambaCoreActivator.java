@@ -11,9 +11,14 @@ package org.openmrs.module.mambacore;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
-import org.openmrs.module.mambacore.api.FlattenDatabaseService;
+import org.openmrs.module.mambacore.task.FlattenTableTask;
+import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * This class contains the logic that is run every time
@@ -24,15 +29,13 @@ public class MambaCoreActivator extends BaseModuleActivator {
     private static final Logger log = LoggerFactory.getLogger(MambaCoreActivator.class);
 
     public MambaCoreActivator() {
-
         super();
-        log.info("MambaCoreActivator constructor");
     }
 
     public void started() {
-        log.info("about to invoke: invokeEventScheduler");
-        Context.getService(FlattenDatabaseService.class).flattenDatabase();
-        log.info("Done invoking: invokeEventScheduler");
+        //TODO:Fix this and uncomment - abandon Task and use the service
+        //Context.getService(FlattenDatabaseService.class).flattenDatabase();
+        registerTask();
     }
 
     @Override
@@ -53,5 +56,34 @@ public class MambaCoreActivator extends BaseModuleActivator {
     @Override
     public void willStop() {
         super.willStop();
+    }
+
+    /**
+     * Register a new OpenMRS task
+     */
+    private void registerTask() {
+        try {
+            Context.addProxyPrivilege("Manage Scheduler");
+
+            TaskDefinition taskDef = Context.getSchedulerService().getTaskByName("MambaETL Task");
+            if (taskDef == null) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, 5);
+                taskDef = new TaskDefinition();
+                taskDef.setTaskClass(FlattenTableTask.class.getCanonicalName());
+                taskDef.setStartOnStartup(true);
+                taskDef.setStarted(true);
+                taskDef.setStartTime(cal.getTime());
+                taskDef.setUuid(UUID.randomUUID().toString());
+                taskDef.setName("Mamba-ETL Task");
+                taskDef.setDescription("MambaETL Task - To Flatten and Prepare Reporting Data.");
+                Context.getSchedulerService().scheduleTask(taskDef);
+                log.info("Task {} has been successfully registered", "MambaETL Task");
+            }
+        } catch (SchedulerException ex) {
+            log.error("Unable to register Task", ex);
+        } finally {
+            Context.removeProxyPrivilege("Manage Scheduler");
+        }
     }
 }

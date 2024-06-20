@@ -29,19 +29,24 @@ import java.util.stream.Collectors;
 public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcMambaReportItemDao.class);
+    private static final String EVENT_SCHEDULER_SQL = "/_core/database/mysql/events/mamba_etl_scheduler.sql";
+    private static final String MYSQL_COMMENT_REGEX = "--.*(?=\\n)";
+    private static final String MAMBA_ETL_SCHEDULE_INTERVAL = "mambaetl.schedule.interval.minutes";
 
     @Override
     public void executeFlatteningScript() {
 
-        long scheduleInterval = Long.parseLong(Context.getAdministrationService().getGlobalProperty("mambaetl.schedule.interval.minutes"));
+        long scheduleInterval = Long.parseLong(Context.getAdministrationService()
+                .getGlobalProperty(MAMBA_ETL_SCHEDULE_INTERVAL));
 
-        try (InputStream stream = JdbcFlattenDatabaseDao.class.getResourceAsStream("/_core/database/mysql/events/mamba_etl_scheduler.sql")) {
+        try (InputStream stream = JdbcFlattenDatabaseDao.class
+                .getResourceAsStream(EVENT_SCHEDULER_SQL)) {
 
             String eventSchedulerSQL = new BufferedReader(new InputStreamReader(Objects.requireNonNull(stream)))
                     .lines()
                     .collect(Collectors.joining("\n"));
 
-            eventSchedulerSQL = eventSchedulerSQL.replaceAll("--.*(?=\\n)", "");
+            eventSchedulerSQL = eventSchedulerSQL.replaceAll(MYSQL_COMMENT_REGEX, "");
 
             DataSource dataSource = ConnectionPoolManager
                     .getInstance()
@@ -52,7 +57,6 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
                 statement.setLong(1, scheduleInterval);
                 statement.execute();
-                log.info("MambaETL Event Scheduler Created");
 
             } catch (SQLException e) {
                 log.error("SQLException executing script", e);
