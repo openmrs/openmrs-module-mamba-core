@@ -38,6 +38,7 @@ stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert_all.sql
 
 stored-procedures/sp_mamba_json_files_insert.sql
+stored-procedures/sp_mamba_json_files_insert_incremental.sql
 stored-procedures/sp_mamba_missing_table_column_names_insert.sql
 
 stored-procedures/sp_mamba_multiselect_values_update.sql
@@ -162,6 +163,11 @@ dimensions/dim_json/sp_mamba_dim_json_create.sql
 dimensions/dim_json/sp_mamba_dim_json_insert.sql
 dimensions/dim_json/sp_mamba_dim_json_update.sql
 dimensions/dim_json/sp_mamba_dim_json.sql
+
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_create.sql
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_insert.sql
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_update.sql
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental.sql
 
 dimensions/dim_locale/sp_mamba_dim_locale_create.sql
 config/sp_mamba_dim_locale_insert.sql

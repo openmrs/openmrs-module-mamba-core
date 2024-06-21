@@ -7,6 +7,8 @@ CREATE TABLE mamba_dim_json
     encounter_type_id INT          NOT NULL UNIQUE,
     Json_data         JSON,
     uuid              CHAR(38),
+    Json_data_hash    CHAR(32),
+    flag              INT          NULL,
 
     PRIMARY KEY (id)
 )
@@ -20,5 +22,8 @@ CREATE INDEX mamba_dim_json_report_name_index
 
 CREATE INDEX mamba_dim_json_uuid_index
     ON mamba_dim_json (uuid);
+
+CREATE INDEX mamba_dim_json_Json_data_hash_index
+    ON mamba_dim_json (Json_data_hash);
 
 -- $END
