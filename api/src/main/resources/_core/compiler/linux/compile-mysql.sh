@@ -70,21 +70,21 @@ function read_config_metadata() {
   count=$(find "$config_dir" -type f -name '*.json' ! -name 'reports.json' | wc -l)
 
   SQL_CONTENTS="
+-- \$BEGIN
+  "$'
 
-      -- \$BEGIN
-          "$'
-              SET @report_data = '%s';
-              SET @file_count = %d;
+  SET @report_data = '%s';
+  SET @file_count = %d;
 
-              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
-              CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
-              CALL sp_mamba_dim_json_update;
+  CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
+  CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
+  CALL sp_mamba_dim_json_update;
 
-              SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
-              CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
-          '"
-      -- \$END
-  "
+  SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
+  CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
+  '"
+-- \$END
+"
 
   # Replace above placeholders in SQL_CONTENTS with actual values
   SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'" "$count")
@@ -97,13 +97,12 @@ function read_config_metadata() {
 function read_locale_setting() {
 
   LOCALE_SP_SQL_CONTENTS="
-
-  -- \$BEGIN
-      "$'
-          SET @concepts_locale = '%s';
-          CALL sp_mamba_locale_insert_helper(@concepts_locale);
-      '"
-  -- \$END
+-- \$BEGIN
+  "$'
+  SET @concepts_locale = '%s';
+  CALL sp_mamba_locale_insert_helper(@concepts_locale);
+  '"
+-- \$END
 "
 
   # Replace above placeholders in SQL_CONTENTS with actual values
@@ -119,12 +118,12 @@ function read_table_partition_setting() {
 
   TBL_PARTITION_SP_SQL_CONTENTS="
 
-  -- \$BEGIN
-      "$'
-          SET @table_partition = '%d';
-          CALL sp_mamba_table_partition_insert_helper(@table_partition);
-      '"
-  -- \$END
+-- \$BEGIN
+  "$'
+  SET @table_partition = '%d';
+  CALL sp_mamba_table_partition_insert_helper(@table_partition);
+  '"
+-- \$END
 "
 
   # Replace above placeholders in SQL_CONTENTS with actual values

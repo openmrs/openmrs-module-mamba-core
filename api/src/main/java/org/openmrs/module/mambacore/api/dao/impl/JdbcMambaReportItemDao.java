@@ -10,20 +10,16 @@
 package org.openmrs.module.mambacore.api.dao.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openmrs.module.mambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.mambacore.api.model.MambaReportItem;
 import org.openmrs.module.mambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.mambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSetMetaData;
 import javax.sql.DataSource;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +34,6 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
     @Override
     public List<MambaReportItem> getMambaReport(MambaReportCriteria criteria) {
-
         String argumentsJson = "";
         try {
             ObjectMapper objectMapper = new ObjectMapper();

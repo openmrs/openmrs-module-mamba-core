@@ -26,6 +26,8 @@ stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_objects_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_tables_in_schema.sql
 stored-procedures/sp_mamba_etl_execute.sql
+stored-procedures/sp_mamba_etl_schedule_table_create.sql
+stored-procedures/sp_mamba_etl_schedule.sql
 
 stored-procedures/sp_mamba_flat_encounter_table_create.sql
 stored-procedures/sp_mamba_flat_encounter_table_create_all.sql
