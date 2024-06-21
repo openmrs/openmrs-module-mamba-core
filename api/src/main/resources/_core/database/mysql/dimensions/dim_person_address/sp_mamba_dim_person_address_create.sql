@@ -19,6 +19,7 @@ CREATE TABLE mamba_dim_person_address
     country           VARCHAR(50)  NULL,
     latitude          VARCHAR(50)  NULL,
     longitude         VARCHAR(50)  NULL,
+    flag              INT          NULL,
 
     PRIMARY KEY (id)
 )

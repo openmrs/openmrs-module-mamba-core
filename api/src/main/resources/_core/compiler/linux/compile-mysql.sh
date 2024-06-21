@@ -72,11 +72,13 @@ function read_config_metadata() {
   SQL_CONTENTS="
 -- \$BEGIN
   "$'
+
   SET @report_data = '%s';
   SET @file_count = %d;
 
   CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
   CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
+  CALL sp_mamba_dim_json_update;
 
   SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
   CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
@@ -592,6 +594,15 @@ DELIMITER //
 
 CREATE PROCEDURE $sp_name()
 BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+    @message_text = MESSAGE_TEXT, @mysql_errno = MYSQL_ERRNO, @returned_sqlstate = RETURNED_SQLSTATE;
+    CALL sp_mamba_insert_error_log_table('$sp_name', @message_text, @mysql_errno, @returned_sqlstate);
+    RESIGNAL;
+END;
+
 $sp_body
 END //
 

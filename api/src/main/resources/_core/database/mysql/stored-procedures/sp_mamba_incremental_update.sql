@@ -1,0 +1,14 @@
+-- $BEGIN
+CALL sp_mamba_dim_concept_incremental_update;
+CALL sp_mamba_dim_concept_answer_incremental_update;
+CALL sp_mamba_dim_person_incremental_update;
+-- CALL sp_mamba_dim_person_name_incremental_update;
+CALL sp_mamba_dim_user_incremental_update;
+CALL sp_mamba_dim_relationship_incremental_update;
+CALL sp_mamba_dim_orders_incremental_update;
+CALL sp_mamba_dim_json_incremental_create;
+
+
+
+
+-- $END

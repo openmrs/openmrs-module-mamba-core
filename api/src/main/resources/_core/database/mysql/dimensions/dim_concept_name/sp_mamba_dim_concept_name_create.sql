@@ -10,6 +10,7 @@ CREATE TABLE mamba_dim_concept_name
     locale_preferred  TINYINT,
     voided            TINYINT,
     concept_name_type VARCHAR(255),
+    flag              INT          NULL,
 
     PRIMARY KEY (id)
 )

@@ -7,6 +7,7 @@ CREATE TABLE mamba_dim_concept_answer
     concept_id        INT NOT NULL,
     answer_concept    INT,
     answer_drug       INT,
+    flag              INT NULL,
 
     PRIMARY KEY (id)
 )
