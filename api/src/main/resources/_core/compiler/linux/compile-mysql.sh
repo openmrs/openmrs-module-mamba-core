@@ -93,6 +93,53 @@ function read_config_metadata() {
 
 }
 
+# Read in the JSON configuration metadata for Table flattening
+function read_config_metadata_for_incremental_comparison() {
+
+  JSON_CONTENTS="{\"flat_report_metadata\":["
+
+  FIRST_FILE=true
+  for FILENAME in "$config_dir"/*.json; do
+    if [ "$FILENAME" = "$config_dir/reports.json" ]; then
+        continue
+    elif [ "$FIRST_FILE" = false ]; then
+        JSON_CONTENTS="$JSON_CONTENTS,"
+#     else
+#        JSON_CONTENTS=""
+    fi
+    JSON_CONTENTS="$JSON_CONTENTS$(cat "$FILENAME")"
+    FIRST_FILE=false
+  done
+
+  JSON_CONTENTS="$JSON_CONTENTS]}"
+
+  # Count the number of JSON files excluding 'reports.json'
+  count=$(find "$config_dir" -type f -name '*.json' ! -name 'reports.json' | wc -l)
+
+  SQL_CONTENTS="
+
+      -- \$BEGIN
+          "$'
+              SET @report_data = '%s';
+              SET @file_count = %d;
+
+              CALL sp_extract_configured_flat_table_file_into_dim_json_incremental(@report_data); -- insert manually added config JSON data from config dir
+              CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
+              CALL sp_mamba_dim_json_incremental_update();
+
+              SET @report_data = fn_mamba_generate_report_array_from_automated_json_table_incremental();
+              CALL sp_mamba_extract_report_metadata_incremental(@report_data, '\''mamba_dim_concept_metadata'\'');
+          '"
+      -- \$END
+  "
+
+  # Replace above placeholders in SQL_CONTENTS with actual values
+  SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'" "$count")
+
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
+
+}
+
 #Read in the locale setting
 function read_locale_setting() {
 
@@ -518,6 +565,9 @@ read_config_report_definition_metadata
 
 # Read in the JSON configuration metadata for Table flattening
 read_config_metadata
+
+# Read in the JSON configuration metadata for incremental comparison
+read_config_metadata_for_incremental_comparison
 
 # Consolidate all the make files into one file
 consolidateSPsCallerFile

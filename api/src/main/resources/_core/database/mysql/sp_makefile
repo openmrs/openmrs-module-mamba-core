@@ -52,11 +52,13 @@ stored-procedures/sp_mamba_generate_report_wrapper.sql
 #stored-procedures/sp_mamba_generate_report_columns_wrapper.sql
 stored-procedures/sp_mamba_write_automated_json_config.sql
 stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_table.sql
+stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_incremental.sql
 stored-procedures/sp_mamba_locale_insert_helper.sql
 stored-procedures/sp_mamba_table_partition_insert_helper.sql
 stored-procedures/sp_mamba_extract_report_column_names.sql
 stored-procedures/sp_mamba_create_error_log_table.sql
 stored-procedures/sp_mamba_insert_error_log_table.sql
+stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
 
 
 #############################################################################
