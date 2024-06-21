@@ -8,6 +8,7 @@ CREATE TABLE mamba_dim_json
     Json_data         JSON,
     uuid              CHAR(38),
     Json_data_hash    CHAR(32),
+    flag              INT          NULL,
 
     PRIMARY KEY (id)
 )

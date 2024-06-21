@@ -78,6 +78,7 @@ function read_config_metadata() {
 
               CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
               CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
+              CALL sp_mamba_dim_json_update;
 
               SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
               CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
