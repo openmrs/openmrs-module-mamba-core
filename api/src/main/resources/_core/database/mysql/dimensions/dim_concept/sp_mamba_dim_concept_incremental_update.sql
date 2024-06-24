@@ -1,4 +1,5 @@
 -- $BEGIN
+
 DECLARE starttime DATETIME;
 SELECT  start_time INTO starttime
 FROM _mamba_etl_schedule sch
@@ -33,6 +34,5 @@ ON dc.concept_id = c.concept_id
         dc.retired = c.retired,
         dc.flag = 2
 WHERE c.date_changed >= starttime;
-
 
 -- $END
