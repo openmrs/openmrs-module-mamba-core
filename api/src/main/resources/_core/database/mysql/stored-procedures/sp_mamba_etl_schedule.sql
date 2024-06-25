@@ -7,7 +7,7 @@ CREATE PROCEDURE sp_mamba_etl_schedule(
 )
 BEGIN
 
-    DECLARE schedule_interval_seconds BIGINT DEFAULT 300; -- 5 Seconds
+    DECLARE interval_seconds BIGINT DEFAULT 300; -- 5 Seconds
     DECLARE start_time_seconds BIGINT;
     DECLARE end_time_seconds BIGINT;
     DECLARE start_time DATETIME DEFAULT NOW();
@@ -23,12 +23,12 @@ BEGIN
     DECLARE etl_is_ready_to_run BOOLEAN DEFAULT FALSE;
 
     -- check if _mamba_etl_schedule is empty(new) or last transaction_status is 'COMPLETED' and its 'end_time' is set.
-    SET @etl_is_ready_to_run = (SELECT COALESCE(
-                                               (SELECT IF(end_time IS NOT NULL AND transaction_status = 'COMPLETED',
-                                                          TRUE, FALSE)
-                                                FROM _mamba_etl_schedule
-                                                ORDER BY id DESC
-                                                LIMIT 1), TRUE));
+    SET etl_is_ready_to_run = (SELECT COALESCE(
+                                              (SELECT IF(end_time IS NOT NULL AND transaction_status = 'COMPLETED',
+                                                         TRUE, FALSE)
+                                               FROM _mamba_etl_schedule
+                                               ORDER BY id DESC
+                                               LIMIT 1), TRUE));
 
     IF etl_is_ready_to_run THEN
 
@@ -37,6 +37,8 @@ BEGIN
 
         INSERT INTO _mamba_etl_schedule(start_time, transaction_status)
         VALUES (start_time, 'RUNNING');
+
+        SET @last_inserted_id = LAST_INSERT_ID();
 
         SET @procedure_call = CONCAT('CALL ', etl_stored_procedure_to_run, '();');
         PREPARE stmt FROM @procedure_call;
@@ -50,7 +52,7 @@ BEGIN
         SELECT time_taken;
 
         -- Run ETL immediately if schedule was missed (give allowance of 5 seconds)
-        SET next_schedule = start_time + schedule_interval_seconds;
+        SET next_schedule = start_time + interval_seconds;
         IF NOW() > next_schedule THEN
             SET next_schedule = NOW() + 1;
         END IF;
@@ -63,22 +65,15 @@ BEGIN
             SET missed_schedule_by_seconds = (start_time_seconds - UNIX_TIMESTAMP(last_next_schedule));
         END IF;
 
-        INSERT INTO _mamba_etl_schedule(schedule_interval_seconds,
-                                        end_time,
-                                        next_schedule,
-                                        execution_duration_seconds,
-                                        missed_schedule_by_seconds,
-                                        completion_status,
-                                        transaction_status,
-                                        success_or_error_message)
-        VALUES (schedule_interval_seconds,
-                txn_end_time,
-                next_schedule,
-                time_taken,
-                missed_schedule_by_seconds,
-                completion_status,
-                'COMPLETED',
-                success_or_error_message);
+        UPDATE _mamba_etl_schedule
+        SET schedule_interval_seconds  = interval_seconds,
+            end_time                   = txn_end_time,
+            next_schedule              = next_schedule,
+            execution_duration_seconds = time_taken,
+            missed_schedule_by_seconds = missed_schedule_by_seconds,
+            completion_status          = 'SUCCESS',
+            transaction_status         = 'COMPLETED'
+        WHERE id = @last_inserted_id;
 
     END IF;
 

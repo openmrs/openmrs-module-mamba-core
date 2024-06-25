@@ -3,6 +3,8 @@
 
 CALL sp_xf_system_drop_all_tables_in_schema;
 
+CALL sp_mamba_etl_schedule_table_create;
+
 CALL sp_mamba_create_error_log_table();
 
 CALL sp_mamba_dim_locale;
