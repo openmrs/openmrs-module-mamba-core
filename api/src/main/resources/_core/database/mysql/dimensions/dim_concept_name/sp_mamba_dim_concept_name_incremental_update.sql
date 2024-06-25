@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT  start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -27,7 +27,7 @@ SELECT cn.concept_name_id,
 FROM mamba_source_db.concept_name cn
 WHERE cn.locale IN (SELECT DISTINCT(locale) FROM mamba_dim_locale)
   AND cn.locale_preferred = 1
-  AND cn.voided = 0 AND cn.date_created >= starttime;
+  AND cn.voided = 0 AND cn.date_created >= @starttime;
 
 -- Update only modified records
 UPDATE mamba_dim_concept_name cn
@@ -40,6 +40,6 @@ SET cn.concept_id = cnm.concept_id ,
     cn.voided = cnm.voided,
     cn.concept_name_type = cnm.concept_name_type,
     cn.flag = 2
-WHERE cnm.date_changed >= starttime;
+WHERE cnm.date_changed >= @starttime;
 
 -- $END

@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT  start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -48,7 +48,7 @@ SELECT
     fulfiller_status,
     1  flag
 FROM mamba_source_db.orders ord
-WHERE ord.date_created >= starttime;
+WHERE ord.date_created >= @starttime;
 
 
 -- Update only modified records
@@ -63,7 +63,7 @@ ON o.order_id = ord.order_id
         o.void_reason = ord.void_reason,
         o.fulfiller_comment = ord.fulfiller_comment,
         o.flag = 2
-WHERE ord.date_changed >= starttime;
+WHERE ord.date_changed >= @starttime;
 
 
 

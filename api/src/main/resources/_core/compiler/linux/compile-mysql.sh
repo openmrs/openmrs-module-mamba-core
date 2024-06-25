@@ -118,25 +118,25 @@ function read_config_metadata_for_incremental_comparison() {
 
   SQL_CONTENTS="
 
-      -- \$BEGIN
-          "$'
-              SET @report_data = '%s';
-              SET @file_count = %d;
+  -- \$BEGIN
+      "$'
+          SET @report_data = '%s';
+          SET @file_count = %d;
 
-              CALL sp_extract_configured_flat_table_file_into_dim_json_incremental(@report_data); -- insert manually added config JSON data from config dir
-              CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
-              CALL sp_mamba_dim_json_incremental_update();
+          CALL sp_extract_configured_flat_table_file_into_dim_json_incremental(@report_data); -- insert manually added config JSON data from config dir
+          CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
+          CALL sp_mamba_dim_json_incremental_update();
 
-              SET @report_data = fn_mamba_generate_report_array_from_automated_json_table_incremental();
-              CALL sp_mamba_extract_report_metadata_incremental(@report_data, '\''mamba_dim_concept_metadata'\'');
-          '"
-      -- \$END
+          SET @report_data = fn_mamba_generate_report_array_from_automated_json_table_incremental();
+          CALL sp_mamba_extract_report_metadata_incremental(@report_data, '\''mamba_dim_concept_metadata'\'');
+      '"
+  -- \$END
   "
 
   # Replace above placeholders in SQL_CONTENTS with actual values
   SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'" "$count")
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_incremental_insert.sql" #TODO: improve!!
 
 }
 

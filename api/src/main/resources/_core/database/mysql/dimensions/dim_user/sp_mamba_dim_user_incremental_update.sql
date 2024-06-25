@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT  start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -42,7 +42,7 @@ SELECT
                             email,
                             1  flag
 FROM mamba_source_db.users u
-WHERE u.date_created >= starttime;
+WHERE u.date_created >= @starttime;
 
 
 -- Update only modified records
@@ -55,7 +55,7 @@ UPDATE mamba_dim_user u
         u.date_changed = us.date_changed,
         u.changed_by = us.changed_by,
         u.flag = 2
-WHERE us.date_changed >= starttime;
+WHERE us.date_changed >= @starttime;
 
 
 
