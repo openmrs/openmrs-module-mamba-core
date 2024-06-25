@@ -13,7 +13,8 @@ BEGIN
     DECLARE start_time DATETIME DEFAULT NOW();
     DECLARE txn_end_time DATETIME;
     DECLARE next_schedule DATETIME;
-    DECLARE missed_schedule_by_seconds BIGINT;
+    DECLARE next_schedule_seconds BIGINT;
+    DECLARE missed_schedule_by_seconds BIGINT DEFAULT 0;
     DECLARE completion_status ENUM ('SUCCESS', 'ERROR');
     DECLARE txn_status ENUM ('RUNNING', 'COMPLETED');
     DECLARE success_or_error_message MEDIUMTEXT;
@@ -51,18 +52,13 @@ BEGIN
         SET time_taken = (end_time_seconds - start_time_seconds);
         SELECT time_taken;
 
-        -- Run ETL immediately if schedule was missed (give allowance of 5 seconds)
-        SET next_schedule = start_time + interval_seconds;
-        IF NOW() > next_schedule THEN
-            SET next_schedule = NOW() + 1;
-        END IF;
+        SET next_schedule_seconds = start_time_seconds + interval_seconds;
+        SET next_schedule = FROM_UNIXTIME(next_schedule_seconds);
 
-        SET last_next_schedule = (SELECT MAX(next_schedule) FROM _mamba_etl_schedule);
-
-        IF last_next_schedule IS NULL THEN
-            SET missed_schedule_by_seconds = 0;
-        ELSE
-            SET missed_schedule_by_seconds = (start_time_seconds - UNIX_TIMESTAMP(last_next_schedule));
+        -- Run ETL immediately if schedule was missed (give allowance of 1 second)
+        IF end_time_seconds > next_schedule_seconds THEN
+            SET missed_schedule_by_seconds = end_time_seconds - next_schedule_seconds;
+            SET next_schedule = FROM_UNIXTIME(end_time_seconds + 1);
         END IF;
 
         UPDATE _mamba_etl_schedule

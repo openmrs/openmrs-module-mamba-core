@@ -19,7 +19,7 @@ SELECT c.uuid        AS uuid,
        c.concept_id  AS concept_id,
        c.datatype_id AS datatype_id,
        c.retired,
-       c.name,
+       name,
        1                flag
 FROM mamba_source_db.concept c
 where c.date_created >= @starttime;

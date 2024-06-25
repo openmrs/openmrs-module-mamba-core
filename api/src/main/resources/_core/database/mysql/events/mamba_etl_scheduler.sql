@@ -2,6 +2,7 @@ SET GLOBAL event_scheduler = ON;
 
 CREATE EVENT IF NOT EXISTS events_mamba_etl
     ON SCHEDULE EVERY ? MINUTE
+        STARTS CURRENT_TIMESTAMP
     DO
     BEGIN
 
@@ -15,6 +16,7 @@ CREATE EVENT IF NOT EXISTS events_mamba_etl
           AND table_name = '_mamba_etl_schedule';
 
         IF etl_schedule_table_count < 1 THEN
+            CALL sp_mamba_etl_schedule_table_create();
             CALL sp_mamba_etl_schedule('sp_mamba_data_processing_flatten');
         ELSE
             CALL sp_mamba_etl_schedule('sp_mamba_data_processing_flatten_incremental');
