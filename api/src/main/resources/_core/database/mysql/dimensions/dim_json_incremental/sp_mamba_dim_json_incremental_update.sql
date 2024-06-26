@@ -11,7 +11,7 @@ SELECT
     encounter_type_id,
     Json_data,uuid,
     Json_data_hash,
-    1 flag,
+    1 flag
 FROM mamba_dim_json_incremental j1
 WHERE j1.encounter_type_id NOT IN (SELECT encounter_type_id FROM mamba_dim_json);
 

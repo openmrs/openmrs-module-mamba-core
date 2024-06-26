@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT  start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -19,6 +19,6 @@ SELECT ca.concept_answer_id AS concept_answer_id,
        ca.answer_drug       AS answer_drug,
        1                    flag
 FROM mamba_source_db.concept_answer ca
-where ca.date_created >= starttime;
+where ca.date_created >= @starttime;
 
 -- $END

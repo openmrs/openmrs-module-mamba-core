@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT  start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -17,7 +17,7 @@ SELECT et.encounter_type_id,
        et.name,
        1 flag
 FROM mamba_source_db.encounter_type et
-WHERE et.date_created >= starttime;
+WHERE et.date_created >= @starttime;
 
 -- Update only modified records
 UPDATE mamba_dim_encounter_type et
@@ -26,6 +26,6 @@ ON e.encounter_type_id = ent.encounter_id
     SET et.uuid = ent.uuid ,
         et.name = ent.name,
         et.flag = 2
-WHERE ent.date_changed >= starttime;
+WHERE ent.date_changed >= @starttime;
 
 -- $END

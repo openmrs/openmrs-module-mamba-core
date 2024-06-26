@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT  start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -33,7 +33,7 @@ FROM mamba_source_db.encounter e
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid
           IN (SELECT DISTINCT(md.encounter_type_uuid)
-              FROM mamba_dim_concept_metadata md) AND e.date_created >= starttime;
+              FROM mamba_dim_concept_metadata md) AND e.date_created >= @starttime;
 
 -- Update only modified records
 UPDATE mamba_dim_encounter e
@@ -48,6 +48,6 @@ ON enc.encounter_type = et.encounter_type_id
         e.voided = enc.voided,
         e.visit_id = enc.visit_id,
         e.flag = 2
-WHERE cnm.date_changed >= starttime;
+WHERE cnm.date_changed >= @starttime;
 
 -- $END

@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -41,7 +41,7 @@ FROM mamba_source_db.person psn
          INNER JOIN mamba_dim_person_name pn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1
-  AND pn.voided = 0 AND  ca.date_created >= starttime;
+  AND pn.voided = 0 AND  ca.date_created >= @starttime;
 
 
 -- Update only modified records
@@ -61,7 +61,7 @@ SET p.birthdate = psn.birthdate ,
     p.person_name_long = CONCAT_WS(' ', prefix, given_name, middle_name, family_name_prefix, family_name, family_name2,
     family_name_suffix, degree),
     p.flag = 2
-WHERE c.date_changed >= starttime;
+WHERE c.date_changed >= @starttime;
 
 
 

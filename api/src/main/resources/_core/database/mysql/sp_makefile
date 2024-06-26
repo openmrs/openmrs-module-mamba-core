@@ -61,6 +61,7 @@ stored-procedures/sp_mamba_extract_report_column_names.sql
 stored-procedures/sp_mamba_create_error_log_table.sql
 stored-procedures/sp_mamba_insert_error_log_table.sql
 stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
+stored-procedures/sp_mamba_data_processing_flatten_incremental.sql
 
 
 #############################################################################
@@ -84,24 +85,29 @@ dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype.sql
 dimensions/dim_concept/sp_mamba_dim_concept_create.sql
 dimensions/dim_concept/sp_mamba_dim_concept_insert.sql
 dimensions/dim_concept/sp_mamba_dim_concept_update.sql
+dimensions/dim_concept/sp_mamba_dim_concept_incremental_update.sql
 dimensions/dim_concept/sp_mamba_dim_concept.sql
 
 dimensions/dim_concept_answer/sp_mamba_dim_concept_answer_create.sql
 dimensions/dim_concept_answer/sp_mamba_dim_concept_answer_insert.sql
+dimensions/dim_concept_answer/sp_mamba_dim_concept_answer_incremental_update.sql
 dimensions/dim_concept_answer/sp_mamba_dim_concept_answer.sql
 
 dimensions/dim_concept_name/sp_mamba_dim_concept_name_create.sql
 dimensions/dim_concept_name/sp_mamba_dim_concept_name_insert.sql
 dimensions/dim_concept_name/sp_mamba_dim_concept_name_update.sql
+dimensions/dim_concept_name/sp_mamba_dim_concept_name_incremental_update.sql
 dimensions/dim_concept_name/sp_mamba_dim_concept_name.sql
 
 dimensions/dim_encounter_type/sp_mamba_dim_encounter_type_create.sql
 dimensions/dim_encounter_type/sp_mamba_dim_encounter_type_insert.sql
+dimensions/dim_encounter_type/sp_mamba_dim_encounter_type_incremental_update.sql
 dimensions/dim_encounter_type/sp_mamba_dim_encounter_type.sql
 
 dimensions/dim_encounter/sp_mamba_dim_encounter_create.sql
 dimensions/dim_encounter/sp_mamba_dim_encounter_insert.sql
 dimensions/dim_encounter/sp_mamba_dim_encounter_update.sql
+dimensions/dim_encounter/sp_mamba_dim_encounter_incremental_update.sql
 dimensions/dim_encounter/sp_mamba_dim_encounter.sql
 
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_create.sql
@@ -118,6 +124,7 @@ dimensions/dim_report_definition/sp_mamba_dim_report_definition.sql
 dimensions/dim_person/sp_mamba_dim_person_create.sql
 dimensions/dim_person/sp_mamba_dim_person_insert.sql
 dimensions/dim_person/sp_mamba_dim_person_update.sql
+dimensions/dim_person/sp_mamba_dim_person_incremental_update.sql
 dimensions/dim_person/sp_mamba_dim_person.sql
 
 dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_create.sql
@@ -136,16 +143,19 @@ dimensions/dim_person_address/sp_mamba_dim_person_address.sql
 dimensions/dim_user/sp_mamba_dim_user_create.sql
 dimensions/dim_user/sp_mamba_dim_user_insert.sql
 dimensions/dim_user/sp_mamba_dim_user_update.sql
+dimensions/dim_user/sp_mamba_dim_user_incremental_update.sql
 dimensions/dim_user/sp_mamba_dim_user.sql
 
 dimensions/dim_relationship/sp_mamba_dim_relationship_create.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship_insert.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship_update.sql
+dimensions/dim_relationship/sp_mamba_dim_relationship_incremental_update.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship.sql
 
 dimensions/dim_orders/sp_mamba_dim_orders_create.sql
 dimensions/dim_orders/sp_mamba_dim_orders_insert.sql
 dimensions/dim_orders/sp_mamba_dim_orders_update.sql
+dimensions/dim_orders/sp_mamba_dim_orders_incremental_update.sql
 dimensions/dim_orders/sp_mamba_dim_orders.sql
 
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_create.sql

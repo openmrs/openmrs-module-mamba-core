@@ -1,6 +1,6 @@
 -- $BEGIN
-DECLARE starttime DATETIME;
-SELECT  start_time INTO starttime
+
+SELECT  start_time INTO @starttime
 FROM _mamba_etl_schedule sch
 WHERE end_time IS NOT NULL
   AND transaction_status ='COMPLETED'
@@ -55,7 +55,7 @@ SELECT
 FROM mamba_source_db.obs o
     INNER JOIN mamba_dim_encounter e
         ON o.encounter_id = e.encounter_id
-WHERE o.encounter_id IS NOT NULL AND o.date_created >= starttime;
+WHERE o.encounter_id IS NOT NULL AND o.date_created >= @starttime;
 
 
 -- Update only modified records

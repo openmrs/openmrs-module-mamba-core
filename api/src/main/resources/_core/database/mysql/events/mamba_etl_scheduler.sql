@@ -1,34 +1,25 @@
--- SET GLOBAL event_scheduler = ON;
+SET GLOBAL event_scheduler = ON;
 
 CREATE EVENT IF NOT EXISTS events_mamba_etl
     ON SCHEDULE EVERY ? MINUTE
+        STARTS CURRENT_TIMESTAMP
     DO
     BEGIN
-        DECLARE status ENUM ('RUNNING', 'COMPLETED');
-        DECLARE etl_first_run bool DEFAULT true;
-        DECLARE total INT;
 
-        insert into _mamba_event_is_running () values ();
+        DECLARE etl_schedule_table_count INT DEFAULT 1;
 
-        -- make this dynamic
+        -- TODO: make etl table name dynamic
         SELECT COUNT(*)
-        INTO total
+        INTO etl_schedule_table_count
         FROM information_schema.tables
         WHERE table_schema = 'analysis_db'
           AND table_name = '_mamba_etl_schedule';
 
-        IF total = 1 THEN
-            CALL sp_mamba_data_processing_etl();
-
+        IF etl_schedule_table_count < 1 THEN
+            CALL sp_mamba_etl_schedule_table_create();
+            CALL sp_mamba_etl_schedule('sp_mamba_data_processing_flatten');
         ELSE
-            SELECT transaction_status
-            INTO status
-            FROM _mamba_etl_schedule
-            ORDER BY id DESC
-            LIMIT 1;
-
-            IF status IS NULL OR status = 'COMPLETED' THEN
-                CALL sp_mamba_etl_schedule();
-            END IF;
+            CALL sp_mamba_etl_schedule('sp_mamba_data_processing_flatten_incremental');
         END IF;
+
     END;
