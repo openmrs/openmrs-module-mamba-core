@@ -9,5 +9,6 @@ CALL sp_mamba_dim_user_incremental_update;
 CALL sp_mamba_dim_relationship_incremental_update;
 CALL sp_mamba_dim_orders_incremental_update;
 CALL sp_mamba_dim_json_incremental_create;
+CALL sp_mamba_dim_concept_metadata_create;
 CALL sp_mamba_dim_concept_metadata_incremental_insert;
 -- $END

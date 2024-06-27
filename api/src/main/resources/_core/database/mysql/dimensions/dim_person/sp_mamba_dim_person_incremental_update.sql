@@ -41,7 +41,7 @@ FROM mamba_source_db.person psn
          INNER JOIN mamba_dim_person_name pn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1
-  AND pn.voided = 0 AND  ca.date_created >= @starttime;
+  AND pn.voided = 0 AND  psn.date_created >= @starttime;
 
 
 -- Update only modified records
@@ -52,7 +52,7 @@ UPDATE mamba_dim_person p
         ON psn.person_id = pn.person_id
 SET p.birthdate = psn.birthdate ,
     p.gender = psn.gender,
-    p.age = fn_mamba_age_calculator(birthdate, death_date),
+    p.age = fn_mamba_age_calculator(psn.birthdate, psn.death_date),
     p.date_created = psn.date_created,
     p.voided = psn.voided,
     p.dead = psn.dead,
@@ -61,7 +61,7 @@ SET p.birthdate = psn.birthdate ,
     p.person_name_long = CONCAT_WS(' ', prefix, given_name, middle_name, family_name_prefix, family_name, family_name2,
     family_name_suffix, degree),
     p.flag = 2
-WHERE c.date_changed >= @starttime;
+WHERE psn.date_changed >= @starttime;
 
 
 

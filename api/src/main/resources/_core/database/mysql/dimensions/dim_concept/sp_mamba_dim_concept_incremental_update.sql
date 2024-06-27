@@ -13,7 +13,6 @@ INSERT INTO mamba_dim_concept (uuid,
                                concept_id,
                                datatype_id,
                                retired,
-                               name,
                                flag)
 SELECT c.uuid        AS uuid,
        c.concept_id  AS concept_id,

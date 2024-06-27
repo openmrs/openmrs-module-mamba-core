@@ -127,8 +127,8 @@ function read_config_metadata_for_incremental_comparison() {
           CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
           CALL sp_mamba_dim_json_incremental_update();
 
-          SET @report_data = fn_mamba_generate_report_array_from_automated_json_table_incremental();
-          CALL sp_mamba_extract_report_metadata_incremental(@report_data, '\''mamba_dim_concept_metadata'\'');
+          SET @report_data = fn_mamba_generate_report_array_from_automated_json_incremental();
+          CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
       '"
   -- \$END
   "
