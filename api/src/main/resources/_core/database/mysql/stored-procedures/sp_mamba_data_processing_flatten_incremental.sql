@@ -2,6 +2,7 @@
 CALL sp_mamba_drop_some_tables_before_incremental_update;
 CALL sp_mamba_dim_concept_incremental_update;
 CALL sp_mamba_dim_concept_answer_incremental_update;
+CALL sp_mamba_dim_concept_name_incremental_update;
 CALL sp_mamba_dim_person_incremental_update;
 -- CALL sp_mamba_dim_person_name_incremental_update;
 CALL sp_mamba_dim_user_incremental_update;
