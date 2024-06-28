@@ -46,8 +46,8 @@ WHERE u.date_created >= @starttime;
 
 
 -- Update only modified records
-UPDATE mamba_dim_user u
-    INNER JOIN mamba_source_db.user us
+UPDATE mamba_dim_users u
+    INNER JOIN mamba_source_db.users us
         ON u.user_id = us.user_id
     SET u.username = us.username ,
         u.creator = us.creator,

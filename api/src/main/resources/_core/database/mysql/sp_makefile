@@ -7,6 +7,7 @@ functions/fn_mamba_get_obs_value_column.sql
 functions/fn_mamba_age_calculator.sql
 functions/fn_mamba_get_datatype_for_concept.sql
 functions/fn_mamba_generate_report_array_from_automated_json_table.sql
+functions/fn_mamba_generate_report_array_from_automated_json_incremental.sql
 functions/fn_mamba_array_length.sql
 functions/fn_mamba_get_array_item_by_index.sql
 functions/fn_mamba_json_array_length.sql
@@ -112,6 +113,7 @@ dimensions/dim_encounter/sp_mamba_dim_encounter.sql
 
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_create.sql
 config/sp_mamba_dim_concept_metadata_insert.sql
+config/sp_mamba_dim_concept_metadata_incremental_insert.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_update.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_cleanup.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql

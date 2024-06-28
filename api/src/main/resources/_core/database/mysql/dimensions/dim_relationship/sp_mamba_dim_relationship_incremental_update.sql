@@ -50,14 +50,14 @@ WHERE r.date_created >= @starttime;
 -- Update only modified records
 UPDATE mamba_dim_relationship r
     INNER JOIN mamba_source_db.relationship rel
-ON r.user_id = rel.user_id
+ON r.relationship_id = rel.relationship_id
     SET r.relationship = rel.relationship ,
         r.person_a = rel.person_a,
         r.person_b = rel.person_b,
         r.date_changed = rel.date_changed,
         r.changed_by = rel.changed_by,
         r.flag = 2
-WHERE us.date_changed >= @starttime;
+WHERE rel.date_changed >= @starttime;
 
 
 
