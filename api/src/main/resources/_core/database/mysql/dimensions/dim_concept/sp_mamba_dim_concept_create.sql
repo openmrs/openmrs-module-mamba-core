@@ -5,7 +5,7 @@ CREATE TABLE mamba_dim_concept
     id          INT          NOT NULL AUTO_INCREMENT,
     concept_id  INT          NOT NULL,
     uuid        CHAR(38)     NOT NULL,
-    datatype_id INT          NOT NULL, -- make it a FK
+    datatype_id INT          NOT NULL,
     datatype    VARCHAR(100) NULL,
     retired     TINYINT(1)   NOT NULL,
     concept_name    VARCHAR(100) NULL,
