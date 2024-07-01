@@ -77,9 +77,7 @@ ON z.obs_value_coded = cn.concept_id
         z.obs_value_coded_uuid = c.uuid
 WHERE z.obs_value_coded IS NOT NULL;
 
--- Add and update column obs_value_boolean (Concept values)
-ALTER TABLE mamba_z_encounter_obs
-    ADD obs_value_boolean boolean;
+-- update column obs_value_boolean (Concept values)
 
 UPDATE   mamba_z_encounter_obs z
 SET obs_value_boolean =
