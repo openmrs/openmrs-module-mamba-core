@@ -22,7 +22,7 @@ WHERE et.date_created >= @starttime;
 -- Update only modified records
 UPDATE mamba_dim_encounter_type et
     INNER JOIN mamba_source_db.encounter_type ent
-ON e.encounter_type_id = ent.encounter_id
+ON et.encounter_type_id = ent.encounter_type_id
     SET et.uuid = ent.uuid ,
         et.name = ent.name,
         et.flag = 2

@@ -31,9 +31,7 @@ SELECT e.encounter_id,
 FROM mamba_source_db.encounter e
          INNER JOIN mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
-WHERE et.uuid
-          IN (SELECT DISTINCT(md.encounter_type_uuid)
-              FROM mamba_dim_concept_metadata md) AND e.date_created >= @starttime;
+WHERE  e.date_created >= @starttime;
 
 -- Update only modified records
 UPDATE mamba_dim_encounter e
@@ -43,11 +41,11 @@ ON e.encounter_id = enc.encounter_id
 ON enc.encounter_type = et.encounter_type_id
     SET e.uuid = enc.uuid ,
         e.encounter_type = enc.encounter_type,
-        e.encounter_type_uuid = et.encounter_type_uuid,
+        e.encounter_type_uuid = et.uuid,
         e.encounter_datetime = enc.encounter_datetime,
         e.voided = enc.voided,
         e.visit_id = enc.visit_id,
         e.flag = 2
-WHERE cnm.date_changed >= @starttime;
+WHERE enc.date_changed >= @starttime;
 
 -- $END

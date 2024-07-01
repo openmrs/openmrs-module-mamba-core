@@ -6,9 +6,12 @@ CALL sp_mamba_dim_concept_name_incremental_update;
 CALL sp_mamba_dim_person_incremental_update;
 -- CALL sp_mamba_dim_person_name_incremental_update;
 CALL sp_mamba_dim_user_incremental_update;
+CALL sp_mamba_dim_encounter_incremental_update;
+CALL sp_mamba_dim_encounter_type_incremental_update;
 CALL sp_mamba_dim_relationship_incremental_update;
 CALL sp_mamba_dim_orders_incremental_update;
 CALL sp_mamba_dim_json_incremental_create;
 CALL sp_mamba_dim_concept_metadata_create;
 CALL sp_mamba_dim_concept_metadata_incremental_insert;
+CALL sp_mamba_z_encounter_obs_incremental_update;
 -- $END

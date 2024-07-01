@@ -24,6 +24,7 @@ CREATE TABLE mamba_z_encounter_obs
     status                  VARCHAR(16)   NOT NULL,
     voided                  TINYINT       NOT NULL,
     row_num                 INT           NULL,
+    flag                    INT           NULL,
 
     PRIMARY KEY (id)
 )
