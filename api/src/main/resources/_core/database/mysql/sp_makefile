@@ -168,6 +168,7 @@ dimensions/dim_agegroup/sp_mamba_dim_agegroup.sql
 z/obs/sp_mamba_z_encounter_obs_create.sql
 z/obs/sp_mamba_z_encounter_obs_insert.sql
 z/obs/sp_mamba_z_encounter_obs_update.sql
+z/obs/sp_mamba_z_encounter_obs_incremental_update.sql
 z/obs/sp_mamba_z_encounter_obs.sql
 
 dimensions/dim_obs_group/sp_mamba_dim_obs_group_create.sql
