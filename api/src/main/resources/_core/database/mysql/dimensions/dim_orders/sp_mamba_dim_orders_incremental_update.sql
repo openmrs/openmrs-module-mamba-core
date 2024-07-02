@@ -51,20 +51,6 @@ FROM mamba_source_db.orders ord
 WHERE ord.date_created >= @starttime;
 
 
--- Update only modified records
-UPDATE mamba_dim_orders o
-    INNER JOIN mamba_source_db.orders ord
-ON o.order_id = ord.order_id
-    SET o.order_number = ord.order_number ,
-        o.orderer = ord.orderer,
-        o.instructions = ord.instructions,
-        o.voided = ord.voided,
-        o.voided_by = ord.voided_by,
-        o.void_reason = ord.void_reason,
-        o.fulfiller_comment = ord.fulfiller_comment,
-        o.flag = 2
-WHERE ord.date_changed >= @starttime;
-
 
 
 -- $END
