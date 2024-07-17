@@ -69,4 +69,7 @@ CREATE INDEX mamba_z_encounter_obs_encounter_datetime_index
 CREATE INDEX mamba_z_encounter_obs_person_id_index
     ON mamba_z_encounter_obs (person_id);
 
+CREATE INDEX mamba_z_encounter_obs_flag
+    ON mamba_z_encounter_obs (flag);
+
 -- $END
