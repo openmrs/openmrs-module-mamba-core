@@ -2,9 +2,9 @@
 
 CREATE TABLE mamba_dim_person_attribute_type
 (
-    id                          INT           NOT NULL AUTO_INCREMENT,
-    date_created                DATETIME      NOT NULL,
-    description                 TEXT          NOT NULL,
+    id                          INT             NOT NULL AUTO_INCREMENT,
+    date_created                DATETIME        NOT NULL,
+    description                 TEXT            NULL,
     name                        NVARCHAR(50)    NOT NULL,
     person_attribute_type_id    INT             NOT NULL,
     retired                     TINYINT(1)      NOT NULL,
