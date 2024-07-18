@@ -7,6 +7,7 @@ CREATE EVENT IF NOT EXISTS events_mamba_etl
     BEGIN
 
         DECLARE etl_schedule_table_count INT DEFAULT 1;
+        DECLARE incremental_mode TINYINT(1) DEFAULT 1;
 
         -- TODO: make etl table name dynamic
         SELECT COUNT(*)
@@ -15,7 +16,11 @@ CREATE EVENT IF NOT EXISTS events_mamba_etl
         WHERE table_schema = 'analysis_db'
           AND table_name = '_mamba_etl_schedule';
 
-        IF etl_schedule_table_count < 1 THEN
+        SELECT DISTINCT(incremental_mode_switch)
+        INTO incremental_mode
+        FROM mamba_etl_user_settings;
+
+        IF etl_schedule_table_count < 1 OR incremental_mode = 0 THEN
             CALL sp_mamba_etl_schedule_table_create();
             CALL sp_mamba_etl_schedule('sp_mamba_data_processing_flatten');
         ELSE

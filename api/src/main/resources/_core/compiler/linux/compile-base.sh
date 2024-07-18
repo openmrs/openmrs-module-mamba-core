@@ -11,7 +11,7 @@ add_option() {
 }
 
 # Parse arguments
-while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:u:" opt; do
   case "${opt}" in
   h) add_option "-h" "${OPTARG}" ;;
   t) add_option "-t" "${OPTARG}" ;;
@@ -50,6 +50,7 @@ while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:" opt; do
   c) add_option "-c" "${OPTARG}" ;;
   l) add_option "-l" "${OPTARG}" ;;
   p) add_option "-p" "${OPTARG}" ;;
+  u) add_option "-u" "${OPTARG}" ;;
   *)
     echo "Invalid option: -$OPTARG. Use -n mysql|postgres|sqlserver|oracle." >&2
     exit 1

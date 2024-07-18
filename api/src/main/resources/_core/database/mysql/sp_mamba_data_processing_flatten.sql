@@ -7,7 +7,7 @@ CALL sp_mamba_create_error_log_table();
 
 CALL sp_mamba_dim_locale;
 
-CALL sp_mamba_dim_table_partition;
+CALL sp_mamba_etl_user_settings;
 
 CALL sp_mamba_dim_location;
 
