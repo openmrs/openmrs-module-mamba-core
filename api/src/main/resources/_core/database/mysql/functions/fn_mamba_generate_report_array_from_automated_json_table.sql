@@ -11,7 +11,7 @@ BEGIN
     SELECT CONCAT('{"flat_report_metadata":[', GROUP_CONCAT(
             CONCAT(
                     '{'
-                        ',"report_name":', JSON_EXTRACT(json_data, '$.report_name'),
+                        '"report_name":', JSON_EXTRACT(json_data, '$.report_name'),
                         ',"flat_table_name":', JSON_EXTRACT(json_data, '$.flat_table_name'),
                         ',"encounter_type_uuid":', JSON_EXTRACT(json_data, '$.encounter_type_uuid'),
                         ',"table_columns": ', JSON_EXTRACT(json_data, '$.table_columns'),

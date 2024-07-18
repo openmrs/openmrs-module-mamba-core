@@ -7,10 +7,10 @@ CREATE FUNCTION fn_mamba_remove_special_characters(input_text VARCHAR(255))
 BEGIN
     DECLARE modified_string VARCHAR(255);
 
-    SET modified_string = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE
+    SET modified_string = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE
     (REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(input_text, '!', ''), '@', ''), '#', ''), '$', ''),
                                                              '%', ''), '^', ''), '&', ''), '*', ''), '?', ''), '/', ''),
-             ',', ''), ')', ''), '(', ''), '"', ''), '-', ''), '=', ''),'+', ''),'£', ''),':', ''),';', ''),'>', ''),'<', '');
+             ',', ''), ')', ''), '(', ''), '"', ''), '-', ''), '=', ''),'+', ''),'£', ''),':', ''),';', ''),'>', ''),'<', ''),'\'', '');
 
 RETURN modified_string;
 END //
