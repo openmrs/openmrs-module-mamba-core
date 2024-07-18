@@ -65,6 +65,7 @@ stored-procedures/sp_mamba_create_error_log_table.sql
 stored-procedures/sp_mamba_insert_error_log_table.sql
 stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
 stored-procedures/sp_mamba_data_processing_flatten_incremental.sql
+stored-procedures/sp_mamba_reset_flags_for_incremental_updates.sql
 
 
 #############################################################################
