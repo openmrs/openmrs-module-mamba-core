@@ -65,6 +65,7 @@ stored-procedures/sp_mamba_create_error_log_table.sql
 stored-procedures/sp_mamba_insert_error_log_table.sql
 stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
 stored-procedures/sp_mamba_data_processing_flatten_incremental.sql
+stored-procedures/sp_mamba_reset_flags_for_incremental_updates.sql
 
 
 #############################################################################
@@ -76,10 +77,18 @@ dimensions/dim_location/sp_mamba_dim_location_insert.sql
 dimensions/dim_location/sp_mamba_dim_location_update.sql
 dimensions/dim_location/sp_mamba_dim_location.sql
 
+dimensions/dim_location/sp_mamba_dim_location_incremental_insert.sql
+dimensions/dim_location/sp_mamba_dim_location_incremental_update.sql
+dimensions/dim_location/sp_mamba_dim_location_incremental.sql
+
 dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_create.sql
 dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_insert.sql
 dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_update.sql
 dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type.sql
+
+dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_incremental_insert.sql
+dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_incremental_update.sql
+dimensions/dim_patient_identifier_type/sp_mamba_dim_patient_identifier_type_incremental.sql
 
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_create.sql
 dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_insert.sql
@@ -136,9 +145,17 @@ dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_insert.sql
 dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_update.sql
 dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier.sql
 
+dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_incremental_insert.sql
+dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_incremental_update.sql
+dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_incremental.sql
+
 dimensions/dim_person_name/sp_mamba_dim_person_name_create.sql
 dimensions/dim_person_name/sp_mamba_dim_person_name_insert.sql
 dimensions/dim_person_name/sp_mamba_dim_person_name.sql
+
+dimensions/dim_person_name/sp_mamba_dim_person_name_incremental_update.sql
+dimensions/dim_person_name/sp_mamba_dim_person_name_incremental_insert.sql
+dimensions/dim_person_name/sp_mamba_dim_person_name_incremental.sql
 
 dimensions/dim_person_address/sp_mamba_dim_person_address_create.sql
 dimensions/dim_person_address/sp_mamba_dim_person_address_insert.sql

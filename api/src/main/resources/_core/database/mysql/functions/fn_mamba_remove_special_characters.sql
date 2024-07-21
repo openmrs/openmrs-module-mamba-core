@@ -8,9 +8,9 @@ BEGIN
     DECLARE modified_string VARCHAR(255);
 
     SET modified_string = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE
-    (REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(input_text, '!', ''), '@', ''), '#', ''), '$', ''),
+    (REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(input_text, '!', ''), '@', ''), '#', ''), '$', ''),
                                                              '%', ''), '^', ''), '&', ''), '*', ''), '?', ''), '/', ''),
-             ',', ''), ')', ''), '(', ''), '"', ''), '-', ''), '=', ''),'+', ''),'£', ''),':', ''),';', ''),'>', ''),'<', '');
+             ',', ''), ')', ''), '(', ''), '"', ''), '-', ''), '=', ''),'+', ''),'£', ''),':', ''),';', ''),'>', ''),'<', ''),'ã', '');
 
 RETURN modified_string;
 END //

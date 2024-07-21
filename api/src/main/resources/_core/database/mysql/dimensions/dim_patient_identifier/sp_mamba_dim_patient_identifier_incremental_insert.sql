@@ -1,4 +1,10 @@
 -- $BEGIN
+SELECT  start_time INTO @starttime
+FROM _mamba_etl_schedule sch
+WHERE end_time IS NOT NULL
+  AND transaction_status ='COMPLETED'
+ORDER BY id DESC
+    LIMIT 1;
 
 INSERT INTO mamba_dim_patient_identifier (patient_id,
                                           identifier,
@@ -12,7 +18,8 @@ INSERT INTO mamba_dim_patient_identifier (patient_id,
                                           changed_by,
                                           voided_by,
                                           date_voided,
-                                          void_reason)
+                                          void_reason,
+                                          incremental_record)
 SELECT patient_id,
        identifier,
        identifier_type,
@@ -25,7 +32,10 @@ SELECT patient_id,
        changed_by,
        voided_by,
        date_voided,
-       void_reason
-FROM mamba_source_db.patient_identifier;
+       void_reason,
+       1
+FROM mamba_source_db.patient_identifier
+where patient_id NOT IN (SELECT patient_id FROM mamba_dim_patient_identifier)
+  AND date_created >= @starttime;
 
 -- $END

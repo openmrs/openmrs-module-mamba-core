@@ -11,8 +11,13 @@ CREATE TABLE mamba_dim_patient_identifier
     location_id           INT         NULL,
     date_created          DATETIME    NOT NULL,
     uuid                  CHAR(38)    NOT NULL,
-    voided                TINYINT     NOT NULL,
-    flag                  INT          NULL,
+    voided                TINYINT     NULL,
+    date_changed          DATETIME    NULL,
+    changed_by            INT         NULL,
+    voided_by             INT          NULL,
+    date_voided           DATETIME     NULL,
+    void_reason           VARCHAR(255) NULL,
+    incremental_record INT DEFAULT 0 NOT NULL,
 
     PRIMARY KEY (id)
 )
@@ -35,5 +40,8 @@ CREATE INDEX mamba_dim_patient_identifier_uuid_index
 
 CREATE INDEX mamba_dim_patient_identifier_preferred_index
     ON mamba_dim_patient_identifier (preferred);
+
+CREATE INDEX mamba_dim_patient_identifier_incremental_record_index
+    ON mamba_dim_patient_identifier (incremental_record);
 
 -- $END

@@ -11,7 +11,7 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
 
     DECLARE cursor_flat_tables CURSOR FOR
-    SELECT DISTINCT cm.flat_table_name FROM mamba_z_encounter_obs eo INNER JOIN mamba_dim_concept_metadata cm ON eo.encounter_type_uuid = cm.encounter_type_uuid WHERE eo.flag in (1, 2)
+    SELECT DISTINCT cm.flat_table_name FROM mamba_z_encounter_obs eo INNER JOIN mamba_dim_concept_metadata cm ON eo.encounter_type_uuid = cm.encounter_type_uuid WHERE eo.flag in (1);
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 

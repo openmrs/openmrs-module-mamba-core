@@ -1,5 +1,12 @@
 -- $BEGIN
 
+SELECT  start_time INTO @starttime
+FROM _mamba_etl_schedule sch
+WHERE end_time IS NOT NULL
+  AND transaction_status ='COMPLETED'
+ORDER BY id DESC
+    LIMIT 1;
+
 INSERT INTO mamba_dim_location (location_id,
                                 name,
                                 description,
@@ -31,7 +38,8 @@ INSERT INTO mamba_dim_location (location_id,
                                 retired,
                                 retired_by,
                                 date_retired,
-                                retire_reason)
+                                retire_reason,
+                                incremental_record)
 SELECT location_id,
        name,
        description,
@@ -63,7 +71,11 @@ SELECT location_id,
        retired,
        retired_by,
        date_retired,
-       retire_reason
-FROM mamba_source_db.location;
+       retire_reason,
+       1
+FROM mamba_source_db.location
+where location_id NOT IN (SELECT location_id FROM mamba_dim_location)
+    AND date_created >= @starttime;
+
 
 -- $END

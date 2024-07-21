@@ -28,7 +28,14 @@ CREATE TABLE mamba_dim_location
     address13       VARCHAR(255) NULL,
     address14       VARCHAR(255) NULL,
     address15       VARCHAR(255) NULL,
-    flag            INT          NULL,
+    date_created    DATETIME     NULL,
+    changed_by      INT          NULL,
+    date_changed    DATETIME     NULL,
+    retired         TINYINT(1)   NULL,
+    retired_by      INT          NULL,
+    date_retired    DATETIME     NULL,
+    retire_reason   VARCHAR(255) NULL,
+    incremental_record INT DEFAULT 0 NOT NULL, -- whether a record has been inserted after the first ETL run,
 
     PRIMARY KEY (id)
 )
@@ -39,5 +46,8 @@ CREATE INDEX mamba_dim_location_location_id_index
 
 CREATE INDEX mamba_dim_location_name_index
     ON mamba_dim_location (name);
+
+CREATE INDEX mamba_dim_location_incremental_record_index
+    ON mamba_dim_location (incremental_record);
 
 -- $END

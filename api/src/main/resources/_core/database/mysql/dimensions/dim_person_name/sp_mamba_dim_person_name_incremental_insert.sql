@@ -1,4 +1,13 @@
 -- $BEGIN
+
+SELECT  start_time INTO @starttime
+FROM _mamba_etl_schedule sch
+WHERE end_time IS NOT NULL
+  AND transaction_status ='COMPLETED'
+ORDER BY id DESC
+    LIMIT 1;
+
+
 INSERT INTO mamba_dim_person_name(person_name_id,
                                   person_id,
                                   preferred,
@@ -16,7 +25,8 @@ INSERT INTO mamba_dim_person_name(person_name_id,
                                   date_voided,
                                   void_reason,
                                   changed_by,
-                                  date_changed)
+                                  date_changed,
+                                  incremental_record)
 SELECT pn.person_name_id,
        pn.person_id,
        pn.preferred,
@@ -34,9 +44,10 @@ SELECT pn.person_name_id,
        pn.date_voided,
        pn.void_reason,
        pn.changed_by,
-       pn.date_changed
-FROM mamba_source_db.person_name pn;
+       pn.date_changed,
+       1
+FROM mamba_source_db.person_name pn
+where person_name_id NOT IN (SELECT person_name_id FROM mamba_dim_person_name)
+  AND date_created >= @starttime;
+
 -- $END
-
-
-
