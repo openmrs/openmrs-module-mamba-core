@@ -10,90 +10,85 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
 
-    SELECT fn_mamba_json_extract_array(report_data, 'flat_report_metadata') INTO @report_array;
-    SELECT fn_mamba_json_array_length(@report_array) INTO @report_array_len;
+    SELECT JSON_EXTRACT(report_data, '$.flat_report_metadata') INTO @report_array;
+    SELECT JSON_LENGTH(@report_array) INTO @report_array_len;
 
-    SET @report_count = 1;
-        WHILE @report_count <= @report_array_len
-            DO
-                SELECT fn_mamba_json_object_at_index(@report_array, @report_count) INTO @report;
-                SET @report =  CONCAT(@report,'}');
-                SELECT fn_mamba_json_extract(@report, 'report_name') INTO @report_name;
-                SELECT fn_mamba_json_extract(@report, 'flat_table_name') INTO @flat_table_name;
-                SELECT fn_mamba_json_extract(@report, 'encounter_type_uuid') INTO @encounter_type;
-                SELECT fn_mamba_json_extract_object(@report, 'table_columns') INTO @column_array;
+    SET @report_count = 0;
+    WHILE @report_count < @report_array_len
+        DO
 
-                SELECT fn_mamba_json_keys_array(@column_array) INTO @column_keys_array;
-                SELECT fn_mamba_array_length(@column_keys_array) INTO @column_keys_array_len;
+            SELECT JSON_EXTRACT(@report_array, CONCAT('$[', @report_count, ']')) INTO @report;
+            SELECT JSON_EXTRACT(@report, '$.report_name') INTO @report_name;
+            SELECT JSON_EXTRACT(@report, '$.flat_table_name') INTO @flat_table_name;
+            SELECT JSON_EXTRACT(@report, '$.encounter_type_uuid') INTO @encounter_type;
+            SELECT JSON_EXTRACT(@report, '$.table_columns') INTO @column_array;
 
-                SET @column_array = CONCAT('{',@column_array,'}');
-                IF @column_keys_array_len = 0 THEN
+            SELECT JSON_KEYS(@column_array) INTO @column_keys_array;
+            SELECT JSON_LENGTH(@column_keys_array) INTO @column_keys_array_len;
 
-                     INSERT INTO mamba_dim_concept_metadata
-                        (
-                            report_name,
-                            flat_table_name,
-                            encounter_type_uuid,
-                            column_label,
-                            concept_uuid
-                        )
-                     VALUES (fn_mamba_remove_quotes(@report_name),
-                            fn_mamba_remove_quotes(@flat_table_name),
-                            fn_mamba_remove_quotes(@encounter_type),
-                            'AUTO-GENERATE',
-                            'AUTO-GENERATE');
-                ELSE
+            IF @column_keys_array_len = 0 THEN
 
-                    SET @col_count = 1;
-                    SET @table_name = fn_mamba_remove_quotes(@flat_table_name);
-                    SET @current_table_count = 1;
+                INSERT INTO mamba_dim_concept_metadata
+                (report_name,
+                 flat_table_name,
+                 encounter_type_uuid,
+                 column_label,
+                 concept_uuid)
+                VALUES (JSON_UNQUOTE(@report_name),
+                        JSON_UNQUOTE(@flat_table_name),
+                        JSON_UNQUOTE(@encounter_type),
+                        'AUTO-GENERATE',
+                        'AUTO-GENERATE');
+            ELSE
 
-                    WHILE @col_count <= @column_keys_array_len
-                        DO
-                            SELECT fn_mamba_get_array_item_by_index(@column_keys_array, @col_count) INTO @field_name;
-                            SELECT fn_mamba_json_value_by_key(@column_array,  @field_name) INTO @concept_uuid;
+                SET @col_count = 0;
+                SET @table_name = JSON_UNQUOTE(@flat_table_name);
+                SET @current_table_count = 1;
 
-                            IF @col_count > 100 THEN
-                                SET @table_name = CONCAT(fn_mamba_remove_quotes(@flat_table_name), '_', @current_table_count);
-                                SET @current_table_count = @current_table_count;
-                                INSERT INTO mamba_dim_concept_metadata
-                                (
-                                    report_name,
-                                    flat_table_name,
-                                    encounter_type_uuid,
-                                    column_label,
-                                    concept_uuid
-                                )
-                                VALUES (fn_mamba_remove_quotes(@report_name),
-                                        fn_mamba_remove_quotes(@table_name),
-                                        fn_mamba_remove_quotes(@encounter_type),
-                                        fn_mamba_remove_quotes(@field_name),
-                                        fn_mamba_remove_quotes(@concept_uuid));
+                WHILE @col_count < @column_keys_array_len
+                    DO
+                        SELECT JSON_EXTRACT(@column_keys_array, CONCAT('$[', @col_count, ']')) INTO @field_name;
+                        SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
 
-                            ELSE
-                                INSERT INTO mamba_dim_concept_metadata
-                                (
-                                    report_name,
-                                    flat_table_name,
-                                    encounter_type_uuid,
-                                    column_label,
-                                    concept_uuid
-                                )
-                                VALUES (fn_mamba_remove_quotes(@report_name),
-                                        fn_mamba_remove_quotes(@flat_table_name),
-                                        fn_mamba_remove_quotes(@encounter_type),
-                                        fn_mamba_remove_quotes(@field_name),
-                                        fn_mamba_remove_quotes(@concept_uuid));
-                            END IF;
+                        IF @col_count > 50 THEN
+
+                            SET @table_name = CONCAT(JSON_UNQUOTE(@flat_table_name), '_', @current_table_count);
+                            SET @current_table_count = @current_table_count;
+
+                            INSERT INTO mamba_dim_concept_metadata
+                            (report_name,
+                             flat_table_name,
+                             encounter_type_uuid,
+                             column_label,
+                             concept_uuid)
+                            VALUES (JSON_UNQUOTE(@report_name),
+                                    JSON_UNQUOTE(@table_name),
+                                    JSON_UNQUOTE(@encounter_type),
+                                    JSON_UNQUOTE(@field_name),
+                                    JSON_UNQUOTE(@concept_uuid));
+
+                        ELSE
+                            INSERT INTO mamba_dim_concept_metadata
+                            (report_name,
+                             flat_table_name,
+                             encounter_type_uuid,
+                             column_label,
+                             concept_uuid)
+                            VALUES (JSON_UNQUOTE(@report_name),
+                                    JSON_UNQUOTE(@flat_table_name),
+                                    JSON_UNQUOTE(@encounter_type),
+                                    JSON_UNQUOTE(@field_name),
+                                    JSON_UNQUOTE(@concept_uuid));
+                        END IF;
 
 
-                            SET @col_count = @col_count + 1;
+                        SET @col_count = @col_count + 1;
 
-                        END WHILE;
-                END IF;
+                    END WHILE;
+            END IF;
 
-                    SET @report_count = @report_count + 1;
-            END WHILE;
+            SET @report_count = @report_count + 1;
+        END WHILE;
 
 END //
 

@@ -73,10 +73,10 @@ function read_config_metadata() {
               SET @report_data = '%s';
               SET @file_count = %d;
 
-              CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
+              -- CALL sp_extract_configured_flat_table_file_into_dim_json_table(@report_data); -- insert manually added config JSON data from config dir
               -- CALL sp_mamba_dim_json_insert(); -- insert automatically generated config JSON data from db
 
-              SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
+              -- SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
               CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
           '"
       -- \$END
@@ -105,7 +105,7 @@ function read_locale_setting() {
   # Replace above placeholders in SQL_CONTENTS with actual values
   LOCALE_SP_SQL_CONTENTS=$(printf "$LOCALE_SP_SQL_CONTENTS" "'$concepts_locale'")
 
-  echo "SQL CONTENT: $LOCALE_SP_SQL_CONTENTS"
+  # echo "SQL CONTENT: $LOCALE_SP_SQL_CONTENTS"
 
   echo "$LOCALE_SP_SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
 }
@@ -161,9 +161,9 @@ function read_config_report_definition_metadata() {
         in_parameters="${in_parameters%, }"
 
         # Print concatenated pairs if there are any
-        if [ -n "$in_parameters" ]; then
-            echo "Query Params: $in_parameters"
-        fi
+        #if [ -n "$in_parameters" ]; then
+        #    echo "Query Params: $in_parameters"
+        #fi
 
 create_report_procedure+="
 
