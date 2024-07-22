@@ -15,13 +15,13 @@ CALL sp_mamba_dim_patient_identifier_type;
 
 CALL sp_mamba_dim_concept_datatype;
 
-CALL sp_mamba_dim_concept_answer;
+CALL sp_mamba_dim_concept_name; -- ok
 
-CALL sp_mamba_dim_concept_name;
+CALL sp_mamba_dim_concept; -- ok
 
-CALL sp_mamba_dim_concept;
+CALL sp_mamba_dim_concept_answer; -- ok
 
-CALL sp_mamba_dim_encounter_type;
+CALL sp_mamba_dim_encounter_type; -- ok
 
 CALL sp_mamba_dim_json_create;
 
@@ -29,21 +29,21 @@ CALL sp_mamba_dim_concept_metadata;
 
 CALL sp_mamba_dim_report_definition;
 
-CALL sp_mamba_dim_encounter;
+CALL sp_mamba_dim_encounter; -- ok
 
-CALL sp_mamba_dim_person_name;
+CALL sp_mamba_dim_person_name; -- ok
 
-CALL sp_mamba_dim_person;
+CALL sp_mamba_dim_person; -- ok
 
 CALL sp_mamba_dim_person_address;
 
-CALL sp_mamba_dim_user;
+CALL sp_mamba_dim_user; -- ok
 
-CALL sp_mamba_dim_relationship;
+CALL sp_mamba_dim_relationship; -- ok
 
 CALL sp_mamba_dim_patient_identifier;
 
-CALL sp_mamba_dim_orders;
+CALL sp_mamba_dim_orders; -- ok
 
 CALL sp_mamba_dim_agegroup;
 

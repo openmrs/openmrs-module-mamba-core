@@ -22,6 +22,15 @@ BEGIN
     )
         CHARSET = UTF8MB4;
 
+    CREATE INDEX mamba_etl_schedule_end_time_index
+        ON _mamba_etl_schedule (end_time);
+
+    CREATE INDEX mamba_etl_schedule_transaction_status_index
+        ON _mamba_etl_schedule (transaction_status);
+
+    CREATE INDEX mamba_etl_schedule_start_time_index
+        ON _mamba_etl_schedule (start_time);
+
 END //
 
 DELIMITER ;

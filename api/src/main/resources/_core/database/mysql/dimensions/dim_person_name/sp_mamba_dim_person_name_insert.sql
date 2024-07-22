@@ -10,7 +10,13 @@ INSERT INTO mamba_dim_person_name(person_name_id,
                                   family_name2,
                                   family_name_suffix,
                                   degree,
-                                  voided)
+                                  date_created,
+                                  date_changed,
+                                  changed_by,
+                                  date_voided,
+                                  voided,
+                                  voided_by,
+                                  void_reason)
 SELECT pn.person_name_id,
        pn.person_id,
        pn.preferred,
@@ -22,7 +28,13 @@ SELECT pn.person_name_id,
        pn.family_name2,
        pn.family_name_suffix,
        pn.degree,
-       pn.voided
+       pn.date_created,
+       pn.date_changed,
+       pn.changed_by,
+       pn.date_voided,
+       pn.voided,
+       pn.voided_by,
+       pn.void_reason
 FROM mamba_source_db.person_name pn;
 -- $END
 

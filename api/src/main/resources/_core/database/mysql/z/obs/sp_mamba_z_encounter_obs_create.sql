@@ -6,6 +6,7 @@ CREATE TABLE mamba_z_encounter_obs
     obs_id                  INT           NOT NULL,
     encounter_id            INT           NULL,
     person_id               INT           NOT NULL,
+    order_id                INT           NULL,
     encounter_datetime      DATETIME      NOT NULL,
     obs_datetime            DATETIME      NOT NULL,
     location_id             INT           NULL,
@@ -13,6 +14,7 @@ CREATE TABLE mamba_z_encounter_obs
     obs_question_concept_id INT DEFAULT 0 NOT NULL,
     obs_value_text          TEXT          NULL,
     obs_value_numeric       DOUBLE        NULL,
+    obs_value_boolean       BOOLEAN       NULL,
     obs_value_coded         INT           NULL,
     obs_value_datetime      DATETIME      NULL,
     obs_value_complex       VARCHAR(1000) NULL,
@@ -22,9 +24,14 @@ CREATE TABLE mamba_z_encounter_obs
     obs_value_coded_uuid    CHAR(38),
     encounter_type_uuid     CHAR(38),
     status                  VARCHAR(16)   NOT NULL,
-    voided                  TINYINT       NOT NULL,
+    previous_version        INT           NULL,
     row_num                 INT           NULL,
-    flag                    INT           NULL,
+    date_created            DATETIME      NOT NULL,
+    date_voided             DATETIME      NULL,
+    voided                  TINYINT(1)    NOT NULL,
+    voided_by               INT           NULL,
+    void_reason             VARCHAR(255)  NULL,
+    incremental_record      INT DEFAULT 0 NOT NULL, -- whether a record has been inserted after the first ETL run
 
     PRIMARY KEY (id)
 )
@@ -69,7 +76,19 @@ CREATE INDEX mamba_z_encounter_obs_encounter_datetime_index
 CREATE INDEX mamba_z_encounter_obs_person_id_index
     ON mamba_z_encounter_obs (person_id);
 
-CREATE INDEX mamba_z_encounter_obs_flag
-    ON mamba_z_encounter_obs (flag);
+CREATE INDEX mamba_z_encounter_obs_date_voided_index
+    ON mamba_z_encounter_obs (date_voided);
+
+CREATE INDEX mamba_z_encounter_obs_incremental_record_index
+    ON mamba_z_encounter_obs (incremental_record);
+
+CREATE INDEX mamba_z_encounter_obs_order_id_index
+    ON mamba_z_encounter_obs (order_id);
+
+CREATE INDEX mamba_z_encounter_obs_previous_version_index
+    ON mamba_z_encounter_obs (previous_version);
+
+CREATE INDEX mamba_z_encounter_obs_obs_group_id_index
+    ON mamba_z_encounter_obs (obs_group_id);
 
 -- $END

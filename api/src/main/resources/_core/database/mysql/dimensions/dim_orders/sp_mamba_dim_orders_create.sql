@@ -17,12 +17,6 @@ CREATE TABLE mamba_dim_orders
     auto_expire_date       DATETIME      NULL,
     date_stopped           DATETIME      NULL,
     order_reason           INT           NULL,
-    creator                INT           NOT NULL,
-    date_created           DATETIME      NOT NULL,
-    voided                 TINYINT(1)    NOT NULL,
-    voided_by              INT           NULL,
-    date_voided            DATETIME      NULL,
-    void_reason            VARCHAR(255)  NULL,
     order_reason_non_coded VARCHAR(255)  NULL,
     urgency                VARCHAR(50)   NOT NULL,
     previous_order_id      INT           NULL,
@@ -34,7 +28,13 @@ CREATE TABLE mamba_dim_orders
     sort_weight            DOUBLE        NULL,
     fulfiller_comment      VARCHAR(1024) NULL,
     fulfiller_status       VARCHAR(50)   NULL,
-    flag                   INT          NULL,
+    date_created           DATETIME      NOT NULL,
+    creator                INT           NULL,
+    voided                 TINYINT(1)    NOT NULL,
+    voided_by              INT           NULL,
+    date_voided            DATETIME      NULL,
+    void_reason            VARCHAR(255)  NULL,
+    incremental_record     INT DEFAULT 0 NOT NULL,
 
     PRIMARY KEY (id)
 )
@@ -57,5 +57,8 @@ CREATE INDEX mamba_dim_orders_patient_id_index
 
 CREATE INDEX mamba_dim_orders_encounter_id_index
     ON mamba_dim_orders (encounter_id);
+
+CREATE INDEX mamba_dim_orders_incremental_record_index
+    ON mamba_dim_orders (incremental_record);
 
 -- $END

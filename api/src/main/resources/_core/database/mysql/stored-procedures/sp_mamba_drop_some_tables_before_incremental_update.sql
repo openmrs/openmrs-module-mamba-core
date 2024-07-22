@@ -7,6 +7,7 @@ BEGIN
 
     DROP TABLE IF EXISTS mamba_dim_json_incremental;
     DROP TABLE IF EXISTS mamba_dim_concept_metadata;
+    DROP TABLE IF EXISTS mamba_etl_user_settings;
 
 END //
 

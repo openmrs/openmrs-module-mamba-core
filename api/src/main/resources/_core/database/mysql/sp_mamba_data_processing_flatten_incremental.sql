@@ -1,0 +1,40 @@
+-- $BEGIN
+CALL sp_mamba_drop_some_tables_before_incremental_update;
+
+CALL sp_mamba_etl_user_settings;
+
+CALL sp_mamba_dim_concept_name_incremental;
+
+CALL sp_mamba_dim_concept_incremental;
+
+CALL sp_mamba_dim_concept_answer_incremental;
+
+CALL sp_mamba_dim_encounter_type_incremental;
+
+CALL sp_mamba_dim_json_incremental_create;
+
+CALL sp_mamba_dim_concept_metadata_create;
+
+CALL sp_mamba_dim_concept_metadata_incremental_insert;
+
+CALL sp_mamba_dim_encounter_incremental;
+
+CALL sp_mamba_dim_person_name_incremental;
+
+CALL sp_mamba_dim_person_incremental;
+
+CALL sp_mamba_dim_user_incremental;
+
+CALL sp_mamba_dim_relationship_incremental;
+
+CALL sp_mamba_dim_orders_incremental;
+
+CALL sp_mamba_z_encounter_obs_incremental;
+
+CALL sp_mamba_flat_encounter_table_incremental_create_all;
+
+CALL sp_mamba_flat_encounter_table_incremental_insert_all;
+
+CALL sp_mamba_reset_flags_for_incremental_updates;
+
+-- $END
