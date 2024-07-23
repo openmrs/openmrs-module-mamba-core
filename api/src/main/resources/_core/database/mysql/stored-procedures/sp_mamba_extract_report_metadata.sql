@@ -20,6 +20,7 @@ BEGIN
     SET @report_count = 0;
     WHILE @report_count < @report_array_len
         DO
+
             SELECT JSON_EXTRACT(@report_array, CONCAT('$[', @report_count, ']')) INTO @report;
             SELECT JSON_EXTRACT(@report, '$.report_name') INTO @report_name;
             SELECT JSON_EXTRACT(@report, '$.flat_table_name') INTO @flat_table_name;

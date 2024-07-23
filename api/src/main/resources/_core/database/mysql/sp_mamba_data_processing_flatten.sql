@@ -35,6 +35,10 @@ CALL sp_mamba_dim_person_name; -- ok
 
 CALL sp_mamba_dim_person; -- ok
 
+CALL sp_mamba_dim_person_attribute;
+
+CALL sp_mamba_dim_person_attribute_type;
+
 CALL sp_mamba_dim_person_address;
 
 CALL sp_mamba_dim_user; -- ok
