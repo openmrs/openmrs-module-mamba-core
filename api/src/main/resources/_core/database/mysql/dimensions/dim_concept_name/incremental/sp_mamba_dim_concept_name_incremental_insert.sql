@@ -1,14 +1,6 @@
 -- $BEGIN
 
-SELECT start_time
-INTO @starttime
-FROM _mamba_etl_schedule sch
-WHERE end_time IS NOT NULL
-  AND transaction_status = 'COMPLETED'
-ORDER BY id DESC
-LIMIT 1;
-
--- Insert only new records
+-- Insert only new Records
 INSERT INTO mamba_dim_concept_name (concept_name_id,
                                     concept_id,
                                     name,
@@ -36,10 +28,10 @@ SELECT cn.concept_name_id,
        cn.void_reason,
        1
 FROM mamba_source_db.concept_name cn
-WHERE cn.concept_name_id NOT IN (SELECT DISTINCT (concept_name_id) FROM mamba_dim_concept_name)
-  AND cn.locale IN (SELECT DISTINCT(concepts_locale) FROM mamba_etl_user_settings)
+         INNER JOIN mamba_etl_incremental_columns_index_new ic
+                    ON cn.concept_name_id = ic.incremental_table_pkey
+WHERE cn.locale IN (SELECT DISTINCT (concepts_locale) FROM mamba_etl_user_settings)
   AND cn.locale_preferred = 1
-  AND cn.voided = 0
-  AND cn.date_created >= @starttime;
+  AND cn.voided = 0;
 
 -- $END

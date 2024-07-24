@@ -2,8 +2,7 @@
 
 CREATE TABLE mamba_dim_concept_name
 (
-    id                 INT           NOT NULL AUTO_INCREMENT,
-    concept_name_id    INT           NOT NULL,
+    concept_name_id    INT           NOT NULL UNIQUE PRIMARY KEY,
     concept_id         INT,
     name               VARCHAR(255)  NOT NULL,
     locale             VARCHAR(50)   NOT NULL,
@@ -17,29 +16,12 @@ CREATE TABLE mamba_dim_concept_name
     void_reason        VARCHAR(255)  NULL,
     incremental_record INT DEFAULT 0 NOT NULL, -- whether a record has been inserted after the first ETL run
 
-    PRIMARY KEY (id)
+    INDEX mamba_idx_concept_id (concept_id),
+    INDEX mamba_idx_concept_name_type (concept_name_type),
+    INDEX mamba_idx_locale (locale),
+    INDEX mamba_idx_locale_preferred (locale_preferred),
+    INDEX mamba_idx_voided (voided),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
-
-CREATE INDEX mamba_dim_concept_name_concept_name_id_index
-    ON mamba_dim_concept_name (concept_name_id);
-
-CREATE INDEX mamba_dim_concept_name_concept_id_index
-    ON mamba_dim_concept_name (concept_id);
-
-CREATE INDEX mamba_dim_concept_name_concept_name_type_index
-    ON mamba_dim_concept_name (concept_name_type);
-
-CREATE INDEX mamba_dim_concept_name_locale_index
-    ON mamba_dim_concept_name (locale);
-
-CREATE INDEX mamba_dim_concept_name_locale_preferred_index
-    ON mamba_dim_concept_name (locale_preferred);
-
-CREATE INDEX mamba_dim_concept_name_voided_index
-    ON mamba_dim_concept_name (voided);
-
-CREATE INDEX mamba_dim_concept_name_incremental_record_index
-    ON mamba_dim_concept_name (incremental_record);
-
 -- $END

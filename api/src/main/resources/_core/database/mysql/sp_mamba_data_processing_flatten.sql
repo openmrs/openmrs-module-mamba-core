@@ -9,6 +9,8 @@ CALL sp_mamba_dim_locale;
 
 CALL sp_mamba_etl_user_settings;
 
+CALL sp_mamba_dim_agegroup;
+
 CALL sp_mamba_dim_location;
 
 CALL sp_mamba_dim_patient_identifier_type;
@@ -48,8 +50,6 @@ CALL sp_mamba_dim_relationship; -- ok
 CALL sp_mamba_dim_patient_identifier;
 
 CALL sp_mamba_dim_orders; -- ok
-
-CALL sp_mamba_dim_agegroup;
 
 CALL sp_mamba_z_encounter_obs;
 

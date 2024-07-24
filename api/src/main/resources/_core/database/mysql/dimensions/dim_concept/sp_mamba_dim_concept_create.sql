@@ -9,7 +9,7 @@ CREATE TABLE mamba_dim_concept
     datatype           VARCHAR(100)  NULL,
     name               VARCHAR(256)  NULL,
     retired            TINYINT(1)    NULL,
-    date_created       DATETIME      NULL,
+    date_created       DATETIME      NOT NULL,
     date_changed       DATETIME      NULL,
     changed_by         INT           NULL,
     date_retired       DATETIME      NULL,
@@ -35,5 +35,8 @@ CREATE INDEX mamba_dim_concept_retired_index
 
 CREATE INDEX mamba_dim_concept_incremental_record_index
     ON mamba_dim_concept (incremental_record);
+
+CREATE INDEX mamba_dim_concept_date_created_index
+    ON mamba_dim_concept (date_created);
 
 -- $END

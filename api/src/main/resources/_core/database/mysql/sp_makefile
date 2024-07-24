@@ -60,13 +60,33 @@ stored-procedures/sp_mamba_write_automated_json_config.sql
 stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_table.sql
 stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_incremental.sql
 stored-procedures/sp_mamba_locale_insert_helper.sql
-stored-procedures/sp_mamba_etl_user_settings_insert_helper.sql
 stored-procedures/sp_mamba_extract_report_column_names.sql
 stored-procedures/sp_mamba_create_error_log_table.sql
 stored-procedures/sp_mamba_insert_error_log_table.sql
 stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
 stored-procedures/sp_mamba_reset_flags_for_incremental_updates.sql
 
+xf_system/etl_user_settings/sp_mamba_etl_user_settings_create.sql
+xf_system/etl_user_settings/sp_mamba_etl_user_settings_insert_helper.sql
+xf_system/etl_user_settings/sp_mamba_etl_user_settings.sql
+config/sp_mamba_etl_user_settings_insert.sql
+
+xf_system/etl_incremental_columns_index_all/sp_mamba_etl_incremental_columns_index_all_create.sql
+xf_system/etl_incremental_columns_index_all/sp_mamba_etl_incremental_columns_index_all_insert.sql
+xf_system/etl_incremental_columns_index_all/sp_mamba_etl_incremental_columns_index_all_truncate.sql
+xf_system/etl_incremental_columns_index_all/sp_mamba_etl_incremental_columns_index_all.sql
+
+xf_system/etl_incremental_columns_index_new/sp_mamba_etl_incremental_columns_index_new_create.sql
+xf_system/etl_incremental_columns_index_new/sp_mamba_etl_incremental_columns_index_new_insert.sql
+xf_system/etl_incremental_columns_index_new/sp_mamba_etl_incremental_columns_index_new_truncate.sql
+xf_system/etl_incremental_columns_index_new/sp_mamba_etl_incremental_columns_index_new.sql
+
+xf_system/etl_incremental_columns_index_modified/sp_mamba_etl_incremental_columns_index_modified_create.sql
+xf_system/etl_incremental_columns_index_modified/sp_mamba_etl_incremental_columns_index_modified_insert.sql
+xf_system/etl_incremental_columns_index_modified/sp_mamba_etl_incremental_columns_index_modified_truncate.sql
+xf_system/etl_incremental_columns_index_modified/sp_mamba_etl_incremental_columns_index_modified.sql
+
+xf_system/sp_mamba_etl_incremental_columns_index.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
@@ -236,10 +256,6 @@ dimensions/dim_json_incremental/sp_mamba_dim_json_incremental.sql
 dimensions/dim_locale/sp_mamba_dim_locale_create.sql
 config/sp_mamba_dim_locale_insert.sql
 dimensions/dim_locale/sp_mamba_dim_locale.sql
-
-dimensions/dim_etl_user_settings/sp_mamba_etl_user_settings_create.sql
-config/sp_mamba_etl_user_settings_insert.sql
-dimensions/dim_etl_user_settings/sp_mamba_etl_user_settings.sql
 
 #############################################################################
 ### A single SP that invokes (CALLs) the above prepared stored procedures ###
