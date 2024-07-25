@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS sp_mamba_etl_incremental_columns_index_all_insert;
 DELIMITER //
 
 CREATE PROCEDURE sp_mamba_etl_incremental_columns_index_all_insert(
-    IN target_table_name VARCHAR(255)
+    IN openmrs_table VARCHAR(255)
 )
 BEGIN
     DECLARE done INT DEFAULT FALSE;
@@ -24,8 +24,8 @@ BEGIN
     SELECT COLUMN_NAME
     INTO pkey_column
     FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_SCHEMA = 'mamba_source_db' -- TODO: change back to 'mamba_source_db'
-      AND TABLE_NAME = target_table_name
+    WHERE TABLE_SCHEMA = 'mamba_source_db'
+      AND TABLE_NAME = openmrs_table
       AND COLUMN_KEY = 'PRI'
     LIMIT 1;
 
@@ -41,11 +41,11 @@ BEGIN
             LEAVE column_loop;
         END IF;
 
-        -- Check if the column exists in target_table_name
+        -- Check if the column exists in openmrs_table
         IF EXISTS (SELECT 1
                    FROM INFORMATION_SCHEMA.COLUMNS
-                   WHERE TABLE_SCHEMA = 'mamba_source_db' -- TODO: change back to 'mamba_source_db'
-                     AND TABLE_NAME = target_table_name
+                   WHERE TABLE_SCHEMA = 'mamba_source_db'
+                     AND TABLE_NAME = openmrs_table
                      AND COLUMN_NAME = incremental_column_name) THEN
             SET column_list = CONCAT(column_list, incremental_column_name, ', ');
             SET select_list = CONCAT(select_list, incremental_column_name, ', ');
@@ -60,7 +60,7 @@ BEGIN
 
     SET @insert_sql = CONCAT(
             'INSERT INTO mamba_etl_incremental_columns_index_all (', column_list, ') ',
-            'SELECT ', select_list, ' FROM mamba_source_db.', target_table_name -- TODO: change back to 'mamba_source_db'
+            'SELECT ', select_list, ' FROM mamba_source_db.', openmrs_table
                       );
 
     PREPARE stmt FROM @insert_sql;

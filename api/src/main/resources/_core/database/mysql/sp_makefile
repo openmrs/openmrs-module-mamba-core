@@ -87,6 +87,7 @@ xf_system/etl_incremental_columns_index_modified/sp_mamba_etl_incremental_column
 xf_system/etl_incremental_columns_index_modified/sp_mamba_etl_incremental_columns_index_modified.sql
 
 xf_system/sp_mamba_etl_incremental_columns_index.sql
+xf_system/sp_mamba_dim_table_insert.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
