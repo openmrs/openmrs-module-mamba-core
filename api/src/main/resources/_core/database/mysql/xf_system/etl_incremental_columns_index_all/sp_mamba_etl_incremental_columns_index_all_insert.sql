@@ -24,7 +24,7 @@ BEGIN
     SELECT COLUMN_NAME
     INTO pkey_column
     FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_SCHEMA = 'openmrs' -- TODO: change back to 'mamba_source_db'
+    WHERE TABLE_SCHEMA = 'mamba_source_db' -- TODO: change back to 'mamba_source_db'
       AND TABLE_NAME = target_table_name
       AND COLUMN_KEY = 'PRI'
     LIMIT 1;
@@ -44,7 +44,7 @@ BEGIN
         -- Check if the column exists in target_table_name
         IF EXISTS (SELECT 1
                    FROM INFORMATION_SCHEMA.COLUMNS
-                   WHERE TABLE_SCHEMA = 'openmrs' -- TODO: change back to 'mamba_source_db'
+                   WHERE TABLE_SCHEMA = 'mamba_source_db' -- TODO: change back to 'mamba_source_db'
                      AND TABLE_NAME = target_table_name
                      AND COLUMN_NAME = incremental_column_name) THEN
             SET column_list = CONCAT(column_list, incremental_column_name, ', ');
@@ -60,7 +60,7 @@ BEGIN
 
     SET @insert_sql = CONCAT(
             'INSERT INTO mamba_etl_incremental_columns_index_all (', column_list, ') ',
-            'SELECT ', select_list, ' FROM openmrs.', target_table_name -- TODO: change back to 'mamba_source_db'
+            'SELECT ', select_list, ' FROM mamba_source_db.', target_table_name -- TODO: change back to 'mamba_source_db'
                       );
 
     PREPARE stmt FROM @insert_sql;

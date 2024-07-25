@@ -1,16 +1,8 @@
 -- $BEGIN
 
-SELECT start_time
-INTO @starttime
-FROM _mamba_etl_schedule sch
-WHERE end_time IS NOT NULL
-  AND transaction_status = 'COMPLETED'
-ORDER BY id DESC
-LIMIT 1;
-
--- Insert only NEW Concepts
-INSERT INTO mamba_dim_concept (uuid,
-                               concept_id,
+-- Insert only new Records
+INSERT INTO mamba_dim_concept (concept_id,
+                               uuid,
                                datatype_id,
                                retired,
                                date_created,
@@ -20,8 +12,8 @@ INSERT INTO mamba_dim_concept (uuid,
                                retired_by,
                                retire_reason,
                                incremental_record)
-SELECT c.uuid          AS uuid,
-       c.concept_id    AS concept_id,
+SELECT c.concept_id    AS concept_id,
+       c.uuid          AS uuid,
        c.datatype_id   AS datatype_id,
        c.retired       AS retired,
        c.date_created  AS date_created,
@@ -32,7 +24,7 @@ SELECT c.uuid          AS uuid,
        c.retire_reason AS retire_reason,
        1
 FROM mamba_source_db.concept c
-WHERE c.concept_id NOT IN (SELECT DISTINCT (concept_id) FROM mamba_dim_concept)
-  AND c.date_created >= @starttime;
+         INNER JOIN mamba_etl_incremental_columns_index_new ic
+                    ON c.concept_id = ic.incremental_table_pkey;
 
 -- $END
