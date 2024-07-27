@@ -2,8 +2,7 @@
 
 CREATE TABLE mamba_dim_encounter_type
 (
-    id                 INT           NOT NULL AUTO_INCREMENT,
-    encounter_type_id  INT           NOT NULL,
+    encounter_type_id  INT           NOT NULL UNIQUE PRIMARY KEY,
     uuid               CHAR(38)      NOT NULL,
     name               VARCHAR(50)   NOT NULL,
     description        TEXT          NULL,
@@ -16,23 +15,11 @@ CREATE TABLE mamba_dim_encounter_type
     retire_reason      VARCHAR(255)  NULL,
     incremental_record INT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (id)
+    INDEX mamba_idx_uuid (uuid),
+    INDEX mamba_idx_retired (retired),
+    INDEX mamba_idx_name (name),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
-
-CREATE INDEX mamba_dim_encounter_type_encounter_type_id_index
-    ON mamba_dim_encounter_type (encounter_type_id);
-
-CREATE INDEX mamba_dim_encounter_type_retired_index
-    ON mamba_dim_encounter_type (retired);
-
-CREATE INDEX mamba_dim_encounter_type_uuid_index
-    ON mamba_dim_encounter_type (uuid);
-
-CREATE INDEX mamba_dim_encounter_type_name_index
-    ON mamba_dim_encounter_type (name);
-
-CREATE INDEX mamba_dim_encounter_type_incremental_record_index
-    ON mamba_dim_encounter_type (incremental_record);
 
 -- $END

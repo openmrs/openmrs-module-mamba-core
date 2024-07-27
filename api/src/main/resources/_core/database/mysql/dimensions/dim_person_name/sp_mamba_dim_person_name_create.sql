@@ -2,8 +2,7 @@
 
 CREATE TABLE mamba_dim_person_name
 (
-    id                 INT           NOT NULL AUTO_INCREMENT,
-    person_name_id     INT           NOT NULL,
+    person_name_id     INT           NOT NULL UNIQUE PRIMARY KEY,
     person_id          INT           NOT NULL,
     preferred          TINYINT       NOT NULL,
     prefix             VARCHAR(50)   NULL,
@@ -16,30 +15,18 @@ CREATE TABLE mamba_dim_person_name
     degree             VARCHAR(50)   NULL,
     date_created       DATETIME      NOT NULL,
     date_changed       DATETIME      NULL,
-    changed_by         INT           NULL,
     date_voided        DATETIME      NULL,
+    changed_by         INT           NULL,
     voided             TINYINT(1)    NOT NULL,
     voided_by          INT           NULL,
     void_reason        VARCHAR(255)  NULL,
     incremental_record INT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (id)
+    INDEX mamba_idx_person_id (person_id),
+    INDEX mamba_idx_voided (voided),
+    INDEX mamba_idx_preferred (preferred),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
-
-CREATE INDEX mamba_dim_person_name_person_name_id_index
-    ON mamba_dim_person_name (person_name_id);
-
-CREATE INDEX mamba_dim_person_name_person_id_index
-    ON mamba_dim_person_name (person_id);
-
-CREATE INDEX mamba_dim_person_name_voided_index
-    ON mamba_dim_person_name (voided);
-
-CREATE INDEX mamba_dim_person_name_preferred_index
-    ON mamba_dim_person_name (preferred);
-
-CREATE INDEX mamba_dim_person_name_incremental_record_index
-    ON mamba_dim_person_name (incremental_record);
 
 -- $END

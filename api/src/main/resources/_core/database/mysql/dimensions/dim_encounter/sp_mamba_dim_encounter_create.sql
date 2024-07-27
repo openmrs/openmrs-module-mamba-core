@@ -2,8 +2,7 @@
 
 CREATE TABLE mamba_dim_encounter
 (
-    id                  INT           NOT NULL AUTO_INCREMENT,
-    encounter_id        INT           NOT NULL,
+    encounter_id        INT           NOT NULL UNIQUE PRIMARY KEY,
     uuid                CHAR(38)      NOT NULL,
     encounter_type      INT           NOT NULL,
     encounter_type_uuid CHAR(38)      NULL,
@@ -14,34 +13,21 @@ CREATE TABLE mamba_dim_encounter
     date_changed        DATETIME      NULL,
     changed_by          INT           NULL,
     date_voided         DATETIME      NULL,
-    voided              TINYINT(1)       NOT NULL,
+    voided              TINYINT(1)    NOT NULL,
     voided_by           INT           NULL,
     void_reason         VARCHAR(255)  NULL,
     incremental_record  INT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (id)
+    INDEX mamba_idx_uuid (uuid),
+    INDEX mamba_idx_encounter_id (encounter_id),
+    INDEX mamba_idx_encounter_type (encounter_type),
+    INDEX mamba_idx_encounter_type_uuid (encounter_type_uuid),
+    INDEX mamba_idx_patient_id (patient_id),
+    INDEX mamba_idx_visit_id (visit_id),
+    INDEX mamba_idx_encounter_datetime (encounter_datetime),
+    INDEX mamba_idx_voided (voided),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
-
-CREATE INDEX mamba_dim_encounter_encounter_id_index
-    ON mamba_dim_encounter (encounter_id);
-
-CREATE INDEX mamba_dim_encounter_encounter_type_index
-    ON mamba_dim_encounter (encounter_type);
-
-CREATE INDEX mamba_dim_encounter_uuid_index
-    ON mamba_dim_encounter (uuid);
-
-CREATE INDEX mamba_dim_encounter_encounter_type_uuid_index
-    ON mamba_dim_encounter (encounter_type_uuid);
-
-CREATE INDEX mamba_dim_encounter_patient_id_index
-    ON mamba_dim_encounter (patient_id);
-
-CREATE INDEX mamba_dim_encounter_visit_id_index
-    ON mamba_dim_encounter (visit_id);
-
-CREATE INDEX mamba_dim_encounter_incremental_record_index
-    ON mamba_dim_encounter (incremental_record);
 
 -- $END

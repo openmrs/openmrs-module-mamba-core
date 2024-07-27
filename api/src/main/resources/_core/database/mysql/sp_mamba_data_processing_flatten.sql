@@ -11,11 +11,11 @@ CALL sp_mamba_etl_user_settings;
 
 CALL sp_mamba_dim_agegroup;
 
-CALL sp_mamba_dim_location;
+CALL sp_mamba_dim_location;-- ok
 
-CALL sp_mamba_dim_patient_identifier_type;
+CALL sp_mamba_dim_patient_identifier_type;-- ok
 
-CALL sp_mamba_dim_concept_datatype;
+CALL sp_mamba_dim_concept_datatype; -- ok
 
 CALL sp_mamba_dim_concept_name; -- ok
 
@@ -37,17 +37,17 @@ CALL sp_mamba_dim_person_name; -- ok
 
 CALL sp_mamba_dim_person; -- ok
 
-CALL sp_mamba_dim_person_attribute;
+CALL sp_mamba_dim_person_attribute_type; -- ok
 
-CALL sp_mamba_dim_person_attribute_type;
+CALL sp_mamba_dim_person_attribute; -- ok
 
-CALL sp_mamba_dim_person_address;
+CALL sp_mamba_dim_person_address; -- ok
 
 CALL sp_mamba_dim_user; -- ok
 
 CALL sp_mamba_dim_relationship; -- ok
 
-CALL sp_mamba_dim_patient_identifier;
+CALL sp_mamba_dim_patient_identifier; -- ok
 
 CALL sp_mamba_dim_orders; -- ok
 

@@ -7,12 +7,13 @@ CREATE TABLE mamba_dim_concept_name
     name               VARCHAR(255)  NOT NULL,
     locale             VARCHAR(50)   NOT NULL,
     locale_preferred   TINYINT,
-    voided             TINYINT,
     concept_name_type  VARCHAR(255),
+    voided             TINYINT,
+    date_created       DATETIME      NOT NULL,
     date_changed       DATETIME      NULL,
+    date_voided        DATETIME      NULL,
     changed_by         INT           NULL,
     voided_by          INT           NULL,
-    date_voided        DATETIME      NULL,
     void_reason        VARCHAR(255)  NULL,
     incremental_record INT DEFAULT 0 NOT NULL, -- whether a record has been inserted after the first ETL run
 

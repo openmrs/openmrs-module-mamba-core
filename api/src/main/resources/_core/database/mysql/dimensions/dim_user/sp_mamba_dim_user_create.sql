@@ -1,8 +1,7 @@
 -- $BEGIN
 CREATE TABLE mamba_dim_users
 (
-    id                 INT           NOT NULL AUTO_INCREMENT,
-    user_id            INT           NOT NULL,
+    user_id            INT           NOT NULL UNIQUE PRIMARY KEY,
     system_id          VARCHAR(50)   NOT NULL,
     username           VARCHAR(50)   NULL,
     creator            INT           NOT NULL,
@@ -18,14 +17,11 @@ CREATE TABLE mamba_dim_users
     retire_reason      VARCHAR(255)  NULL,
     incremental_record INT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (id)
+    INDEX mamba_idx_system_id (system_id),
+    INDEX mamba_idx_username (username),
+    INDEX mamba_idx_retired (retired),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
-
-CREATE INDEX mamba_dim_users_user_id_index
-    ON mamba_dim_users (user_id);
-
-CREATE INDEX mamba_dim_users_incremental_record_index
-    ON mamba_dim_users (incremental_record);
 
 -- $END

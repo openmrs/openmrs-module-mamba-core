@@ -1,8 +1,8 @@
 -- $BEGIN
+
 CREATE TABLE mamba_dim_relationship
 (
-
-    relationship_id    INT           NOT NULL AUTO_INCREMENT,
+    relationship_id    INT           NOT NULL UNIQUE PRIMARY KEY,
     person_a           INT           NOT NULL,
     relationship       INT           NOT NULL,
     person_b           INT           NOT NULL,
@@ -19,17 +19,11 @@ CREATE TABLE mamba_dim_relationship
     void_reason        VARCHAR(255)  NULL,
     incremental_record INT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (relationship_id)
+    INDEX mamba_idx_person_a (person_a),
+    INDEX mamba_idx_person_b (person_b),
+    INDEX mamba_idx_relationship (relationship),
+    INDEX mamba_idx_incremental_record (incremental_record)
 
 ) CHARSET = UTF8MB3;
-
-CREATE INDEX mamba_dim_relationship_person_a_index
-    ON mamba_dim_relationship (person_a);
-
-CREATE INDEX mamba_dim_relationship_person_b_index
-    ON mamba_dim_relationship (person_b);
-
-CREATE INDEX mamba_dim_relationship_incremental_record_index
-    ON mamba_dim_relationship (incremental_record);
 
 -- $END

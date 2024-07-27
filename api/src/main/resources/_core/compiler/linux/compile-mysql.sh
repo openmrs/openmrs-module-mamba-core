@@ -126,11 +126,11 @@ function read_config_metadata_for_incremental_comparison() {
           SET @report_data = '%s';
           SET @file_count = %d;
 
-          CALL sp_extract_configured_flat_table_file_into_dim_json_incremental(@report_data); -- insert manually added config JSON data from config dir
-          CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
-          CALL sp_mamba_dim_json_incremental_update();
+          -- CALL sp_extract_configured_flat_table_file_into_dim_json_incremental(@report_data); -- insert manually added config JSON data from config dir
+          -- CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
+          -- CALL sp_mamba_dim_json_incremental_update();
 
-          SET @report_data = fn_mamba_generate_report_array_from_automated_json_incremental();
+          -- SET @report_data = fn_mamba_generate_report_array_from_automated_json_incremental();
           CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
       '"
   -- \$END

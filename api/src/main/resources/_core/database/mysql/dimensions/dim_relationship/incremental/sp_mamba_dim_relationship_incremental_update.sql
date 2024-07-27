@@ -1,15 +1,9 @@
 -- $BEGIN
 
-SELECT start_time
-INTO @starttime
-FROM _mamba_etl_schedule sch
-WHERE end_time IS NOT NULL
-  AND transaction_status = 'COMPLETED'
-ORDER BY id DESC
-LIMIT 1;
-
 -- Update only modified records
 UPDATE mamba_dim_relationship r
+    INNER JOIN mamba_etl_incremental_columns_index_modified im
+    ON r.relationship_id = im.incremental_table_pkey
     INNER JOIN mamba_source_db.relationship rel
     ON r.relationship_id = rel.relationship_id
 SET r.relationship       = rel.relationship,
@@ -27,7 +21,7 @@ SET r.relationship       = rel.relationship,
     r.voided_by          = rel.voided_by,
     r.date_voided        = rel.date_voided,
     r.incremental_record = 1
-WHERE rel.date_changed >= @starttime;
+WHERE im.incremental_table_pkey > 1;
 
 
 -- $END

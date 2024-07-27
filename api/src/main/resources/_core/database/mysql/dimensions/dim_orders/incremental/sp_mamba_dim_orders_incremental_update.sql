@@ -1,17 +1,11 @@
 -- $BEGIN
 
-SELECT start_time
-INTO @starttime
-FROM _mamba_etl_schedule sch
-WHERE end_time IS NOT NULL
-  AND transaction_status = 'COMPLETED'
-ORDER BY id DESC
-LIMIT 1;
-
 -- Modified Encounters
 UPDATE mamba_dim_orders do
+    INNER JOIN mamba_etl_incremental_columns_index_modified im
+    ON do.order_id = im.incremental_table_pkey
     INNER JOIN mamba_source_db.orders o
-    ON o.order_id = do.order_id
+    ON do.order_id = o.order_id
 SET do.order_id               = o.order_id,
     do.uuid                   = o.uuid,
     do.order_type_id          = o.order_type_id,
@@ -44,7 +38,6 @@ SET do.order_id               = o.order_id,
     do.date_voided            = o.date_voided,
     do.void_reason            = o.void_reason,
     do.incremental_record     = 1
-WHERE o.voided = 1
-  AND o.date_voided >= @starttime;
+WHERE im.incremental_table_pkey > 1;
 
 -- $END

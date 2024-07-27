@@ -40,11 +40,11 @@ SELECT e.encounter_id,
        e.void_reason,
        1
 FROM mamba_source_db.encounter e
+         INNER JOIN mamba_etl_incremental_columns_index_new ic
+                    ON e.encounter_type = ic.incremental_table_pkey
          INNER JOIN mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
-WHERE e.encounter_id NOT IN (SELECT DISTINCT (encounter_id) FROM mamba_dim_encounter)
-  AND e.date_created >= @starttime
-  AND et.uuid
-    IN (SELECT DISTINCT(md.encounter_type_uuid)
-        FROM mamba_dim_concept_metadata md);
+WHERE et.uuid
+          IN (SELECT DISTINCT(md.encounter_type_uuid)
+              FROM mamba_dim_concept_metadata md);
 -- $END
