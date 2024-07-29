@@ -7,7 +7,8 @@ CREATE PROCEDURE sp_mamba_etl_schedule(
 )
 BEGIN
 
-    DECLARE interval_seconds BIGINT DEFAULT 300; -- 5 Seconds
+    DECLARE etl_execution_delay_seconds TINYINT(2) DEFAULT 0; -- 0 Seconds
+    DECLARE etl_interval_seconds INT;
     DECLARE start_time_seconds BIGINT;
     DECLARE end_time_seconds BIGINT;
     DECLARE start_time DATETIME DEFAULT NOW();
@@ -23,13 +24,21 @@ BEGIN
     DECLARE last_next_schedule DATETIME;
     DECLARE etl_is_ready_to_run BOOLEAN DEFAULT FALSE;
 
-    -- check if _mamba_etl_schedule is empty(new) or last transaction_status is 'COMPLETED' and its 'end_time' is set.
+    -- check if _mamba_etl_schedule is empty(new) or last transaction_status
+    -- is 'COMPLETED' AND it was a 'SUCCESS' AND its 'end_time' was set.
     SET etl_is_ready_to_run = (SELECT COALESCE(
-                                              (SELECT IF(end_time IS NOT NULL AND transaction_status = 'COMPLETED',
+                                              (SELECT IF(end_time IS NOT NULL
+                                                             AND transaction_status = 'COMPLETED'
+                                                             AND completion_status = 'SUCCESS',
                                                          TRUE, FALSE)
                                                FROM _mamba_etl_schedule
                                                ORDER BY id DESC
                                                LIMIT 1), TRUE));
+
+    SET etl_interval_seconds = (SELECT etl_interval_seconds
+                                FROM _mamba_etl_user_settings
+                                ORDER BY id DESC
+                                LIMIT 1);
 
     IF etl_is_ready_to_run THEN
 
@@ -40,6 +49,12 @@ BEGIN
         VALUES (start_time, 'RUNNING');
 
         SET @last_inserted_id = LAST_INSERT_ID();
+
+        UPDATE _mamba_etl_user_settings
+        SET last_etl_schedule_insert_id = @last_inserted_id
+        WHERE TRUE
+        ORDER BY id DESC
+        LIMIT 1;
 
         SET @procedure_call = CONCAT('CALL ', etl_stored_procedure_to_run, '();');
         PREPARE stmt FROM @procedure_call;
@@ -52,7 +67,7 @@ BEGIN
         SET time_taken = (end_time_seconds - start_time_seconds);
         SELECT time_taken;
 
-        SET next_schedule_seconds = start_time_seconds + interval_seconds;
+        SET next_schedule_seconds = start_time_seconds + etl_interval_seconds + etl_execution_delay_seconds;
         SET next_schedule = FROM_UNIXTIME(next_schedule_seconds);
 
         -- Run ETL immediately if schedule was missed (give allowance of 1 second)
@@ -62,8 +77,7 @@ BEGIN
         END IF;
 
         UPDATE _mamba_etl_schedule
-        SET schedule_interval_seconds  = interval_seconds,
-            end_time                   = txn_end_time,
+        SET end_time                   = txn_end_time,
             next_schedule              = next_schedule,
             execution_duration_seconds = time_taken,
             missed_schedule_by_seconds = missed_schedule_by_seconds,

@@ -12,7 +12,7 @@ BEGIN
 
     SELECT DISTINCT(table_partition_number)
     INTO @table_partition_number
-    FROM mamba_etl_user_settings;
+    FROM _mamba_etl_user_settings;
 
     SELECT JSON_EXTRACT(report_data, '$.flat_report_metadata') INTO @report_array;
     SELECT JSON_LENGTH(@report_array) INTO @report_array_len;

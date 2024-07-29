@@ -27,7 +27,7 @@ SELECT cn.concept_name_id,
        cn.date_voided,
        cn.void_reason
 FROM mamba_source_db.concept_name cn
-WHERE cn.locale IN (SELECT DISTINCT(concepts_locale) FROM mamba_etl_user_settings)
+WHERE cn.locale IN (SELECT DISTINCT(concepts_locale) FROM _mamba_etl_user_settings)
   AND cn.locale_preferred = 1
   AND cn.voided = 0;
 

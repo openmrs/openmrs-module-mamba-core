@@ -22,7 +22,7 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
     -c sp                       clear all stored procedures before run
     -c views                    clear all views before run
     -l locale                   locale to use e.g 'en'
-    -p table_partition_number   Number at which to partition large Tables
+    -p table_partition_number   Number of Columns at which to partition large Tables
     -u incremental_mode_switch  Configuration switch to turn on/off the incremental update feature
 
 EOF
@@ -362,11 +362,11 @@ function consolidateSPsCallerFile() {
   local dbEngineBaseDir=$(readlink -f "../../database/$db_engine")
 
   # Search for core's p_data_processing.sql file in all subdirectories in the path: ${project.build.directory}/mamba-etl/_core/database/$db_engine
-  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_mamba_data_processing_flatten.sql -type f -print -quit)
+  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_mamba_data_processing_drop_and_flatten.sql -type f -print -quit)
   local consolidatedFile=$(find "$dbEngineBaseDir" -name sp_makefile -type f -print -quit)
 
   # Search for all files with the specified filename in the path: ${project.build.directory}/mamba-etl/_etl
-  # Then get its directory name/path, so we can find a file named sp_mamba_data_processing_flatten.sql which is in the same dir
+  # Then get its directory name/path, so we can find a file named sp_mamba_data_processing_drop_and_flatten.sql which is in the same dir
   local sp_make_folders=$(find "../../../_etl" -name sp_makefile -type f -exec dirname {} \; | sort -u)
 
   local newLine="\n"
@@ -448,6 +448,25 @@ function remove_tildes_in_create_stored_procedures_file (){
 
     # Remove the temporary file
     rm "$temp_file_no_tildes"
+}
+
+# copy mamba_main.sql to the build directory
+function copy_mamba_main_sql_to_build_dir() {
+
+    SOURCE_FILE="../../database/$db_engine/mamba_main.sql"
+
+    # Extract the file name from the source path
+    FILE_NAME=$(basename "$SOURCE_FILE")
+
+    DESTINATION_FILE="$BUILD_DIR/$FILE_NAME"
+
+    if cp "$SOURCE_FILE" "$DESTINATION_FILE"; then
+        echo "mamba main sql file copied successfully to $DESTINATION_FILE."
+    else
+        echo "BUILD_DIR: $BUILD_DIR"
+        echo "Failed to copy $SOURCE_FILE to $DESTINATION_FILE" >&2
+        return 1
+    fi
 }
 
 
@@ -558,10 +577,12 @@ elif [ "$objects_to_clear" == "views" ] || [ "$objects_to_clear" == "view" ] || 
 fi
 
 # Read in the concepts locale setting
-read_locale_setting
+# Got a better implementation so commenting this code out
+# read_locale_setting
 
 # Read in the table partition number setting
-read_etl_user_settings
+# Got a better implementation so commenting this code out
+# read_etl_user_settings
 
 # Read in the JSON for Report Definition configuration metadata
 read_config_report_definition_metadata
@@ -574,6 +595,7 @@ read_config_metadata_for_incremental_comparison
 
 # Consolidate all the make files into one file
 consolidateSPsCallerFile
+
 
 if [ -n "$stored_procedures" ]
 then
@@ -652,8 +674,20 @@ BEGIN
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
 BEGIN
     GET DIAGNOSTICS CONDITION 1
-    @message_text = MESSAGE_TEXT, @mysql_errno = MYSQL_ERRNO, @returned_sqlstate = RETURNED_SQLSTATE;
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
     CALL sp_mamba_insert_error_log_table('$sp_name', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('$sp_name', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
     RESIGNAL;
 END;
 
@@ -788,3 +822,6 @@ $vw_body
     echo "$views_body" > "$BUILD_DIR/$vw_out_file"
 
 fi
+
+# function to copy mamba_main.sql to the build directory
+copy_mamba_main_sql_to_build_dir

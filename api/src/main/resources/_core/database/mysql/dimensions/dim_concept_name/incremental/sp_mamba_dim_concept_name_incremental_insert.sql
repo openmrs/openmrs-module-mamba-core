@@ -32,7 +32,7 @@ SELECT cn.concept_name_id,
 FROM mamba_source_db.concept_name cn
          INNER JOIN mamba_etl_incremental_columns_index_new ic
                     ON cn.concept_name_id = ic.incremental_table_pkey
-WHERE cn.locale IN (SELECT DISTINCT (concepts_locale) FROM mamba_etl_user_settings)
+WHERE cn.locale IN (SELECT DISTINCT (concepts_locale) FROM _mamba_etl_user_settings)
   AND cn.locale_preferred = 1
   AND cn.voided = 0;
 

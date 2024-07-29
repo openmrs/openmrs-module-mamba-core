@@ -1,7 +1,13 @@
 -- $BEGIN
 CALL sp_mamba_drop_some_tables_before_incremental_update;
 
-CALL sp_mamba_etl_user_settings;
+-- CALL sp_mamba_etl_user_settings;
+
+CALL sp_mamba_dim_location_incremental;
+
+CALL sp_mamba_dim_patient_identifier_type_incremental;
+
+CALL sp_mamba_dim_concept_datatype_incremental;
 
 CALL sp_mamba_dim_concept_name_incremental;
 
@@ -23,9 +29,17 @@ CALL sp_mamba_dim_person_name_incremental;
 
 CALL sp_mamba_dim_person_incremental;
 
+CALL sp_mamba_dim_person_attribute_type_incremental;
+
+CALL sp_mamba_dim_person_attribute_incremental;
+
+CALL sp_mamba_dim_person_address_incremental;
+
 CALL sp_mamba_dim_user_incremental;
 
 CALL sp_mamba_dim_relationship_incremental;
+
+CALL sp_mamba_dim_patient_identifier_incremental;
 
 CALL sp_mamba_dim_orders_incremental;
 

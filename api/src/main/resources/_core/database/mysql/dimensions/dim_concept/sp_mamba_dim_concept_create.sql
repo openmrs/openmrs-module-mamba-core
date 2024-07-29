@@ -19,8 +19,8 @@ CREATE TABLE mamba_dim_concept
     INDEX mamba_idx_uuid (uuid),
     INDEX mamba_idx_datatype_id (datatype_id),
     INDEX mamba_idx_retired (retired),
-    INDEX mamba_idx_incremental_record (incremental_record),
-    INDEX mamba_idx_date_created (date_created)
+    INDEX mamba_idx_date_created (date_created),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
 

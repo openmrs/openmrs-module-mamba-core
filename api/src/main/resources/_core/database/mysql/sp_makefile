@@ -25,11 +25,14 @@ functions/fn_mamba_remove_special_characters.sql
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_objects_in_schema.sql
-stored-procedures/sp_xf_system_drop_all_tables_in_schema.sql
+xf_system/sp_mamba_system_drop_all_tables.sql
 stored-procedures/sp_mamba_etl_execute.sql
-stored-procedures/sp_mamba_etl_scheduler_wrapper.sql
-stored-procedures/sp_mamba_etl_schedule_table_create.sql
-stored-procedures/sp_mamba_etl_schedule.sql
+
+xf_system/etl_scheduler/sp_mamba_etl_scheduler_wrapper.sql
+xf_system/etl_scheduler/sp_mamba_etl_schedule_table_create.sql
+xf_system/etl_scheduler/sp_mamba_etl_schedule.sql
+
+xf_system/sp_mamba_etl_setup.sql
 
 stored-procedures/sp_mamba_flat_encounter_table_create.sql
 stored-procedures/sp_mamba_flat_encounter_table_create_all.sql
@@ -66,10 +69,11 @@ stored-procedures/sp_mamba_insert_error_log_table.sql
 stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
 stored-procedures/sp_mamba_reset_flags_for_incremental_updates.sql
 
+xf_system/etl_user_settings/sp_mamba_etl_user_settings_drop.sql
 xf_system/etl_user_settings/sp_mamba_etl_user_settings_create.sql
-xf_system/etl_user_settings/sp_mamba_etl_user_settings_insert_helper.sql
+xf_system/etl_user_settings/sp_mamba_etl_user_settings_insert.sql
 xf_system/etl_user_settings/sp_mamba_etl_user_settings.sql
-config/sp_mamba_etl_user_settings_insert.sql
+#config/sp_mamba_etl_user_settings_insert.sql
 
 xf_system/etl_incremental_columns_index_all/sp_mamba_etl_incremental_columns_index_all_create.sql
 xf_system/etl_incremental_columns_index_all/sp_mamba_etl_incremental_columns_index_all_insert.sql
@@ -283,12 +287,8 @@ dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_insert.sql
 dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_update.sql
 dimensions/dim_json_incremental/sp_mamba_dim_json_incremental.sql
 
-dimensions/dim_locale/sp_mamba_dim_locale_create.sql
-config/sp_mamba_dim_locale_insert.sql
-dimensions/dim_locale/sp_mamba_dim_locale.sql
-
-#############################################################################
-### A single SP that invokes (CALLs) the above prepared stored procedures ###
-#############################################################################
-sp_mamba_data_processing_flatten.sql
-sp_mamba_data_processing_flatten_incremental.sql
+#########################################################################################################
+### Flattening SPs (drop or increment tables) that invoke (CALL) the above prepared stored procedures ###
+#########################################################################################################
+sp_mamba_data_processing_drop_and_flatten.sql
+sp_mamba_data_processing_increment_and_flatten.sql

@@ -8,6 +8,7 @@ WHERE end_time IS NOT NULL
 ORDER BY id DESC
 LIMIT 1;
 
+
 -- Insert only new records
 INSERT INTO mamba_dim_encounter (encounter_id,
                                  uuid,

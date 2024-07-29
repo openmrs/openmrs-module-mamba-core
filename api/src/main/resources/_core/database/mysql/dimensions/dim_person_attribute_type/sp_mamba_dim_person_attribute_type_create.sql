@@ -16,7 +16,7 @@ CREATE TABLE mamba_dim_person_attribute_type
     changed_by               INT           NULL,
     incremental_record       INT DEFAULT 0 NOT NULL, -- whether a record has been inserted after the first ETL run
 
-    INDEX mamba_idx_uuid (name),
+    INDEX mamba_idx_name (name),
     INDEX mamba_idx_uuid (uuid),
     INDEX mamba_idx_retired (retired),
     INDEX mamba_idx_incremental_record (incremental_record)

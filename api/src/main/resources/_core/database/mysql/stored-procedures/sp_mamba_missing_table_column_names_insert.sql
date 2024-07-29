@@ -23,9 +23,9 @@ BEGIN
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-    SELECT DISTINCT(locale)
+    SELECT DISTINCT(concepts_locale)
     INTO @concepts_locale
-    FROM mamba_dim_locale;
+    FROM _mamba_etl_user_settings;
 
     OPEN cursor_encounters;
     computations_loop:

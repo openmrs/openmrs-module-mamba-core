@@ -20,7 +20,7 @@ WHERE obs_id in
              FROM mamba_z_encounter_obs o
              WHERE obs_group_id IS NOT NULL) a
        WHERE row_num > 1)
-  AND cn.locale IN (SELECT DISTINCT(locale) FROM mamba_dim_locale)
+  AND cn.locale IN (SELECT DISTINCT(concepts_locale) FROM _mamba_etl_user_settings)
   AND cn.locale_preferred = 1
   AND cn.voided = 0;
 

@@ -7,8 +7,7 @@ BEGIN
 
     CREATE TABLE IF NOT EXISTS _mamba_etl_schedule
     (
-        id                         INT      NOT NULL AUTO_INCREMENT,
-        schedule_interval_seconds  BIGINT   NOT NULL DEFAULT 300, -- 5 Seconds
+        id                         INT      NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
         start_time                 DATETIME NOT NULL DEFAULT NOW(),
         end_time                   DATETIME,
         next_schedule              DATETIME,
@@ -18,18 +17,12 @@ BEGIN
         transaction_status         ENUM ('RUNNING', 'COMPLETED'),
         success_or_error_message   MEDIUMTEXT,
 
-        PRIMARY KEY (id)
+        INDEX mamba_idx_start_time (start_time),
+        INDEX mamba_idx_end_time (end_time),
+        INDEX mamba_idx_transaction_status (transaction_status),
+        INDEX mamba_idx_completion_status (completion_status)
     )
         CHARSET = UTF8MB4;
-
-    CREATE INDEX mamba_etl_schedule_end_time_index
-        ON _mamba_etl_schedule (end_time);
-
-    CREATE INDEX mamba_etl_schedule_transaction_status_index
-        ON _mamba_etl_schedule (transaction_status);
-
-    CREATE INDEX mamba_etl_schedule_start_time_index
-        ON _mamba_etl_schedule (start_time);
 
 END //
 
