@@ -1,54 +1,61 @@
--- $BEGIN
-CALL sp_mamba_drop_some_tables_before_incremental_update;
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_increment_and_flatten;
 
--- CALL sp_mamba_etl_user_settings;
+DELIMITER //
 
-CALL sp_mamba_dim_location_incremental;
+CREATE PROCEDURE sp_mamba_data_processing_increment_and_flatten()
 
-CALL sp_mamba_dim_patient_identifier_type_incremental;
+BEGIN
 
-CALL sp_mamba_dim_concept_datatype_incremental;
+    CALL sp_mamba_drop_some_tables_before_incremental_update;
 
-CALL sp_mamba_dim_concept_name_incremental;
+    CALL sp_mamba_dim_location_incremental;
 
-CALL sp_mamba_dim_concept_incremental;
+    CALL sp_mamba_dim_patient_identifier_type_incremental;
 
-CALL sp_mamba_dim_concept_answer_incremental;
+    CALL sp_mamba_dim_concept_datatype_incremental;
 
-CALL sp_mamba_dim_encounter_type_incremental;
+    CALL sp_mamba_dim_concept_name_incremental;
 
-CALL sp_mamba_dim_json_incremental_create;
+    CALL sp_mamba_dim_concept_incremental;
 
-CALL sp_mamba_dim_concept_metadata_create;
+    CALL sp_mamba_dim_concept_answer_incremental;
 
-CALL sp_mamba_dim_concept_metadata_incremental_insert;
+    CALL sp_mamba_dim_encounter_type_incremental;
 
-CALL sp_mamba_dim_encounter_incremental;
+    CALL sp_mamba_dim_json_incremental_create;
 
-CALL sp_mamba_dim_person_name_incremental;
+    CALL sp_mamba_dim_concept_metadata_create;
 
-CALL sp_mamba_dim_person_incremental;
+    CALL sp_mamba_dim_concept_metadata_incremental_insert;
 
-CALL sp_mamba_dim_person_attribute_type_incremental;
+    CALL sp_mamba_dim_encounter_incremental;
 
-CALL sp_mamba_dim_person_attribute_incremental;
+    CALL sp_mamba_dim_person_name_incremental;
 
-CALL sp_mamba_dim_person_address_incremental;
+    CALL sp_mamba_dim_person_incremental;
 
-CALL sp_mamba_dim_user_incremental;
+    CALL sp_mamba_dim_person_attribute_type_incremental;
 
-CALL sp_mamba_dim_relationship_incremental;
+    CALL sp_mamba_dim_person_attribute_incremental;
 
-CALL sp_mamba_dim_patient_identifier_incremental;
+    CALL sp_mamba_dim_person_address_incremental;
 
-CALL sp_mamba_dim_orders_incremental;
+    CALL sp_mamba_dim_user_incremental;
 
-CALL sp_mamba_z_encounter_obs_incremental;
+    CALL sp_mamba_dim_relationship_incremental;
 
-CALL sp_mamba_flat_encounter_table_incremental_create_all;
+    CALL sp_mamba_dim_patient_identifier_incremental;
 
-CALL sp_mamba_flat_encounter_table_incremental_insert_all;
+    CALL sp_mamba_dim_orders_incremental;
 
-CALL sp_mamba_reset_flags_for_incremental_updates;
+    CALL sp_mamba_z_encounter_obs_incremental;
 
--- $END
+    CALL sp_mamba_flat_encounter_table_incremental_create_all;
+
+    CALL sp_mamba_flat_encounter_table_incremental_insert_all;
+
+    CALL sp_mamba_reset_flags_for_incremental_updates;
+
+END //
+
+DELIMITER ;

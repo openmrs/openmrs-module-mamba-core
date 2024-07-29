@@ -15,7 +15,7 @@ BEGIN
     DECLARE txn_end_time DATETIME;
     DECLARE next_schedule DATETIME;
     DECLARE next_schedule_seconds BIGINT;
-    DECLARE missed_schedule_by_seconds BIGINT DEFAULT 0;
+    DECLARE missed_schedule_by_seconds INT DEFAULT 0;
     DECLARE completion_status ENUM ('SUCCESS', 'ERROR');
     DECLARE txn_status ENUM ('RUNNING', 'COMPLETED');
     DECLARE success_or_error_message MEDIUMTEXT;
