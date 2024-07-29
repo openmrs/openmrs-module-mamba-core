@@ -679,7 +679,7 @@ BEGIN
     @mysql_errno = MYSQL_ERRNO,
     @returned_sqlstate = RETURNED_SQLSTATE;
 
-    CALL sp_mamba_insert_error_log_table('$sp_name', @message_text, @mysql_errno, @returned_sqlstate);
+    CALL sp_mamba_etl_error_log_insert('$sp_name', @message_text, @mysql_errno, @returned_sqlstate);
 
     UPDATE _mamba_etl_schedule
     SET end_time                   = NOW(),

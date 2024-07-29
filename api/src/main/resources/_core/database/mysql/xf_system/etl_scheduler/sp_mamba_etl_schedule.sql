@@ -17,11 +17,7 @@ BEGIN
     DECLARE next_schedule_seconds BIGINT;
     DECLARE missed_schedule_by_seconds INT DEFAULT 0;
     DECLARE completion_status ENUM ('SUCCESS', 'ERROR');
-    DECLARE txn_status ENUM ('RUNNING', 'COMPLETED');
-    DECLARE success_or_error_message MEDIUMTEXT;
     DECLARE time_taken BIGINT;
-
-    DECLARE last_next_schedule DATETIME;
     DECLARE etl_is_ready_to_run BOOLEAN DEFAULT FALSE;
 
     -- check if _mamba_etl_schedule is empty(new) or last transaction_status
