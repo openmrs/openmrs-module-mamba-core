@@ -17,10 +17,10 @@ BEGIN
     INTO incremental_mode
     FROM _mamba_etl_user_settings;
 
-    IF etl_ever_scheduled = 0 OR incremental_mode = 0 THEN
-        CALL sp_mamba_etl_schedule('sp_mamba_data_processing_drop_and_flatten');
+    IF etl_ever_scheduled <= 1 OR incremental_mode = 0 THEN
+        CALL sp_mamba_data_processing_drop_and_flatten();
     ELSE
-        CALL sp_mamba_etl_schedule('sp_mamba_data_processing_increment_and_flatten');
+        CALL sp_mamba_data_processing_increment_and_flatten();
     END IF;
 
 END //
