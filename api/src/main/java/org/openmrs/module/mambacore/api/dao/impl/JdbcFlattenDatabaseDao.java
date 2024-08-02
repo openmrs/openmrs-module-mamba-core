@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcFlattenDatabaseDao.class);
-    private static final String ETL_SCHEDULER_SQL = "/_core/database/mysql/mamba_main.sql";
+    private static final String ETL_SCHEDULER_SQL = "/_core/database/mysql/mamba_main.sql";//TODO: needs to be adapted to be db agnostic
     private static final String MYSQL_COMMENT_REGEX = "--.*(?=\\n)";
 
     @Override
