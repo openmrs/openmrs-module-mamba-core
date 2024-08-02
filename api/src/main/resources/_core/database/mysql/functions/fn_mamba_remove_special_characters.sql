@@ -11,7 +11,7 @@ BEGIN
     DECLARE current_char CHAR(1);
 
     SET modified_string = input_text;
-    SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã';
+    -- SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã';
     SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã\|[]{}\'~`';
 
     WHILE char_index <= LENGTH(special_chars) DO

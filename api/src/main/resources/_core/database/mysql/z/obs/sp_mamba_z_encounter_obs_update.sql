@@ -29,5 +29,4 @@ WHERE z.obs_value_coded IS NOT NULL
        FROM mamba_dim_concept c
        WHERE c.datatype = 'Boolean');
 
-
 -- $END

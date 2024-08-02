@@ -1,14 +1,22 @@
 -- $BEGIN
 
-SELECT start_time
-INTO @starttime
-FROM _mamba_etl_schedule sch
-WHERE end_time IS NOT NULL
-  AND transaction_status = 'COMPLETED'
-ORDER BY id DESC
-LIMIT 1;
+-- Use a temporary table to store row numbers
+CREATE TEMPORARY TABLE mamba_temp_obs_row_num AS
+SELECT obs_id,
+       (@row_number := CASE
+                           WHEN @prev_person_id = person_id
+                               AND @prev_encounter_id = encounter_id
+                               AND @prev_concept_id = concept_id
+                               THEN @row_number + 1
+                           ELSE 1
+           END) AS row_num,
+       @prev_person_id := person_id,
+       @prev_encounter_id := encounter_id,
+       @prev_concept_id := concept_id
+FROM openmrs.obs
+WHERE encounter_id IS NOT NULL
+ORDER BY person_id, encounter_id, concept_id;
 
--- Insert only NEW Obs (determined by date_created)
 INSERT INTO mamba_z_encounter_obs (obs_id,
                                    encounter_id,
                                    person_id,
@@ -35,16 +43,15 @@ INSERT INTO mamba_z_encounter_obs (obs_id,
                                    date_voided,
                                    voided,
                                    voided_by,
-                                   void_reason,
-                                   incremental_record)
+                                   void_reason)
 SELECT o.obs_id,
        o.encounter_id,
-       person_id,
-       order_id,
-       encounter_datetime,
-       obs_datetime,
-       location_id,
-       obs_group_id,
+       o.person_id,
+       o.order_id,
+       e.encounter_datetime,
+       o.obs_datetime,
+       o.location_id,
+       o.obs_group_id,
        o.concept_id     AS obs_question_concept_id,
        o.value_text     AS obs_value_text,
        o.value_numeric  AS obs_value_numeric,
@@ -55,21 +62,22 @@ SELECT o.obs_id,
        NULL             AS obs_question_uuid,
        NULL             AS obs_answer_uuid,
        NULL             AS obs_value_coded_uuid,
-       encounter_type_uuid,
-       status,
-       previous_version,
-       row_num,
+       e.encounter_type_uuid,
+       o.status,
+       o.previous_version,
+       t.row_num,
        o.date_created,
        o.date_voided,
        o.voided,
        o.voided_by,
-       o.void_reason,
-       1
+       o.void_reason
 FROM mamba_source_db.obs o
-         INNER JOIN mamba_dim_encounter e
-                    ON o.encounter_id = e.encounter_id
-WHERE o.encounter_id IS NOT NULL
-  AND o.obs_id NOT IN (SELECT obs_id FROM mamba_z_encounter_obs)
-  AND o.date_created >= @starttime;
+         INNER JOIN mamba_etl_incremental_columns_index_new ic ON o.obs_id = ic.incremental_table_pkey
+         INNER JOIN mamba_dim_encounter e ON o.encounter_id = e.encounter_id
+         INNER JOIN mamba_temp_obs_row_num t ON o.obs_id = t.obs_id
+WHERE o.encounter_id IS NOT NULL;
+
+-- Drop the temporary table
+DROP TEMPORARY TABLE mamba_temp_obs_row_num;
 
 -- $END

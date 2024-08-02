@@ -2,8 +2,7 @@
 
 CREATE TABLE mamba_z_encounter_obs
 (
-    id                      INT           NOT NULL AUTO_INCREMENT,
-    obs_id                  INT           NOT NULL,
+    obs_id                  INT           NOT NULL UNIQUE PRIMARY KEY,
     encounter_id            INT           NULL,
     person_id               INT           NOT NULL,
     order_id                INT           NULL,
@@ -33,62 +32,23 @@ CREATE TABLE mamba_z_encounter_obs
     void_reason             VARCHAR(255)  NULL,
     incremental_record      INT DEFAULT 0 NOT NULL, -- whether a record has been inserted after the first ETL run
 
-    PRIMARY KEY (id)
+    INDEX mamba_idx_encounter_id (encounter_id),
+    INDEX mamba_idx_person_id (person_id),
+    INDEX mamba_idx_encounter_datetime (encounter_datetime),
+    INDEX mamba_idx_encounter_type_uuid (encounter_type_uuid),
+    INDEX mamba_idx_obs_question_concept_id (obs_question_concept_id),
+    INDEX mamba_idx_obs_value_coded (obs_value_coded),
+    INDEX mamba_idx_obs_value_coded_uuid (obs_value_coded_uuid),
+    INDEX mamba_idx_obs_question_uuid (obs_question_uuid),
+    INDEX mamba_idx_status (status),
+    INDEX mamba_idx_voided (voided),
+    INDEX mamba_idx_row_num (row_num),
+    INDEX mamba_idx_date_voided (date_voided),
+    INDEX mamba_idx_order_id (order_id),
+    INDEX mamba_idx_previous_version (previous_version),
+    INDEX mamba_idx_obs_group_id (obs_group_id),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
-
-CREATE INDEX mamba_z_encounter_obs_encounter_id_type_uuid_person_id_index
-    ON mamba_z_encounter_obs (encounter_id, person_id, encounter_datetime);
-
-CREATE INDEX mamba_z_encounter_obs_id_index
-    ON mamba_z_encounter_obs (obs_id);
-
-CREATE INDEX mamba_z_encounter_obs_encounter_id_index
-    ON mamba_z_encounter_obs (encounter_id);
-
-CREATE INDEX mamba_z_encounter_obs_encounter_type_uuid_index
-    ON mamba_z_encounter_obs (encounter_type_uuid);
-
-CREATE INDEX mamba_z_encounter_obs_question_concept_id_index
-    ON mamba_z_encounter_obs (obs_question_concept_id);
-
-CREATE INDEX mamba_z_encounter_obs_value_coded_index
-    ON mamba_z_encounter_obs (obs_value_coded);
-
-CREATE INDEX mamba_z_encounter_obs_value_coded_uuid_index
-    ON mamba_z_encounter_obs (obs_value_coded_uuid);
-
-CREATE INDEX mamba_z_encounter_obs_question_uuid_index
-    ON mamba_z_encounter_obs (obs_question_uuid);
-
-CREATE INDEX mamba_z_encounter_obs_status_index
-    ON mamba_z_encounter_obs (status);
-
-CREATE INDEX mamba_z_encounter_obs_voided_index
-    ON mamba_z_encounter_obs (voided);
-
-CREATE INDEX mamba_z_encounter_obs_row_num_index
-    ON mamba_z_encounter_obs (row_num);
-
-CREATE INDEX mamba_z_encounter_obs_encounter_datetime_index
-    ON mamba_z_encounter_obs (encounter_datetime);
-
-CREATE INDEX mamba_z_encounter_obs_person_id_index
-    ON mamba_z_encounter_obs (person_id);
-
-CREATE INDEX mamba_z_encounter_obs_date_voided_index
-    ON mamba_z_encounter_obs (date_voided);
-
-CREATE INDEX mamba_z_encounter_obs_incremental_record_index
-    ON mamba_z_encounter_obs (incremental_record);
-
-CREATE INDEX mamba_z_encounter_obs_order_id_index
-    ON mamba_z_encounter_obs (order_id);
-
-CREATE INDEX mamba_z_encounter_obs_previous_version_index
-    ON mamba_z_encounter_obs (previous_version);
-
-CREATE INDEX mamba_z_encounter_obs_obs_group_id_index
-    ON mamba_z_encounter_obs (obs_group_id);
 
 -- $END
