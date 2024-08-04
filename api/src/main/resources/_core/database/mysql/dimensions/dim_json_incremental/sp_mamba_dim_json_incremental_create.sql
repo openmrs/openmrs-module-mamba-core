@@ -5,9 +5,9 @@ CREATE TABLE mamba_dim_json_incremental
     id                INT          NOT NULL AUTO_INCREMENT,
     report_name       VARCHAR(100) NOT NULL,
     encounter_type_id INT          NOT NULL UNIQUE,
-    Json_data         JSON,
+    table_json_data         JSON,
     uuid              CHAR(38),
-    Json_data_hash    CHAR(32),
+    table_json_data_hash    CHAR(32),
 
     PRIMARY KEY (id)
 )
@@ -23,6 +23,6 @@ CREATE INDEX mamba_dim_json_incremental_uuid_index
     ON mamba_dim_json_incremental (uuid);
 
 CREATE INDEX mamba_dim_json_incremental_Json_data_hash_index
-    ON mamba_dim_json_incremental (Json_data_hash);
+    ON mamba_dim_json_incremental (table_json_data_hash);
 
 -- $END

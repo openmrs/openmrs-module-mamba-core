@@ -34,7 +34,7 @@ BEGIN
         END IF;
 
         SET @insert_stmt = CONCAT(
-                'INSERT INTO mamba_dim_json_incremental(report_name,encounter_type_id,Json_data,uuid)
+                'INSERT INTO mamba_dim_json_incremental(report_name,encounter_type_id,table_json_data,uuid)
                     SELECT
                         name,
                         encounter_type_id,

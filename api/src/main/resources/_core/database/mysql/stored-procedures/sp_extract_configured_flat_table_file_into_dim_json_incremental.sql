@@ -36,7 +36,7 @@ BEGIN
             INSERT INTO mamba_dim_json_incremental
             (report_name,
              encounter_type_id,
-             Json_data,
+             table_json_data,
              uuid)
             VALUES (JSON_UNQUOTE(@report_name),
                     @encounter_type_id,

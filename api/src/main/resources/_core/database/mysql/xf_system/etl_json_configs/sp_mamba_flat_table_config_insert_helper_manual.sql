@@ -1,13 +1,13 @@
--- manually extracts user given flat table config files into the mamba_dim_json table
--- this data together with automatically extracted flat table data is inserted into the mamba_dim_json table
+-- manually extracts user given flat table config file json into the mamba_flat_table_config table
+-- this data together with automatically extracted flat table data is inserted into the mamba_flat_table_config table
 -- later it is processed by the 'fn_mamba_generate_report_array_from_automated_json_table' function
 -- into the @report_data variable inside the compile-mysql.sh script
 
-DROP PROCEDURE IF EXISTS sp_extract_configured_flat_table_file_into_dim_json_table;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_table_config_insert_helper_manual;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_extract_configured_flat_table_file_into_dim_json_table(
+CREATE PROCEDURE sp_mamba_flat_table_config_insert_helper_manual(
     IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4
 )
 BEGIN
@@ -38,11 +38,11 @@ BEGIN
                                       LIMIT 1);
 
             IF report_enc_type_id IS NOT NULL THEN
-                INSERT INTO mamba_dim_json
+                INSERT INTO mamba_flat_table_config
                 (report_name,
                  encounter_type_id,
-                 Json_data,
-                 uuid)
+                 table_json_data,
+                 encounter_type_uuid)
                 VALUES (JSON_UNQUOTE(report_enc_name),
                         report_enc_type_id,
                         @report_data_item,

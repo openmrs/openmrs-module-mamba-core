@@ -24,7 +24,7 @@ BEGIN
 
     CALL sp_mamba_dim_encounter_type;
 
-    CALL sp_mamba_dim_json_create;
+    CALL sp_mamba_flat_table_config;
 
     CALL sp_mamba_dim_concept_metadata;
 

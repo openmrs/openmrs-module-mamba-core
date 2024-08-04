@@ -25,11 +25,12 @@ UPDATE mamba_dim_concept c
 SET c.datatype = dt.name
 WHERE c.incremental_record = 1;
 
--- Update the concept name
+-- Update the concept name and table column name
 UPDATE mamba_dim_concept c
     INNER JOIN mamba_dim_concept_name cn
     ON c.concept_id = cn.concept_id
-SET c.name = IF(c.retired = 1, CONCAT(cn.name, '_', 'RETIRED'), cn.name)
+SET c.name = IF(c.retired = 1, CONCAT(cn.name, '_', 'RETIRED'), cn.name),
+    c.auto_table_column_name = LOWER(LEFT(REPLACE(REPLACE(fn_mamba_remove_special_characters(c.name), ' ', '_'),'__', '_'),60))
 WHERE c.incremental_record = 1;
 
 -- $END

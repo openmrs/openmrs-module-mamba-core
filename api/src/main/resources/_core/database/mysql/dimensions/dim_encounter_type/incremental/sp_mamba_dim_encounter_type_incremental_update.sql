@@ -19,4 +19,10 @@ SET et.uuid               = ent.uuid,
     et.incremental_record = 1
 WHERE im.incremental_table_pkey > 1;
 
+UPDATE mamba_dim_encounter_type et
+SET et.auto_flat_table_name = LOWER(LEFT(
+        REPLACE(REPLACE(fn_mamba_remove_special_characters(CONCAT('mamba_flat_encounter_', et.name)), ' ', '_'), '__',
+                '_'), 60))
+WHERE et.incremental_record = 1;
+
 -- $END
