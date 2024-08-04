@@ -1,9 +1,9 @@
-DROP PROCEDURE IF EXISTS sp_mamba_extract_report_metadata;
+DROP PROCEDURE IF EXISTS sp_mamba_concept_metadata_insert_helper;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_extract_report_metadata(
-    IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4,
+CREATE PROCEDURE sp_mamba_concept_metadata_insert_helper(
+    IN report_data JSON,
     IN metadata_table VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
@@ -32,7 +32,7 @@ BEGIN
 
             IF @column_keys_array_len = 0 THEN
 
-                INSERT INTO mamba_dim_concept_metadata
+                INSERT INTO mamba_concept_metadata
                 (report_name,
                  flat_table_name,
                  encounter_type_uuid,
@@ -59,7 +59,7 @@ BEGIN
                             SET @table_name = CONCAT(JSON_UNQUOTE(@flat_table_name), '_', @current_table_count);
                             SET @current_table_count = @current_table_count;
 
-                            INSERT INTO mamba_dim_concept_metadata
+                            INSERT INTO mamba_concept_metadata
                             (report_name,
                              flat_table_name,
                              encounter_type_uuid,
@@ -72,7 +72,7 @@ BEGIN
                                     JSON_UNQUOTE(@concept_uuid));
 
                         ELSE
-                            INSERT INTO mamba_dim_concept_metadata
+                            INSERT INTO mamba_concept_metadata
                             (report_name,
                              flat_table_name,
                              encounter_type_uuid,

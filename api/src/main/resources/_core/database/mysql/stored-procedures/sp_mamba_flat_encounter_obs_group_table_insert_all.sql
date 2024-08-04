@@ -6,13 +6,13 @@ DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert_all;
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert_all()
 BEGIN
 
-    DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
+    DECLARE tbl_name VARCHAR(60) CHARACTER SET UTF8MB4;
     DECLARE obs_name CHAR(50) CHARACTER SET UTF8MB4;
 
     DECLARE done INT DEFAULT 0;
 
     DECLARE cursor_flat_tables CURSOR FOR
-    SELECT DISTINCT(flat_table_name) FROM mamba_dim_concept_metadata;
+    SELECT DISTINCT(flat_table_name) FROM mamba_concept_metadata;
 
     DECLARE cursor_obs_group_tables CURSOR FOR
     SELECT DISTINCT(obs_group_name) FROM mamba_dim_obs_group;

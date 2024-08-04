@@ -26,7 +26,7 @@ BEGIN
 
     CALL sp_mamba_flat_table_config;
 
-    CALL sp_mamba_dim_concept_metadata;
+    CALL sp_mamba_concept_metadata;
 
     CALL sp_mamba_dim_report_definition;
 

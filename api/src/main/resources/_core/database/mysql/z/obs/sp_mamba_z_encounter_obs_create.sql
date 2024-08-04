@@ -4,6 +4,7 @@ CREATE TABLE mamba_z_encounter_obs
 (
     obs_id                  INT           NOT NULL UNIQUE PRIMARY KEY,
     encounter_id            INT           NULL,
+    visit_id                INT           NULL,
     person_id               INT           NOT NULL,
     order_id                INT           NULL,
     encounter_datetime      DATETIME      NOT NULL,
@@ -33,6 +34,7 @@ CREATE TABLE mamba_z_encounter_obs
     incremental_record      INT DEFAULT 0 NOT NULL, -- whether a record has been inserted after the first ETL run
 
     INDEX mamba_idx_encounter_id (encounter_id),
+    INDEX mamba_idx_visit_id (visit_id),
     INDEX mamba_idx_person_id (person_id),
     INDEX mamba_idx_encounter_datetime (encounter_datetime),
     INDEX mamba_idx_encounter_type_uuid (encounter_type_uuid),

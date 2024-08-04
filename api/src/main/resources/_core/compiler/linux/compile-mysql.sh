@@ -95,21 +95,21 @@ CALL sp_mamba_flat_table_config_update();
 
 }
 
-# Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_dim_concept_metadata table
+# Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table
 function read_config_metadata_into_mamba_dim_concept_metadata() {
 
   SQL_CONTENTS="
 -- \$BEGIN
 "$'
 
-SET @report_data = fn_mamba_generate_report_array_from_automated_json_table();
-CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
+SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config();
+CALL sp_mamba_concept_metadata_insert_helper(@report_data, '\''mamba_concept_metadata'\'');
 
 '"
 -- \$END
 "
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_insert.sql" #TODO: improve!!
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_concept_metadata_insert.sql" #TODO: improve!!
 }
 
 # Read in the JSON configuration metadata for Table flattening
@@ -147,7 +147,7 @@ function read_config_metadata_for_incremental_comparison() {
           -- CALL sp_mamba_dim_json_incremental_update();
 
           -- SET @report_data = fn_mamba_generate_report_array_from_automated_json_incremental();
-          CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_dim_concept_metadata'\'');
+          CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_concept_metadata'\'');
       '"
   -- \$END
   "
@@ -683,7 +683,7 @@ add_mamba_etl_starter_scripts
 # Read in the Flat Table JSON configurations into the intermediary/consolidation table, mamba_flat_table_config
 read_config_metadata_into_mamba_flat_table_config
 
-# Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_dim_concept_metadata table
+# Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table
 read_config_metadata_into_mamba_dim_concept_metadata
 
 # Read in the JSON configuration metadata for incremental comparison

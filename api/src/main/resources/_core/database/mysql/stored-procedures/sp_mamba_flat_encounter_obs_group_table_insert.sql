@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert;
 
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert(
-    IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4,
+    IN flat_encounter_table_name VARCHAR(60) CHARACTER SET UTF8MB4,
     obs_group_name VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
@@ -24,7 +24,7 @@ BEGIN
                 fn_mamba_get_obs_value_column(concept_datatype), ' END) ', column_label)
             ORDER BY id ASC)
     INTO @column_labels
-    FROM mamba_dim_concept_metadata cm
+    FROM mamba_concept_metadata cm
              INNER JOIN
          (
              SELECT
@@ -41,15 +41,15 @@ BEGIN
     IF @column_labels IS NOT NULL THEN
         IF (SELECT count(*)FROM information_schema.tables WHERE table_name = @tbl_obs_group_name) > 0 THEN
             SET @insert_stmt = CONCAT(
-                    'INSERT INTO `', @tbl_obs_group_name, '` SELECT eo.encounter_id, eo.person_id, eo.encounter_datetime, eo.location_id, ',
+                    'INSERT INTO `', @tbl_obs_group_name, '` SELECT eo.encounter_id, eo.visit_id, eo.person_id, eo.encounter_datetime, eo.location_id, ',
                     @column_labels, '
                     FROM mamba_z_encounter_obs eo
-                        INNER JOIN mamba_dim_concept_metadata cm
+                        INNER JOIN mamba_concept_metadata cm
                         ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
                     WHERE  cm.flat_table_name = ''', @tbl_name, '''
                     AND eo.encounter_type_uuid = cm.encounter_type_uuid
                     AND eo.obs_group_id IS NOT NULL  AND eo.status = ''FINAL''
-                    GROUP BY eo.encounter_id, eo.person_id, eo.encounter_datetime,eo.obs_group_id, eo.location_id;');
+                    GROUP BY eo.encounter_id, eo.visit_id, eo.person_id, eo.encounter_datetime,eo.obs_group_id, eo.location_id;');
         END IF;
     END IF;
 

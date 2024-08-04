@@ -1,22 +1,16 @@
 -- $BEGIN
 
 -- Update the Concept datatypes, concept_name and concept_id based on given locale
-UPDATE mamba_dim_concept_metadata md
+UPDATE mamba_concept_metadata md
     INNER JOIN mamba_dim_concept c
     ON md.concept_uuid = c.uuid
-    INNER JOIN mamba_dim_concept_name cn
-    ON c.concept_id = cn.concept_id
 SET md.concept_datatype = c.datatype,
     md.concept_id       = c.concept_id,
     md.concept_name     = c.name
-WHERE md.id > 0
-  AND cn.locale IN (SELECT DISTINCT(concepts_locale) FROM _mamba_etl_user_settings)
-  AND IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED');
-
--- Use locale preferred or Fully specified name
+WHERE md.id > 0;
 
 -- Update to True if this field is an obs answer to an obs Question
-UPDATE mamba_dim_concept_metadata md
+UPDATE mamba_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
     ON md.concept_id = ca.answer_concept
 SET md.concept_answer_obs = 1
@@ -25,13 +19,14 @@ WHERE md.id > 0
                         FROM mamba_dim_concept_answer ca);
 
 -- Update to for multiple selects/dropdowns/options this field is an obs answer to an obs Question
-UPDATE mamba_dim_concept_metadata md
+-- TODO: check this implementation here
+UPDATE mamba_concept_metadata md
 SET md.concept_answer_obs = 1
 WHERE md.id > 0
   and concept_datatype = 'N/A';
 
 -- Update row number
-UPDATE mamba_dim_concept_metadata md
+UPDATE mamba_concept_metadata md
     INNER JOIN (SELECT flat_table_name,
                        concept_id,
                        id,
@@ -42,7 +37,7 @@ UPDATE mamba_dim_concept_metadata md
                            END AS num,
                        @prev_flat_table_name := flat_table_name,
                        @prev_concept_id := concept_id
-                FROM mamba_dim_concept_metadata
+                FROM mamba_concept_metadata
                 ORDER BY flat_table_name, concept_id, id) m ON md.id = m.id
 SET md.row_num = num
 WHERE md.id > 0;

@@ -14,7 +14,7 @@ BEGIN
 
     DECLARE cursor_encounters CURSOR FOR
         SELECT DISTINCT(encounter_type_uuid), m.report_name, m.flat_table_name, et.encounter_type_id
-        FROM mamba_dim_concept_metadata m
+        FROM mamba_concept_metadata m
                  INNER JOIN mamba_dim_encounter_type et ON m.encounter_type_uuid = et.uuid
         WHERE et.retired = 0
           AND m.concept_uuid = 'AUTO-GENERATE'
@@ -33,7 +33,7 @@ BEGIN
         END IF;
 
         SET @insert_stmt = CONCAT(
-                'INSERT INTO mamba_dim_concept_metadata
+                'INSERT INTO mamba_concept_metadata
                 (
                     report_name,
                     flat_table_name,

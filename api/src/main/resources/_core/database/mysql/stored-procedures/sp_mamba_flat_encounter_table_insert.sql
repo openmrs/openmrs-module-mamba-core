@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_insert;
 DELIMITER //
 
 CREATE PROCEDURE sp_mamba_flat_encounter_table_insert(
-    IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
+    IN flat_encounter_table_name VARCHAR(60) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -20,21 +20,21 @@ BEGIN
                                fn_mamba_get_obs_value_column(concept_datatype), ' END) ', column_label)
                         ORDER BY id ASC)
     INTO @column_labels
-    FROM mamba_dim_concept_metadata
+    FROM mamba_concept_metadata
     WHERE flat_table_name = @tbl_name;
 
     IF @column_labels IS NOT NULL THEN
         SET @insert_stmt = CONCAT(
                 'INSERT INTO `', @tbl_name,
-                '` SELECT o.encounter_id, o.person_id, o.encounter_datetime, o.location_id, ',
+                '` SELECT o.encounter_id, o.visit_id, o.person_id, o.encounter_datetime, o.location_id, ',
                 @column_labels, '
                 FROM mamba_z_encounter_obs o
-                    INNER JOIN mamba_dim_concept_metadata cm
+                    INNER JOIN mamba_concept_metadata cm
                     ON IF(cm.concept_answer_obs=1, cm.concept_uuid=o.obs_value_coded_uuid, cm.concept_uuid=o.obs_question_uuid)
                 WHERE cm.flat_table_name = ''', @tbl_name, '''
                 AND o.encounter_type_uuid = cm.encounter_type_uuid
                 AND o.row_num = cm.row_num AND o.obs_group_id IS NULL AND o.voided = 0
-                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime, o.location_id;');
+                GROUP BY o.encounter_id, o.visit_id, o.person_id, o.encounter_datetime, o.location_id;');
     END IF;
 
     IF @column_labels IS NOT NULL THEN

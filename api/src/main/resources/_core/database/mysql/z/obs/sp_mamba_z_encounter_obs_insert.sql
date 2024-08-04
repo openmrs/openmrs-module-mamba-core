@@ -19,6 +19,7 @@ ORDER BY person_id, encounter_id, concept_id;
 
 INSERT INTO mamba_z_encounter_obs (obs_id,
                                    encounter_id,
+                                   visit_id,
                                    person_id,
                                    order_id,
                                    encounter_datetime,
@@ -46,6 +47,7 @@ INSERT INTO mamba_z_encounter_obs (obs_id,
                                    void_reason)
 SELECT o.obs_id,
        o.encounter_id,
+       e.visit_id,
        o.person_id,
        o.order_id,
        e.encounter_datetime,

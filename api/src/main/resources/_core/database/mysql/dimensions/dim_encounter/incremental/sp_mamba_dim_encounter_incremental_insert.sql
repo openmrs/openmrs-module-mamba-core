@@ -47,5 +47,5 @@ FROM mamba_source_db.encounter e
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid
           IN (SELECT DISTINCT(md.encounter_type_uuid)
-              FROM mamba_dim_concept_metadata md);
+              FROM mamba_concept_metadata md);
 -- $END

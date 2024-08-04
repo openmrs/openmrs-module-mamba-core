@@ -28,7 +28,8 @@ SELECT cn.concept_name_id,
        cn.void_reason
 FROM mamba_source_db.concept_name cn
 WHERE cn.locale IN (SELECT DISTINCT(concepts_locale) FROM _mamba_etl_user_settings)
-  AND cn.locale_preferred = 1
+  AND IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED')
   AND cn.voided = 0;
+-- Use locale preferred or Fully specified name
 
 -- $END
