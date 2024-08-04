@@ -35,6 +35,7 @@ public class MambaCoreActivator extends BaseModuleActivator {
     @Override
     public void started() {
         log.info("log MambaCoreActivator started()");
+        super.started();
     }
 
     @Override
@@ -60,6 +61,7 @@ public class MambaCoreActivator extends BaseModuleActivator {
     @Override
     public void contextRefreshed() {
         log.info("log MambaCoreActivator contextRefreshed()");
+        super.contextRefreshed();
     }
 
     /**
