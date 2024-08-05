@@ -56,8 +56,10 @@ stored-procedures/sp_mamba_write_automated_json_config.sql
 
 stored-procedures/sp_mamba_locale_insert_helper.sql
 stored-procedures/sp_mamba_extract_report_column_names.sql
+
 xf_system/sp_mamba_truncate_tables_before_incremental.sql
-stored-procedures/sp_mamba_reset_flags_for_incremental_updates.sql
+xf_system/sp_mamba_reset_incremental_update_flag.sql
+xf_system/sp_mamba_reset_incremental_update_flag_all.sql
 
 xf_system/etl_concept_metadata/sp_mamba_concept_metadata.sql
 xf_system/etl_concept_metadata/sp_mamba_concept_metadata_create.sql
