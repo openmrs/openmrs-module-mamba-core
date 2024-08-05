@@ -14,17 +14,23 @@ import org.openmrs.module.mambacore.api.FlattenDatabaseService;
 import org.openmrs.module.mambacore.api.dao.FlattenDatabaseDao;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Transactional
 public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements FlattenDatabaseService {
-	
-	private FlattenDatabaseDao dao;
-	
-	public void setDao(FlattenDatabaseDao dao) {
-		this.dao = dao;
-	}
-	
-	@Override
-	public void flattenDatabase() {
-		dao.executeFlatteningScript();
-	}
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private FlattenDatabaseDao dao;
+
+    public void setDao(FlattenDatabaseDao dao) {
+        this.dao = dao;
+    }
+
+    @Override
+    public void setupEtl() {
+        executorService.submit(() -> {
+            dao.deployMambaEtl();
+        });
+    }
 }

@@ -11,6 +11,7 @@ package org.openmrs.module.mambacore.db;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.mambacore.util.MambaETLProperties;
 
 import java.util.Properties;
 
@@ -22,21 +23,15 @@ public class ConnectionPoolManager {
 	
 	private ConnectionPoolManager() {
 		
-		Properties properties = Context.getRuntimeProperties();
+		MambaETLProperties props = MambaETLProperties.getInstance();
 		
-		String driver = properties.getProperty("mambaetl.analysis.db.driver");
-		String url = properties.getProperty("mambaetl.analysis.db.url");
-		String userName = properties.getProperty("mambaetl.analysis.db.username");
-		String password = properties.getProperty("mambaetl.analysis.db.password");
-		String defaultUrl = "jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&useSSL=false";
+		dataSource.setDriverClassName(props.getDriver());
+		dataSource.setUsername(props.getUserName());
+		dataSource.setPassword(props.getPassword());
+		dataSource.setUrl(props.getUrl());
 		
-		dataSource.setDriverClassName(driver != null ? driver : properties.getProperty("connection.driver_class"));
-		dataSource.setUsername(userName != null ? userName : properties.getProperty("connection.username"));
-		dataSource.setPassword((password != null ? password : properties.getProperty("connection.password")));
-		dataSource.setUrl(url != null ? url : defaultUrl);
-		
-		dataSource.setInitialSize(4);
-		dataSource.setMaxTotal(20);
+		dataSource.setInitialSize(props.getConnectionInitialSize());
+		dataSource.setMaxTotal(props.getConnectionMaxTotal());
 	}
 	
 	public static ConnectionPoolManager getInstance() {

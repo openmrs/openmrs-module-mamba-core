@@ -14,6 +14,6 @@ import org.openmrs.api.OpenmrsService;
 
 public interface FlattenDatabaseService extends OpenmrsService {
 
-	 @Authorized({MambaReportsConstants.VIEW_MAMBA_REPORT})
-	void flattenDatabase();
+    @Authorized({MambaReportsConstants.VIEW_MAMBA_REPORT})
+    void setupEtl();
 }

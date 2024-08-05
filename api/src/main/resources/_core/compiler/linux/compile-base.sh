@@ -11,7 +11,7 @@ add_option() {
 }
 
 # Parse arguments
-while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:" opt; do
+while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:u:" opt; do
   case "${opt}" in
   h) add_option "-h" "${OPTARG}" ;;
   t) add_option "-t" "${OPTARG}" ;;
@@ -50,6 +50,7 @@ while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:" opt; do
   c) add_option "-c" "${OPTARG}" ;;
   l) add_option "-l" "${OPTARG}" ;;
   p) add_option "-p" "${OPTARG}" ;;
+  u) add_option "-u" "${OPTARG}" ;;
   *)
     echo "Invalid option: -$OPTARG. Use -n mysql|postgres|sqlserver|oracle." >&2
     exit 1
@@ -128,11 +129,11 @@ function consolidateSPsCallerFile() {
   local dbEngineBaseDir="../../database/$db_engine"
 
   # Search for core's p_data_processing.sql file in all subdirectories in the path: ${project.build.directory}/mamba-etl/_core/database/$db_engine
-  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_mamba_data_processing_flatten.sql -type f -print -quit)
+  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_mamba_data_processing_drop_and_flatten.sql -type f -print -quit)
   local consolidatedFile=$(find "$dbEngineBaseDir" -name sp_makefile -type f -print -quit)
 
   # Search for all files with the specified filename in the path: ${project.build.directory}/mamba-etl/_etl
-  # Then get its directory name/path, so we can find a file named sp_mamba_data_processing_flatten.sql which is in the same dir
+  # Then get its directory name/path, so we can find a file named sp_mamba_data_processing_drop_and_flatten.sql which is in the same dir
   local sp_make_folders=$(find "../../../_etl" -name sp_makefile -type f -exec dirname {} \; | sort -u)
 
   # Loop through each folder, cd to that folder

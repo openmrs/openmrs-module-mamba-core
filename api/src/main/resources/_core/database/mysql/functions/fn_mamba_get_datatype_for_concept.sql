@@ -13,7 +13,7 @@ BEGIN
 
     ELSEIF conceptDatatype = 'Coded'
        OR conceptDatatype = 'N/A' THEN
-        SET mysqlDatatype = 'NVarchar(250)';
+        SET mysqlDatatype = 'Varchar(250)';
 
     ELSEIF conceptDatatype = 'Boolean' THEN
         SET mysqlDatatype = 'Boolean';

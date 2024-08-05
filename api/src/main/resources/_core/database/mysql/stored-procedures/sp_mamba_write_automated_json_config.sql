@@ -33,7 +33,7 @@ BEGIN
 
         SET @report_data = CONCAT(@report_data, ']}');
 
-        CALL sp_mamba_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
+        CALL sp_mamba_extract_report_metadata(@report_data, 'mamba_concept_metadata');
 
 END //
 
