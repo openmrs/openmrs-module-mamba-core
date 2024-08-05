@@ -145,14 +145,33 @@ function read_config_metadata_into_mamba_dim_concept_metadata() {
 -- \$BEGIN
 "$'
 
-SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config();
-CALL sp_mamba_concept_metadata_insert_helper(@report_data, '\''mamba_concept_metadata'\'');
+SET @is_incremental = 0;
+SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config(@is_incremental);
+CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, @report_data, '\''mamba_concept_metadata'\'');
 
 '"
 -- \$END
 "
 
   echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_concept_metadata_insert.sql" #TODO: improve!!
+}
+
+# Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table (incrementally)
+function read_config_metadata_into_mamba_dim_concept_metadata_incremental() {
+
+  SQL_CONTENTS="
+-- \$BEGIN
+"$'
+
+SET @is_incremental = 1;
+SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config(@is_incremental);
+CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, @report_data, '\''mamba_concept_metadata'\'');
+
+'"
+-- \$END
+"
+
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_concept_metadata_incremental_insert.sql" #TODO: improve!!
 }
 
 # Read in the JSON configuration metadata for Table flattening
@@ -731,6 +750,9 @@ read_config_metadata_into_mamba_flat_table_config_incremental
 
 # Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table
 read_config_metadata_into_mamba_dim_concept_metadata
+
+# Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table (incrementally)
+read_config_metadata_into_mamba_dim_concept_metadata_incremental
 
 # TODO: Delete after Read in the JSON configuration metadata for incremental comparison
 read_config_metadata_for_incremental_comparison

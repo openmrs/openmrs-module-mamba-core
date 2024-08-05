@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS sp_mamba_missing_table_column_names_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_concept_metadata_missing_columns_insert;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_missing_table_column_names_insert()
+CREATE PROCEDURE sp_mamba_concept_metadata_missing_columns_insert()
 BEGIN
 
     DECLARE encounter_type_uuid_value CHAR(38);

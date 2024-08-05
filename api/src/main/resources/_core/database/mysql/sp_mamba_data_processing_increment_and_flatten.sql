@@ -24,9 +24,7 @@ BEGIN
 
     CALL sp_mamba_flat_table_config_incremental;
 
-    CALL sp_mamba_dim_concept_metadata_create;
-
-    CALL sp_mamba_dim_concept_metadata_incremental_insert;
+    CALL sp_mamba_concept_metadata_incremental;
 
     CALL sp_mamba_dim_encounter_incremental;
 

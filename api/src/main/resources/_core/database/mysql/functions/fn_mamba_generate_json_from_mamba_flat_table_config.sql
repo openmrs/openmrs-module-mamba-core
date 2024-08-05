@@ -2,7 +2,9 @@ DROP FUNCTION IF EXISTS fn_mamba_generate_json_from_mamba_flat_table_config;
 
 DELIMITER //
 
-CREATE FUNCTION fn_mamba_generate_json_from_mamba_flat_table_config() RETURNS MEDIUMTEXT
+CREATE FUNCTION fn_mamba_generate_json_from_mamba_flat_table_config(
+    is_incremental TINYINT(1)
+) RETURNS JSON
     DETERMINISTIC
 BEGIN
     DECLARE report_array JSON;
@@ -18,8 +20,8 @@ BEGIN
                     '}'
             ) SEPARATOR ','), ']}')
     INTO report_array
-    FROM mamba_flat_table_config;
-    -- WHERE uuid NOT IN (SELECT  DISTINCT encounter_type_uuid from mamba_concept_metadata);
+    FROM mamba_flat_table_config
+    WHERE (IF(is_incremental = 1, incremental_record = 1, 1));
 
     RETURN report_array;
 
