@@ -6,7 +6,7 @@ CREATE PROCEDURE sp_mamba_data_processing_increment_and_flatten()
 
 BEGIN
 
-    CALL sp_mamba_truncate_tables_before_incremental;
+    -- CALL sp_mamba_truncate_tables_before_incremental;
 
     CALL sp_mamba_dim_location_incremental;
 
@@ -48,9 +48,15 @@ BEGIN
 
     CALL sp_mamba_z_encounter_obs_incremental;
 
-    CALL sp_mamba_flat_encounter_table_incremental_create_all;
+    CALL sp_mamba_flat_table_incremental_create_all;
 
-    CALL sp_mamba_flat_encounter_table_incremental_insert_all;
+    CALL sp_mamba_flat_table_incremental_insert_all;
+
+    CALL sp_mamba_flat_table_obs_incremental_insert_all;
+
+    -- CALL sp_mamba_flat_encounter_table_incremental_create_all;
+
+    -- CALL sp_mamba_flat_encounter_table_incremental_insert_all;
 
     CALL sp_mamba_reset_flags_for_incremental_updates;
 
