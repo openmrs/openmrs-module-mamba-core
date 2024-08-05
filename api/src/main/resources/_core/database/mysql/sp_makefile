@@ -26,7 +26,6 @@ stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_objects_in_schema.sql
 xf_system/sp_mamba_system_drop_all_tables.sql
-stored-procedures/sp_mamba_etl_execute.sql
 
 xf_system/etl_scheduler/sp_mamba_etl_scheduler_wrapper.sql
 xf_system/etl_scheduler/sp_mamba_etl_schedule_table_create.sql
@@ -46,7 +45,6 @@ stored-procedures/sp_mamba_flat_encounter_obs_group_table_create_all.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert_all.sql
 
-stored-procedures/sp_mamba_json_files_insert_incremental.sql
 stored-procedures/sp_mamba_missing_table_column_names_insert.sql
 
 stored-procedures/sp_mamba_multiselect_values_update.sql
@@ -61,7 +59,7 @@ stored-procedures/sp_mamba_write_automated_json_config.sql
 
 stored-procedures/sp_mamba_locale_insert_helper.sql
 stored-procedures/sp_mamba_extract_report_column_names.sql
-stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
+xf_system/sp_mamba_truncate_tables_before_incremental.sql
 stored-procedures/sp_mamba_reset_flags_for_incremental_updates.sql
 
 xf_system/etl_concept_metadata/sp_mamba_concept_metadata.sql
@@ -79,7 +77,13 @@ config/sp_mamba_flat_table_config_insert.sql
 xf_system/etl_json_configs/sp_mamba_flat_table_config_update.sql
 xf_system/etl_json_configs/sp_mamba_flat_table_config.sql
 
-stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_incremental.sql
+xf_system/etl_json_configs/incremental/sp_mamba_flat_table_config_incremental_create.sql
+xf_system/etl_json_configs/incremental/sp_mamba_flat_table_config_incremental_insert_helper_manual.sql
+xf_system/etl_json_configs/incremental/sp_mamba_flat_table_config_incremental_insert_helper_auto.sql
+config/sp_mamba_flat_table_config_incremental_insert.sql
+xf_system/etl_json_configs/incremental/sp_mamba_flat_table_config_incremental_update.sql
+xf_system/etl_json_configs/incremental/sp_mamba_flat_table_config_incremental_truncate.sql
+xf_system/etl_json_configs/incremental/sp_mamba_flat_table_config_incremental.sql
 
 xf_system/etl_obs_group/sp_mamba_obs_group.sql
 xf_system/etl_obs_group/sp_mamba_obs_group_create.sql
@@ -114,6 +118,8 @@ xf_system/etl_incremental_columns_index_modified/sp_mamba_etl_incremental_column
 
 xf_system/sp_mamba_etl_incremental_columns_index.sql
 xf_system/sp_mamba_dim_table_insert.sql
+
+xf_system/sp_mamba_truncate_table.sql
 
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
@@ -292,10 +298,6 @@ z/obs/incremental/sp_mamba_z_encounter_obs_incremental_insert.sql
 z/obs/incremental/sp_mamba_z_encounter_obs_incremental_update.sql
 z/obs/incremental/sp_mamba_z_encounter_obs_incremental.sql
 
-dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_create.sql
-dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_insert.sql
-dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_update.sql
-dimensions/dim_json_incremental/sp_mamba_dim_json_incremental.sql
 
 #########################################################################################################
 ### Flattening SPs (drop or increment tables) that invoke (CALL) the above prepared stored procedures ###

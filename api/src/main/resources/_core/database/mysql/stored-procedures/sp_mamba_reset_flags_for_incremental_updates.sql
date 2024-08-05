@@ -21,7 +21,7 @@ BEGIN
 
     update mamba_dim_orders set flag  = NULL  where flag in (1,2);
 
-    update mamba_dim_json set flag  = NULL  where flag in (1,2);
+    update mamba_flat_table_config set flag  = NULL  where flag in (1,2);
 
     update mamba_z_encounter_obs set flag  = NULL  where flag in (1,2);
 

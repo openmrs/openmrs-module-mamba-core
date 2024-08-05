@@ -95,6 +95,49 @@ CALL sp_mamba_flat_table_config_update();
 
 }
 
+# Read in the Flat Table JSON configurations into the intermediary/consolidation table (incremental table), mamba_flat_table_config_incremental
+function read_config_metadata_into_mamba_flat_table_config_incremental() {
+
+  JSON_CONTENTS="{\"flat_report_metadata\":["
+
+  FIRST_FILE=true
+  for FILENAME in "$config_dir"/*.json; do
+    if [ "$FILENAME" = "$config_dir/reports.json" ]; then
+        continue
+    elif [ "$FIRST_FILE" = false ]; then
+        JSON_CONTENTS="$JSON_CONTENTS,"
+#     else
+#        JSON_CONTENTS=""
+    fi
+    JSON_CONTENTS="$JSON_CONTENTS$(cat "$FILENAME")"
+    FIRST_FILE=false
+  done
+
+  JSON_CONTENTS="$JSON_CONTENTS]}"
+
+  # Count the number of JSON files excluding 'reports.json'
+  count=$(find "$config_dir" -type f -name '*.json' ! -name 'reports.json' | wc -l)
+
+  SQL_CONTENTS="
+-- \$BEGIN
+"$'
+
+SET @report_data = '%s';
+
+CALL sp_mamba_flat_table_config_incremental_insert_helper_manual(@report_data); -- insert manually added config JSON data from config dir
+CALL sp_mamba_flat_table_config_incremental_insert_helper_auto(); -- insert automatically generated config JSON data from db
+CALL sp_mamba_flat_table_config_incremental_update();
+'"
+-- \$END
+  "
+
+  # Replace above placeholders in SQL_CONTENTS with actual values
+  SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'")
+
+  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_flat_table_config_incremental_insert.sql"
+
+}
+
 # Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table
 function read_config_metadata_into_mamba_dim_concept_metadata() {
 
@@ -683,10 +726,13 @@ add_mamba_etl_starter_scripts
 # Read in the Flat Table JSON configurations into the intermediary/consolidation table, mamba_flat_table_config
 read_config_metadata_into_mamba_flat_table_config
 
+# Read in the Flat Table JSON configurations into the intermediary/consolidation table (incremental table), mamba_flat_table_config_incremental
+read_config_metadata_into_mamba_flat_table_config_incremental
+
 # Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table
 read_config_metadata_into_mamba_dim_concept_metadata
 
-# Read in the JSON configuration metadata for incremental comparison
+# TODO: Delete after Read in the JSON configuration metadata for incremental comparison
 read_config_metadata_for_incremental_comparison
 
 # Consolidate all the make files into one file

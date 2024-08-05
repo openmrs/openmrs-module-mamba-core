@@ -8,7 +8,7 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE jsonData JSON;
     DECLARE cur CURSOR FOR
-        SELECT json_data FROM mamba_dim_json;
+        SELECT json_data FROM mamba_flat_table_config;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
         SET @report_data = '{"flat_report_metadata":[';

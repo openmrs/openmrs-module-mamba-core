@@ -18,7 +18,7 @@ BEGIN
                     '}'
             ) SEPARATOR ','), ']}')
     INTO report_array
-    FROM mamba_dim_json;
+    FROM mamba_flat_table_config;
     -- WHERE uuid NOT IN (SELECT  DISTINCT encounter_type_uuid from mamba_concept_metadata);
 
     RETURN report_array;
