@@ -81,6 +81,11 @@ xf_system/etl_json_configs/sp_mamba_flat_table_config.sql
 
 stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_incremental.sql
 
+xf_system/etl_obs_group/sp_mamba_obs_group.sql
+xf_system/etl_obs_group/sp_mamba_obs_group_create.sql
+xf_system/etl_obs_group/sp_mamba_obs_group_insert.sql
+xf_system/etl_obs_group/sp_mamba_obs_group_update.sql
+
 xf_system/etl_error/sp_mamba_etl_error_log_drop.sql
 xf_system/etl_error/sp_mamba_etl_error_log_create.sql
 xf_system/etl_error/sp_mamba_etl_error_log_insert.sql
@@ -286,11 +291,6 @@ z/obs/sp_mamba_z_encounter_obs.sql
 z/obs/incremental/sp_mamba_z_encounter_obs_incremental_insert.sql
 z/obs/incremental/sp_mamba_z_encounter_obs_incremental_update.sql
 z/obs/incremental/sp_mamba_z_encounter_obs_incremental.sql
-
-dimensions/dim_obs_group/sp_mamba_dim_obs_group_create.sql
-dimensions/dim_obs_group/sp_mamba_dim_obs_group_insert.sql
-dimensions/dim_obs_group/sp_mamba_dim_obs_group_update.sql
-dimensions/dim_obs_group/sp_mamba_dim_obs_group.sql
 
 dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_create.sql
 dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_insert.sql

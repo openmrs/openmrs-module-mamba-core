@@ -52,7 +52,7 @@ BEGIN
 
     CALL sp_mamba_z_encounter_obs;
 
-    CALL sp_mamba_dim_obs_group;
+    CALL sp_mamba_obs_group;
 
     CALL sp_mamba_flat_encounter_table_create_all;
 

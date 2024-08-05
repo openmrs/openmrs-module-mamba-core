@@ -4,13 +4,13 @@ DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_create;
 
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_create(
     IN flat_encounter_table_name VARCHAR(60) CHARSET UTF8MB4,
-    obs_group_name VARCHAR(255) CHARSET UTF8MB4
+    obs_group_concept_name VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
 
     SET session group_concat_max_len = 20000;
     SET @column_labels := NULL;
-    SET @tbl_obs_group_name = CONCAT(flat_encounter_table_name, '_', obs_group_name);
+    SET @tbl_obs_group_name = CONCAT(LEFT(flat_encounter_table_name, 50), '_', obs_group_concept_name); -- TODO: 50 + 12 to make 62
 
     SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @tbl_obs_group_name, '`');
 
@@ -20,10 +20,10 @@ BEGIN
              INNER JOIN
          (SELECT DISTINCT obs_question_concept_id
           FROM mamba_z_encounter_obs eo
-                   INNER JOIN mamba_dim_obs_group og
+                   INNER JOIN mamba_obs_group og
                               on eo.obs_group_id = og.obs_id
           WHERE obs_group_id IS NOT NULL
-            AND og.obs_group_name = obs_group_name) eo
+            AND og.obs_group_concept_name = obs_group_concept_name) eo
          ON cm.concept_id = eo.obs_question_concept_id
     WHERE flat_table_name = flat_encounter_table_name
       AND concept_datatype IS NOT NULL;

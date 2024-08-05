@@ -15,7 +15,7 @@ BEGIN
     SELECT DISTINCT(flat_table_name) FROM mamba_concept_metadata;
 
     DECLARE cursor_obs_group_tables CURSOR FOR
-    SELECT DISTINCT(obs_group_name) FROM mamba_dim_obs_group;
+    SELECT DISTINCT(obs_group_concept_name) FROM mamba_obs_group;
 
     -- DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
