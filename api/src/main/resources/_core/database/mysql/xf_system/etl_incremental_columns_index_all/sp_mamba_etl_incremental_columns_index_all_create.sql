@@ -5,7 +5,7 @@
 
 CREATE TABLE IF NOT EXISTS mamba_etl_incremental_columns_index_all
 (
-    incremental_table_pkey INT        NOT NULL UNIQUE,
+    incremental_table_pkey INT        NOT NULL UNIQUE PRIMARY KEY,
 
     date_created           DATETIME   NOT NULL,
     date_changed           DATETIME   NULL,
@@ -14,8 +14,6 @@ CREATE TABLE IF NOT EXISTS mamba_etl_incremental_columns_index_all
 
     retired                TINYINT(1) NULL,
     voided                 TINYINT(1) NULL,
-
-    PRIMARY KEY (incremental_table_pkey),
 
     INDEX mamba_idx_date_created (date_created),
     INDEX mamba_idx_date_changed (date_changed),

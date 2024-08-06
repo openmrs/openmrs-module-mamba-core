@@ -26,7 +26,7 @@ BEGIN
     IF @column_labels IS NOT NULL THEN
         SET @insert_stmt = CONCAT(
                 'INSERT INTO `', @tbl_name,
-                '` SELECT o.encounter_id, o.visit_id, o.person_id, o.encounter_datetime, o.location_id, ',
+                '` SELECT o.encounter_id, MAX(o.visit_id) AS visit_id, o.person_id, o.encounter_datetime, MAX(o.location_id) AS location_id, ',
                 @column_labels, '
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_concept_metadata cm
@@ -34,7 +34,7 @@ BEGIN
                 WHERE cm.flat_table_name = ''', @tbl_name, '''
                 AND o.encounter_type_uuid = cm.encounter_type_uuid
                 AND o.row_num = cm.row_num AND o.obs_group_id IS NULL AND o.voided = 0
-                GROUP BY o.encounter_id, o.visit_id, o.person_id, o.encounter_datetime, o.location_id;');
+                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime;');
     END IF;
 
     IF @column_labels IS NOT NULL THEN

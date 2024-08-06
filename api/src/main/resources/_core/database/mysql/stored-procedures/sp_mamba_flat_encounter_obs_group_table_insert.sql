@@ -38,15 +38,15 @@ BEGIN
         IF (SELECT count(*) FROM information_schema.tables WHERE table_name = @tbl_obs_group_name) > 0 THEN
             SET @insert_stmt = CONCAT(
                     'INSERT INTO `', @tbl_obs_group_name,
-                    '` SELECT eo.encounter_id, eo.visit_id, eo.person_id, eo.encounter_datetime, eo.location_id, ',
+                    '` SELECT eo.encounter_id, MAX(eo.visit_id) AS visit_id, eo.person_id, eo.encounter_datetime, MAX(eo.location_id) AS location_id, ',
                     @column_labels, '
                     FROM mamba_z_encounter_obs eo
                         INNER JOIN mamba_concept_metadata cm
                         ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
                     WHERE  cm.flat_table_name = ''', @tbl_name, '''
                     AND eo.encounter_type_uuid = cm.encounter_type_uuid
-                    AND eo.obs_group_id IS NOT NULL  AND eo.status = ''FINAL''
-                    GROUP BY eo.encounter_id, eo.visit_id, eo.person_id, eo.encounter_datetime,eo.obs_group_id, eo.location_id;');
+                    AND eo.obs_group_id IS NOT NULL
+                    GROUP BY eo.encounter_id, eo.person_id, eo.encounter_datetime,eo.obs_group_id;');
         END IF;
     END IF;
 

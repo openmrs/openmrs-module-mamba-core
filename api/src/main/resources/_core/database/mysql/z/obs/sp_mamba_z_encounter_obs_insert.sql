@@ -13,7 +13,7 @@ SELECT obs_id,
        @prev_person_id := person_id,
        @prev_encounter_id := encounter_id,
        @prev_concept_id := concept_id
-FROM openmrs.obs
+FROM mamba_source_db.obs
 WHERE encounter_id IS NOT NULL
 ORDER BY person_id, encounter_id, concept_id;
 

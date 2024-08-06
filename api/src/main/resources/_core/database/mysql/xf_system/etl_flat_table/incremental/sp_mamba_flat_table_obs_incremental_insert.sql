@@ -9,13 +9,9 @@ CREATE PROCEDURE sp_mamba_flat_table_obs_incremental_insert(
 BEGIN
 
     SET session group_concat_max_len = 20000;
-    SET @tbl_name = flat_encounter_table_name;
-    SET @enc_id = encounter_id;
 
-    SET @old_sql = (SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
-                    FROM INFORMATION_SCHEMA.COLUMNS
-                    WHERE TABLE_NAME = @tbl_name
-                      AND TABLE_SCHEMA = Database());
+    SET @enc_id = encounter_id;
+    SET @tbl_name = flat_encounter_table_name;
 
     SELECT GROUP_CONCAT(DISTINCT
                         CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
@@ -34,7 +30,7 @@ BEGIN
     IF @column_labels IS NOT NULL THEN
         SET @insert_stmt = CONCAT(
                 'INSERT INTO `', @tbl_name,
-                '` SELECT o.encounter_id, o.visit_id, o.person_id, o.encounter_datetime, o.location_id, ',
+                '` SELECT o.encounter_id, MAX(o.visit_id) AS visit_id, o.person_id, o.encounter_datetime, MAX(o.location_id) AS location_id, ',
                 @column_labels, '
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_concept_metadata cm
@@ -42,8 +38,8 @@ BEGIN
                 WHERE cm.flat_table_name = ''', @tbl_name, '''
                 AND o.encounter_id = ''', @enc_id, '''
                 AND o.encounter_type_uuid = cm.encounter_type_uuid
-                AND o.row_num = cm.row_num AND o.obs_group_id IS NULL AND o.voided = 0
-                GROUP BY o.encounter_id, o.visit_id, o.person_id, o.encounter_datetime, o.location_id;');
+                AND o.voided = 0
+                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime;');
     END IF;
 
     IF @column_labels IS NOT NULL THEN

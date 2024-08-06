@@ -35,8 +35,8 @@ BEGIN
             ' AND incremental_table_pkey NOT IN (SELECT DISTINCT (', pkey_column, ') FROM ', mamba_table_name, ')');
 
     PREPARE stmt FROM @insert_sql;
-    SET @incremental_start_time = incremental_start_time;
-    EXECUTE stmt USING @incremental_start_time;
+    SET @inc_start_time = incremental_start_time;
+    EXECUTE stmt USING @inc_start_time;
     DEALLOCATE PREPARE stmt;
 END //
 
