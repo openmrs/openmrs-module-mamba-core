@@ -33,7 +33,7 @@ SELECT e.encounter_id,
        1
 FROM mamba_source_db.encounter e
          INNER JOIN mamba_etl_incremental_columns_index_new ic
-                    ON e.encounter_type = ic.incremental_table_pkey
+                    ON e.encounter_id = ic.incremental_table_pkey
          INNER JOIN mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid

@@ -2,7 +2,7 @@
 
 -- Update the hash of the JSON data
 UPDATE mamba_flat_table_config_incremental
-SET table_json_data_hash = MD5(table_json_data)
+SET table_json_data_hash = MD5(TRIM(table_json_data))
 WHERE id > 0;
 
 -- If a new encounter type has been added
@@ -24,7 +24,8 @@ WHERE tci.encounter_type_id NOT IN (SELECT encounter_type_id FROM mamba_flat_tab
 -- If there is any change in either concepts or encounter types in terms of names or additional questions
 UPDATE mamba_flat_table_config tc
     INNER JOIN mamba_flat_table_config_incremental tci ON tc.encounter_type_id = tci.encounter_type_id
-SET tc.table_json_data_hash = tci.table_json_data_hash,
+SET tc.table_json_data      = tci.table_json_data,
+    tc.table_json_data_hash = tci.table_json_data_hash,
     tc.report_name          = tci.report_name,
     tc.encounter_type_uuid  = tci.encounter_type_uuid,
     tc.incremental_record   = 1
