@@ -1,5 +1,11 @@
 -- $BEGIN
 
+SET @row_number = 0;
+SET @prev_person_id = NULL;
+SET @prev_encounter_id = NULL;
+SET @prev_concept_id = NULL;
+SET @date_created = NULL;
+
 -- Use a temporary table to store row numbers
 CREATE TEMPORARY TABLE mamba_temp_obs_row_num AS
 SELECT obs_id,
@@ -7,15 +13,17 @@ SELECT obs_id,
                            WHEN @prev_person_id = person_id
                                AND @prev_encounter_id = encounter_id
                                AND @prev_concept_id = concept_id
+                               AND @date_created = date_created
                                THEN @row_number + 1
                            ELSE 1
            END) AS row_num,
        @prev_person_id := person_id,
        @prev_encounter_id := encounter_id,
-       @prev_concept_id := concept_id
+       @prev_concept_id := concept_id,
+       @date_created := date_created
 FROM mamba_source_db.obs
 WHERE encounter_id IS NOT NULL
-ORDER BY person_id, encounter_id, concept_id;
+ORDER BY person_id, encounter_id, concept_id, date_created;
 
 INSERT INTO mamba_z_encounter_obs (obs_id,
                                    encounter_id,

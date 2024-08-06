@@ -26,12 +26,17 @@ WHERE md.id > 0
   and concept_datatype = 'N/A';
 
 -- Update row number
+SET @row_number = 0;
+SET @prev_flat_table_name = NULL;
+SET @prev_concept_id = NULL;
+
 UPDATE mamba_concept_metadata md
     INNER JOIN (SELECT flat_table_name,
                        concept_id,
                        id,
                        @row_number := CASE
-                                          WHEN @prev_flat_table_name = flat_table_name AND @prev_concept_id = concept_id
+                                          WHEN @prev_flat_table_name = flat_table_name
+                                              AND @prev_concept_id = concept_id
                                               THEN @row_number + 1
                                           ELSE 1
                            END AS num,
