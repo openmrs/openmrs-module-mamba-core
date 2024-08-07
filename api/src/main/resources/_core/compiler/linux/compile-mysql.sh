@@ -83,7 +83,6 @@ SET @report_data = '%s';
 
 CALL sp_mamba_flat_table_config_insert_helper_manual(@report_data); -- insert manually added config JSON data from config dir
 CALL sp_mamba_flat_table_config_insert_helper_auto(); -- insert automatically generated config JSON data from db
-CALL sp_mamba_flat_table_config_update();
 '"
 -- \$END
   "
@@ -126,7 +125,6 @@ SET @report_data = '%s';
 
 CALL sp_mamba_flat_table_config_incremental_insert_helper_manual(@report_data); -- insert manually added config JSON data from config dir
 CALL sp_mamba_flat_table_config_incremental_insert_helper_auto(); -- insert automatically generated config JSON data from db
-CALL sp_mamba_flat_table_config_incremental_update();
 '"
 -- \$END
   "
