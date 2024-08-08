@@ -29,11 +29,9 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
         MambaETLProperties props = MambaETLProperties.getInstance();
 
-        System.out.println("Deploying MambaETL, scheduled @interval: " + props.getInterval() + " seconds...");
         log.info("Deploying MambaETL, scheduled @interval: " + props.getInterval() + " seconds...");
         executeSqlScript(props);
         log.info("Done deploying MambaETL...");
-        System.out.println("Done deploying MambaETL...");
     }
 
     private void executeSqlScript(MambaETLProperties props) {
