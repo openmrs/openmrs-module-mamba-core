@@ -11,5 +11,5 @@ package org.openmrs.module.mambacore.api.dao;
 
 public interface FlattenDatabaseDao {
 	
-	void executeFlatteningScript();
+	void deployMambaEtl();
 }

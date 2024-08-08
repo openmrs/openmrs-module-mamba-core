@@ -6,12 +6,12 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_flat_encounter_table_insert_all()
 BEGIN
 
-    DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
+    DECLARE tbl_name VARCHAR(60) CHARACTER SET UTF8MB4;
 
     DECLARE done INT DEFAULT FALSE;
 
     DECLARE cursor_flat_tables CURSOR FOR
-        SELECT DISTINCT(flat_table_name) FROM mamba_dim_concept_metadata;
+        SELECT DISTINCT(flat_table_name) FROM mamba_concept_metadata;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 

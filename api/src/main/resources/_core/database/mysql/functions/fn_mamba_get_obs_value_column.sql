@@ -23,6 +23,10 @@ BEGIN
 
         ELSEIF conceptDatatype = 'Numeric' THEN
             SET obsValueColumn = 'obs_value_numeric';
+
+        ELSE
+            SET obsValueColumn = 'obs_value_text';
+
         END IF;
 
     RETURN (obsValueColumn);

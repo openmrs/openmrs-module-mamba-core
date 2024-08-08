@@ -2,8 +2,7 @@
 
 CREATE TABLE mamba_dim_orders
 (
-    id                     INT           NOT NULL AUTO_INCREMENT,
-    order_id               INT           NOT NULL,
+    order_id               INT           NOT NULL UNIQUE PRIMARY KEY,
     uuid                   CHAR(38)      NOT NULL,
     order_type_id          INT           NOT NULL,
     concept_id             INT           NOT NULL,
@@ -17,12 +16,6 @@ CREATE TABLE mamba_dim_orders
     auto_expire_date       DATETIME      NULL,
     date_stopped           DATETIME      NULL,
     order_reason           INT           NULL,
-    creator                INT           NOT NULL,
-    date_created           DATETIME      NOT NULL,
-    voided                 TINYINT(1)    NOT NULL,
-    voided_by              INT           NULL,
-    date_voided            DATETIME      NULL,
-    void_reason            VARCHAR(255)  NULL,
     order_reason_non_coded VARCHAR(255)  NULL,
     urgency                VARCHAR(50)   NOT NULL,
     previous_order_id      INT           NULL,
@@ -34,28 +27,21 @@ CREATE TABLE mamba_dim_orders
     sort_weight            DOUBLE        NULL,
     fulfiller_comment      VARCHAR(1024) NULL,
     fulfiller_status       VARCHAR(50)   NULL,
-    flag                   INT          NULL,
+    date_created           DATETIME      NOT NULL,
+    creator                INT           NULL,
+    voided                 TINYINT(1)    NOT NULL,
+    voided_by              INT           NULL,
+    date_voided            DATETIME      NULL,
+    void_reason            VARCHAR(255)  NULL,
+    incremental_record     INT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (id)
+    INDEX mamba_idx_uuid (uuid),
+    INDEX mamba_idx_order_type_id (order_type_id),
+    INDEX mamba_idx_concept_id (concept_id),
+    INDEX mamba_idx_patient_id (patient_id),
+    INDEX mamba_idx_encounter_id (encounter_id),
+    INDEX mamba_idx_incremental_record (incremental_record)
 )
     CHARSET = UTF8MB4;
-
-CREATE INDEX mamba_dim_orders_order_id_index
-    ON mamba_dim_orders (order_id);
-
-CREATE INDEX mamba_dim_orders_uuid_index
-    ON mamba_dim_orders (uuid);
-
-CREATE INDEX mamba_dim_orders_order_type_id_index
-    ON mamba_dim_orders (order_type_id);
-
-CREATE INDEX mamba_dim_orders_concept_id_index
-    ON mamba_dim_orders (concept_id);
-
-CREATE INDEX mamba_dim_orders_patient_id_index
-    ON mamba_dim_orders (patient_id);
-
-CREATE INDEX mamba_dim_orders_encounter_id_index
-    ON mamba_dim_orders (encounter_id);
 
 -- $END

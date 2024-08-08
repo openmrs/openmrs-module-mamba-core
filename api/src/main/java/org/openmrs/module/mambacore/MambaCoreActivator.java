@@ -32,10 +32,10 @@ public class MambaCoreActivator extends BaseModuleActivator {
         super();
     }
 
+    @Override
     public void started() {
-        //TODO:Fix this and uncomment - abandon Task and use the service
-        //Context.getService(FlattenDatabaseService.class).flattenDatabase();
-        registerTask();
+        log.info("log MambaCoreActivator started()");
+        super.started();
     }
 
     @Override
@@ -56,6 +56,12 @@ public class MambaCoreActivator extends BaseModuleActivator {
     @Override
     public void willStop() {
         super.willStop();
+    }
+
+    @Override
+    public void contextRefreshed() {
+        log.info("log MambaCoreActivator contextRefreshed()");
+        super.contextRefreshed();
     }
 
     /**

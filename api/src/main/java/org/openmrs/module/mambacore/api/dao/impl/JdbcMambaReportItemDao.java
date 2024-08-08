@@ -106,7 +106,6 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
                             String columnName = metaData.getColumnName(i);
                             Object columnValue = resultSet.getObject(i);
                             reportItem.getRecord().add(new MambaReportItemColumn(columnName, columnValue));
-
                             log.debug("Column (metadata..) {} : {}", columnName, columnValue);
                         }
                         serialId++;

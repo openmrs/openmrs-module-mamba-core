@@ -29,7 +29,7 @@ public class FlattenTableTask extends AbstractTask {
             startExecuting();
 
             try {
-                getService().flattenDatabase();
+                // getService().setupEtl(); TODO: Delete this Task as we no longer use it
             } catch (Exception e) {
                 log.error("Error while running MambaETL FlattenTableTask: ", e);
             } finally {

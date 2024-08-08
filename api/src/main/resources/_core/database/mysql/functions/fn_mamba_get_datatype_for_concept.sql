@@ -12,8 +12,8 @@ BEGIN
         SET mysqlDatatype = 'TEXT';
 
     ELSEIF conceptDatatype = 'Coded'
-       OR conceptDatatype = 'N/A' THEN
-        SET mysqlDatatype = 'NVarchar(250)';
+        OR conceptDatatype = 'N/A' THEN
+        SET mysqlDatatype = 'Varchar(250)';
 
     ELSEIF conceptDatatype = 'Boolean' THEN
         SET mysqlDatatype = 'Boolean';
@@ -26,6 +26,9 @@ BEGIN
 
     ELSEIF conceptDatatype = 'Numeric' THEN
         SET mysqlDatatype = 'DOUBLE';
+
+    ELSE
+        SET mysqlDatatype = 'TEXT';
 
     END IF;
 
