@@ -28,7 +28,6 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     public void deployMambaEtl() {
 
         MambaETLProperties props = MambaETLProperties.getInstance();
-
         log.info("Deploying MambaETL, scheduled @interval: " + props.getInterval() + " seconds...");
         executeSqlScript(props);
         log.info("Done deploying MambaETL...");
@@ -38,6 +37,7 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         try (InputStream stream = classLoader.getResourceAsStream(ETL_DEPLOY_SQL)) {
+
             if (stream == null) {
                 log.error("SQL script not found: {}", ETL_DEPLOY_SQL);
                 return;
