@@ -35,8 +35,6 @@ FROM mamba_source_db.encounter e
          INNER JOIN mamba_etl_incremental_columns_index_new ic
                     ON e.encounter_id = ic.incremental_table_pkey
          INNER JOIN mamba_dim_encounter_type et
-                    ON e.encounter_type = et.encounter_type_id
-WHERE et.uuid
-          IN (SELECT DISTINCT(md.encounter_type_uuid)
-              FROM mamba_concept_metadata md);
+                    ON e.encounter_type = et.encounter_type_id;
+
 -- $END
