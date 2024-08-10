@@ -9,8 +9,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 public class StringReplacerUtil {
-
-    public static void replaceString(InputStream inputStream, OutputStream outputStream, String target, String replacement)
+	
+	public static void replaceString(InputStream inputStream, OutputStream outputStream, String target, String replacement)
             throws IOException {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
