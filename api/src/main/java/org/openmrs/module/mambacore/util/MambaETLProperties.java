@@ -18,13 +18,13 @@ public class MambaETLProperties {
 	
 	private final int interval;
 	
-	private final String driver;
+	private final String openmrsDbDriver;
 	
-	private final String url;
+	private final String openmrsDbConnectionUrl;
 	
-	private final String userName;
+	private final String mambaETLuser;
 	
-	private final String password;
+	private final String mambaETLuserPassword;
 	
 	private final int connectionInitialSize = 4;
 	
@@ -34,20 +34,19 @@ public class MambaETLProperties {
 		
 		Properties properties = Context.getRuntimeProperties();
 		
+		this.openmrsDbDriver = properties.getProperty("connection.driver_class");
+		this.openmrsDbConnectionUrl = properties.getProperty("connection.url");
+		
+		this.mambaETLuser = properties.getProperty("mambaetl.analysis.db.username",
+		    properties.getProperty("connection.username"));
+		this.mambaETLuserPassword = properties.getProperty("mambaetl.analysis.db.password",
+		    properties.getProperty("connection.password"));
+		
 		this.locale = getProperty(properties, "mambaetl.analysis.locale", "en");
 		this.columns = getIntProperty(properties, "mambaetl.analysis.columns", 50);
 		this.incremental = getIntProperty(properties, "mambaetl.analysis.incremental_mode", 0);
 		this.automated = getIntProperty(properties, "mambaetl.analysis.automated_flattening", 0);
 		this.interval = getIntProperty(properties, "mambaetl.analysis.etl_interval", 300);
-		
-		this.driver = properties.getProperty("mambaetl.analysis.db.driver",
-		    properties.getProperty("connection.driver_class"));
-		this.url = properties.getProperty("mambaetl.analysis.db.url",
-		    "jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&useSSL=false&allowMultiQueries=true");
-		this.userName = properties.getProperty("mambaetl.analysis.db.username",
-		    properties.getProperty("connection.username"));
-		this.password = properties.getProperty("mambaetl.analysis.db.password",
-		    properties.getProperty("connection.password"));
 	}
 	
 	public static synchronized MambaETLProperties getInstance() {
@@ -77,20 +76,20 @@ public class MambaETLProperties {
 		return interval;
 	}
 	
-	public String getDriver() {
-		return driver;
+	public String getOpenmrsDbDriver() {
+		return openmrsDbDriver;
 	}
 	
-	public String getUrl() {
-		return url;
+	public String getOpenmrsDbConnectionUrl() {
+		return openmrsDbConnectionUrl;
 	}
 	
-	public String getUserName() {
-		return userName;
+	public String getMambaETLuser() {
+		return mambaETLuser;
 	}
 	
-	public String getPassword() {
-		return password;
+	public String getMambaETLuserPassword() {
+		return mambaETLuserPassword;
 	}
 	
 	public int getConnectionInitialSize() {
