@@ -10,10 +10,7 @@
 package org.openmrs.module.mambacore.db;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.mambacore.util.MambaETLProperties;
-
-import java.util.Properties;
 
 public class ConnectionPoolManager {
 	
@@ -25,10 +22,10 @@ public class ConnectionPoolManager {
 		
 		MambaETLProperties props = MambaETLProperties.getInstance();
 		
-		dataSource.setDriverClassName(props.getDriver());
-		dataSource.setUsername(props.getUserName());
-		dataSource.setPassword(props.getPassword());
-		dataSource.setUrl(props.getUrl());
+		dataSource.setDriverClassName(props.getOpenmrsDbDriver());
+		dataSource.setUsername(props.getMambaETLuser());
+		dataSource.setPassword(props.getMambaETLuserPassword());
+		dataSource.setUrl(props.getOpenmrsDbConnectionUrl());
 		
 		dataSource.setInitialSize(props.getConnectionInitialSize());
 		dataSource.setMaxTotal(props.getConnectionMaxTotal());
