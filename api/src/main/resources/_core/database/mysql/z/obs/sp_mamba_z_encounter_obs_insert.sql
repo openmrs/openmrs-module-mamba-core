@@ -6,8 +6,27 @@ SET @prev_encounter_id = NULL;
 SET @prev_concept_id = NULL;
 SET @date_created = NULL;
 
--- Use a temporary table to store row numbers
-CREATE TEMPORARY TABLE mamba_temp_obs_row_num AS
+-- Create the temporary table: mamba_temp_obs_row_num
+CREATE TEMPORARY TABLE mamba_temp_obs_row_num
+(
+    obs_id       INT      NOT NULL,
+    row_num      INT      NOT NULL,
+    person_id    INT      NOT NULL,
+    encounter_id INT      NOT NULL,
+    concept_id   INT      NOT NULL,
+    date_created DATETIME NOT NULL,
+
+    INDEX mamba_idx_encounter_id (obs_id),
+    INDEX mamba_idx_visit_id (row_num),
+    INDEX mamba_idx_person_id (person_id),
+    INDEX mamba_idx_encounter_datetime (encounter_id),
+    INDEX mamba_idx_encounter_type_uuid (concept_id),
+    INDEX mamba_idx_obs_question_concept_id (date_created)
+)
+    CHARSET = UTF8MB4;
+
+-- insert into mamba_temp_obs_row_num
+INSERT INTO mamba_temp_obs_row_num
 SELECT obs_id,
        (@row_number := CASE
                            WHEN @prev_person_id = person_id
@@ -16,15 +35,16 @@ SELECT obs_id,
                                AND @date_created = date_created
                                THEN @row_number + 1
                            ELSE 1
-           END) AS row_num,
-       @prev_person_id := person_id,
-       @prev_encounter_id := encounter_id,
-       @prev_concept_id := concept_id,
-       @date_created := date_created
+           END)                           AS row_num,
+       @prev_person_id := person_id       AS person_id,
+       @prev_encounter_id := encounter_id AS encounter_id,
+       @prev_concept_id := concept_id     AS concept_id,
+       @date_created := date_created      AS date_created
 FROM mamba_source_db.obs
 WHERE encounter_id IS NOT NULL
 ORDER BY person_id, encounter_id, concept_id, date_created;
 
+-- Insert into mamba_z_encounter_obs
 INSERT INTO mamba_z_encounter_obs (obs_id,
                                    encounter_id,
                                    visit_id,
@@ -86,7 +106,5 @@ FROM mamba_source_db.obs o
          INNER JOIN mamba_temp_obs_row_num t ON o.obs_id = t.obs_id
 WHERE o.encounter_id IS NOT NULL;
 
--- Drop the temporary table
 DROP TEMPORARY TABLE mamba_temp_obs_row_num;
-
 -- $END
