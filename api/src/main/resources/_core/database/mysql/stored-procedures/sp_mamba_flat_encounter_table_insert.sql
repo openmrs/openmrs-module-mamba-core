@@ -10,11 +10,6 @@ BEGIN
     SET session group_concat_max_len = 20000;
     SET @tbl_name = flat_encounter_table_name;
 
-    SET @old_sql = (SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
-                    FROM INFORMATION_SCHEMA.COLUMNS
-                    WHERE TABLE_NAME = @tbl_name
-                      AND TABLE_SCHEMA = Database());
-
     SELECT GROUP_CONCAT(DISTINCT
                         CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
                                fn_mamba_get_obs_value_column(concept_datatype), ' END) ', column_label)
@@ -33,7 +28,7 @@ BEGIN
                     ON IF(cm.concept_answer_obs=1, cm.concept_uuid=o.obs_value_coded_uuid, cm.concept_uuid=o.obs_question_uuid)
                 WHERE cm.flat_table_name = ''', @tbl_name, '''
                 AND o.encounter_type_uuid = cm.encounter_type_uuid
-                AND o.row_num = cm.row_num AND o.obs_group_id IS NULL AND o.voided = 0
+                AND o.obs_group_id IS NULL AND o.voided = 0
                 GROUP BY o.encounter_id, o.person_id, o.encounter_datetime;');
     END IF;
 

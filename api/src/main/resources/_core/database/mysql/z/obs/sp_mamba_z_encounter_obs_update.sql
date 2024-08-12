@@ -1,12 +1,5 @@
 -- $BEGIN
 
--- update obs question UUIDs
-UPDATE mamba_z_encounter_obs z
-    INNER JOIN mamba_concept_metadata md
-    ON z.obs_question_concept_id = md.concept_id
-SET z.obs_question_uuid = md.concept_uuid
-WHERE z.obs_id > 0;
-
 -- update obs_value_coded (UUIDs & Concept value names)
 UPDATE mamba_z_encounter_obs z
     INNER JOIN mamba_dim_concept c

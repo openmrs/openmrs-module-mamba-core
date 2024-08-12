@@ -1,8 +1,8 @@
 -- $BEGIN
 
 INSERT INTO mamba_obs_group (obs_group_concept_id,
-                                 obs_group_concept_name,
-                                 obs_id)
+                             obs_group_concept_name,
+                             obs_id)
 SELECT DISTINCT o.obs_question_concept_id,
                 LEFT(c.auto_table_column_name, 12) AS name,
                 obs_id
