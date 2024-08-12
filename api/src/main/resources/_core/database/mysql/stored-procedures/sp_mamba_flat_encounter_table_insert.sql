@@ -11,8 +11,27 @@ BEGIN
     SET @tbl_name = flat_encounter_table_name;
 
     -- Precompute the concept metadata table to minimize repeated queries
-    CREATE TEMPORARY TABLE IF NOT EXISTS mamba_temp_concept_metadata AS
-    SELECT DISTINCT id, column_label, fn_mamba_get_obs_value_column(concept_datatype) AS obs_value_column, concept_uuid, concept_answer_obs
+    CREATE TEMPORARY TABLE mamba_temp_concept_metadata
+    (
+        id                 INT          NOT NULL,
+        column_label       VARCHAR(255) NOT NULL,
+        obs_value_column   VARCHAR(50),
+        concept_uuid       CHAR(38)     NOT NULL,
+        concept_answer_obs INT,
+
+        INDEX mamba_idx_id (id),
+        INDEX mamba_idx_column_label (column_label),
+        INDEX mamba_idx_concept_uuid (concept_uuid),
+        INDEX mamba_idx_concept_answer_obs (concept_answer_obs)
+    )
+        CHARSET = UTF8MB4;
+
+    INSERT INTO mamba_temp_concept_metadata
+    SELECT DISTINCT id,
+                    column_label,
+                    fn_mamba_get_obs_value_column(concept_datatype) AS obs_value_column,
+                    concept_uuid,
+                    concept_answer_obs
     FROM mamba_concept_metadata
     WHERE flat_table_name = @tbl_name;
 
