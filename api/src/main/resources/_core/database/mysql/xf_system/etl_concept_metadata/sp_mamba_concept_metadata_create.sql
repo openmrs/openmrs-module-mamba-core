@@ -20,6 +20,7 @@ CREATE TABLE mamba_concept_metadata
     INDEX mamba_idx_concept_uuid (concept_uuid),
     INDEX mamba_idx_encounter_type_uuid (encounter_type_uuid),
     INDEX mamba_idx_row_num (row_num),
+    INDEX mamba_idx_concept_datatype (concept_datatype),
     INDEX mamba_idx_flat_table_name (flat_table_name),
     INDEX mamba_idx_incremental_record (incremental_record)
 )

@@ -33,13 +33,6 @@ SET z.encounter_id            = o.encounter_id,
     z.incremental_record      = 1
 WHERE im.incremental_table_pkey > 1;
 
--- update obs question UUIDs for only NEW Obs (not voided)
-UPDATE mamba_z_encounter_obs z
-    INNER JOIN mamba_concept_metadata md
-    ON z.obs_question_concept_id = md.concept_id
-SET z.obs_question_uuid = md.concept_uuid
-WHERE z.incremental_record = 1;
-
 -- update obs_value_coded (UUIDs & Concept value names) for only NEW Obs (not voided)
 UPDATE mamba_z_encounter_obs z
     INNER JOIN mamba_dim_concept c
