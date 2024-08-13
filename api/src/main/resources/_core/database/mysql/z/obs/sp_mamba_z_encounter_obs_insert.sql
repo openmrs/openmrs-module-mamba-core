@@ -10,7 +10,7 @@ BEGIN
 
     SELECT COUNT(*)
     INTO total_records
-    FROM openmrs.obs o
+    FROM mamba_source_db.obs o
              INNER JOIN mamba_dim_encounter e ON o.encounter_id = e.encounter_id
              INNER JOIN (SELECT DISTINCT concept_id, concept_uuid
                          FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
