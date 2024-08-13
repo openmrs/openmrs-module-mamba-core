@@ -36,14 +36,37 @@ BEGIN
     WHERE flat_table_name = @tbl_name;
 
     SELECT GROUP_CONCAT(DISTINCT
-                        CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
+                        CONCAT('MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
                                obs_value_column, ' END) ', column_label)
                         ORDER BY id ASC)
     INTO @column_labels
     FROM mamba_temp_concept_metadata;
 
     IF @column_labels IS NOT NULL THEN
-        -- Insert for concept_answer_obs = 1
+        -- First Insert: concept_answer_obs = 0
+        SET @insert_stmt = CONCAT(
+                'INSERT INTO `', @tbl_name,
+                '` SELECT o.encounter_id, MAX(o.visit_id) AS visit_id, o.person_id, o.encounter_datetime, MAX(o.location_id) AS location_id, ',
+                @column_labels, '
+                FROM mamba_z_encounter_obs o
+                    INNER JOIN mamba_temp_concept_metadata tcm
+                    ON tcm.concept_uuid = o.obs_question_uuid
+                WHERE tcm.concept_answer_obs = 0
+                AND tcm.obs_value_column IS NOT NULL
+                AND o.obs_group_id IS NULL AND o.voided = 0
+                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
+                ORDER BY o.encounter_id ASC');
+
+        PREPARE inserttbl FROM @insert_stmt;
+        EXECUTE inserttbl;
+        DEALLOCATE PREPARE inserttbl;
+
+        -- Second Insert: concept_answer_obs = 1, Handle potential duplicates
+        SET @update_stmt =
+                (SELECT GROUP_CONCAT(CONCAT(column_label, ' = COALESCE(VALUES(', column_label, '), ', column_label,
+                                            ')'))
+                 FROM mamba_temp_concept_metadata);
+
         SET @insert_stmt = CONCAT(
                 'INSERT INTO `', @tbl_name,
                 '` SELECT o.encounter_id, MAX(o.visit_id) AS visit_id, o.person_id, o.encounter_datetime, MAX(o.location_id) AS location_id, ',
@@ -55,24 +78,9 @@ BEGIN
                 AND tcm.obs_value_column IS NOT NULL
                 AND o.obs_group_id IS NULL AND o.voided = 0
                 GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
-                ORDER BY o.encounter_id ASC');
-        PREPARE inserttbl FROM @insert_stmt;
-        EXECUTE inserttbl;
-        DEALLOCATE PREPARE inserttbl;
+                ORDER BY o.encounter_id ASC
+                ON DUPLICATE KEY UPDATE ', @update_stmt);
 
-        -- Insert for concept_answer_obs != 1
-        SET @insert_stmt = CONCAT(
-                'INSERT INTO `', @tbl_name,
-                '` SELECT o.encounter_id, MAX(o.visit_id) AS visit_id, o.person_id, o.encounter_datetime, MAX(o.location_id) AS location_id, ',
-                @column_labels, '
-                FROM mamba_z_encounter_obs o
-                    INNER JOIN mamba_temp_concept_metadata tcm
-                    ON tcm.concept_uuid = o.obs_question_uuid
-                WHERE tcm.concept_answer_obs != 1
-                AND tcm.obs_value_column IS NOT NULL
-                AND o.obs_group_id IS NULL AND o.voided = 0
-                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
-                ORDER BY o.encounter_id ASC');
         PREPARE inserttbl FROM @insert_stmt;
         EXECUTE inserttbl;
         DEALLOCATE PREPARE inserttbl;
