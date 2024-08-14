@@ -237,7 +237,7 @@ function read_locale_setting() {
   echo "$LOCALE_SP_SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
 }
 
-#Read in the ETL user settings
+#Not using this function, Using a different approach - only left here for code reference purposes
 function read_etl_user_settings() {
 
   USER_SETTINGS_SP_SQL_CONTENTS="
@@ -280,7 +280,7 @@ DROP EVENT IF EXISTS _mamba_etl_scheduler_event;
 ~-~-
 
 -- Setup ETL configurations
-CALL sp_mamba_etl_setup(?, ?, ?, ?, ?);
+CALL sp_mamba_etl_setup(?, ?, ?, ?, ?,?,?);
 -- pass them from the runtime properties file
 
 ~-~-
@@ -730,10 +730,6 @@ fi
 # Got a better implementation so commenting this code out
 # read_locale_setting
 
-# Read in the table partition number setting
-# Got a better implementation so commenting this code out
-# read_etl_user_settings
-
 # Read in the JSON for Report Definition configuration metadata
 read_config_report_definition_metadata
 
@@ -881,10 +877,12 @@ DELIMITER ;
     file_to_clean="$BUILD_DIR/$sp_out_file"
 
     ## Automate the Create Analysis Database command at the beginning of the script
-    create_target_db="CREATE database IF NOT EXISTS $analysis_database;"$'\n~-~-\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
+    ## create_target_db="CREATE database IF NOT EXISTS $analysis_database;"$'\n~-~-\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
+    create_target_db="CREATE database IF NOT EXISTS mamba_etl_db;"$'\n~-~-\n'
 
     ## Add the target database to use at the beginning of the script
-    use_target_db="USE $analysis_database;"$'\n~-~-\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
+    # use_target_db="USE $analysis_database;"$'\n~-~-\n' #TODO: This also adds to the create_stored_procedures.sql file -> This needs to be corrected to only add to the liquibase cleaned file
+    use_target_db="USE mamba_etl_db;"$'\n~-~-\n'
 
     # Create a temporary file with the text to prepend
     temp_file=$(mktemp)
@@ -901,16 +899,21 @@ DELIMITER ;
     # Overwrite the original file with the contents of the temporary file
     mv "$temp_file" "$file_to_clean"
 
+    # Create OpenMRS deployable build file before replacing mamba_source_db placeholder cuz this is replaced in Java
+    # for the create_stored_procedures build file, that one can contain whatever has been passed via pom.xml for test purposes
+    cleaned_jdbc_file="$BUILD_DIR/jdbc_$sp_out_file"
+    make_buildfile_jdbc_compatible
+
     # Remove the temporary file
     rm "$temp_file"
 
+     ## Replace source database placeholder name
+     temp_file=$(mktemp)
 
-    ## Replace source database placeholder name
-
-    temp_file=$(mktemp)
-
-    # Search for any occurrences of 'mamba_source_db' and  awk to perform the replacement
-    awk -v search="mamba_source_db" -v replace="$source_database" '{ gsub(search, replace) }1' "$file_to_clean" > "$temp_file"
+    # Search for any occurrences of 'mamba_etl_db' and 'mamba_source_db' and  awk to perform the replacement
+    awk -v analysis_db="$analysis_database" -v source_db="$source_database" \
+        '{ gsub("mamba_etl_db", analysis_db); gsub("mamba_source_db", source_db); print }' \
+        "$file_to_clean" > "$temp_file"
 
     # Overwrite the original file with the contents of the temporary file
     mv "$temp_file" "$file_to_clean"
@@ -919,10 +922,7 @@ DELIMITER ;
     rm "$temp_file"
 
     cleaned_liquibase_file="$BUILD_DIR/liquibase_$sp_out_file"
-    cleaned_jdbc_file="$BUILD_DIR/jdbc_$sp_out_file"
-
     make_buildfile_liquibase_compatible
-    make_buildfile_jdbc_compatible
 
     #remove tilde characters from the build files
     remove_tildes_in_sql_build_file "$BUILD_DIR/$sp_out_file"

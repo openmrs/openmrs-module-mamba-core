@@ -12,13 +12,19 @@ package org.openmrs.module.mambacore.api.impl;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.mambacore.api.FlattenDatabaseService;
 import org.openmrs.module.mambacore.api.dao.FlattenDatabaseDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Transactional
 public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements FlattenDatabaseService {
+
+    private static final Logger log = LoggerFactory.getLogger(FlattenDatabaseServiceImpl.class);
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private FlattenDatabaseDao dao;
@@ -30,7 +36,29 @@ public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements Fl
     @Override
     public void setupEtl() {
         executorService.submit(() -> {
-            dao.deployMambaEtl();
+            try {
+                dao.deployMambaEtl();
+            } catch (Exception e) {
+                log.error("Error deploying Mamba ETL", e);
+            }
         });
+    }
+
+
+    @Override
+    @PreDestroy
+    public void shutdownEtlThread() {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                executorService.shutdownNow();
+                if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    log.error("ExecutorService did not terminate");
+                }
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }
