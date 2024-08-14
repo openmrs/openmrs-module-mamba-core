@@ -12,7 +12,7 @@ BEGIN
 
     SET modified_string = input_text;
     -- SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã';
-    SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã\|[]{}\'~`';
+    SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã\|[]{}\'~`.'; -- TODO: Added '.' xter as well but Remove after adding backtick support
 
     WHILE char_index <= LENGTH(special_chars) DO
             SET current_char = SUBSTRING(special_chars, char_index, 1);
