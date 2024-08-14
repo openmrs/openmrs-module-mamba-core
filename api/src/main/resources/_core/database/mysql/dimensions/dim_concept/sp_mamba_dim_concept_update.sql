@@ -7,7 +7,7 @@ UPDATE mamba_dim_concept c
 SET c.datatype = dt.name
 WHERE c.concept_id > 0;
 
--- Update the concept name and auto_table_column_name in one query
+-- Update the concept name and auto_table_column_name
 UPDATE mamba_dim_concept c
     INNER JOIN mamba_dim_concept_name cn
     ON c.concept_id = cn.concept_id
