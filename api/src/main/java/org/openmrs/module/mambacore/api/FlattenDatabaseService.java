@@ -16,4 +16,7 @@ public interface FlattenDatabaseService extends OpenmrsService {
 
     @Authorized({MambaReportsConstants.VIEW_MAMBA_REPORT})
     void setupEtl();
+
+    @Authorized({MambaReportsConstants.VIEW_MAMBA_REPORT})
+    void shutdownEtlThread();
 }

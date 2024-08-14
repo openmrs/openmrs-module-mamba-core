@@ -26,6 +26,10 @@ public class MambaETLProperties {
 	
 	private final String mambaETLuserPassword;
 	
+	private final String openmrsDatabase;
+	
+	private final String etlDatababase;
+	
 	private final int connectionInitialSize = 4;
 	
 	private final int connectionMaxTotal = 20;
@@ -41,6 +45,9 @@ public class MambaETLProperties {
 		    properties.getProperty("connection.username"));
 		this.mambaETLuserPassword = properties.getProperty("mambaetl.analysis.db.password",
 		    properties.getProperty("connection.password"));
+		
+		this.openmrsDatabase = getProperty(properties, "mambaetl.analysis.db.openmrs_database", "openmrs");
+		this.etlDatababase = getProperty(properties, "mambaetl.analysis.db.etl_database", "analysis_db");
 		
 		this.locale = getProperty(properties, "mambaetl.analysis.locale", "en");
 		this.columns = getIntProperty(properties, "mambaetl.analysis.columns", 50);
@@ -90,6 +97,14 @@ public class MambaETLProperties {
 	
 	public String getMambaETLuserPassword() {
 		return mambaETLuserPassword;
+	}
+	
+	public String getOpenmrsDatabase() {
+		return openmrsDatabase;
+	}
+	
+	public String getEtlDatababase() {
+		return etlDatababase;
 	}
 	
 	public int getConnectionInitialSize() {
