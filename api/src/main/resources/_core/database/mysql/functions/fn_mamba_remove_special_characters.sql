@@ -14,7 +14,7 @@ BEGIN
     -- SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã';
     SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã\|[]{}\'~`.'; -- TODO: Added '.' xter as well but Remove after adding backtick support
 
-    WHILE char_index <= LENGTH(special_chars) DO
+    WHILE char_index <= CHAR_LENGTH(special_chars) DO
             SET current_char = SUBSTRING(special_chars, char_index, 1);
             SET modified_string = REPLACE(modified_string, current_char, '');
             SET char_index = char_index + 1;

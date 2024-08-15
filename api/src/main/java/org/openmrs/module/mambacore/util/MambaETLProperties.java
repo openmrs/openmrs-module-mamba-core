@@ -50,8 +50,8 @@ public class MambaETLProperties {
 		this.etlDatababase = getProperty(properties, "mambaetl.analysis.db.etl_database", "analysis_db");
 		
 		this.locale = getProperty(properties, "mambaetl.analysis.locale", "en");
-		this.columns = getIntProperty(properties, "mambaetl.analysis.columns", 50);
-		this.incremental = getIntProperty(properties, "mambaetl.analysis.incremental_mode", 0);
+		this.columns = getIntProperty(properties, "mambaetl.analysis.columns", 40);
+		this.incremental = getIntProperty(properties, "mambaetl.analysis.incremental_mode", 1);
 		this.automated = getIntProperty(properties, "mambaetl.analysis.automated_flattening", 0);
 		this.interval = getIntProperty(properties, "mambaetl.analysis.etl_interval", 300);
 	}

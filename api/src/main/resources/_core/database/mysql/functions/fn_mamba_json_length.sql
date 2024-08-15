@@ -7,7 +7,7 @@ BEGIN
     DECLARE element_count INT DEFAULT 0;
     DECLARE current_position INT DEFAULT 1;
 
-    WHILE current_position <= LENGTH(json_array) DO
+    WHILE current_position <= CHAR_LENGTH(json_array) DO
         SET element_count = element_count + 1;
         SET current_position = LOCATE(',', json_array, current_position) + 1;
 

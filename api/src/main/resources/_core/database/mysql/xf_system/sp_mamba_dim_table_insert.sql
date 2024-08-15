@@ -62,8 +62,8 @@ BEGIN
     CLOSE column_cursor;
 
     -- Remove the trailing comma and space
-    SET column_list = LEFT(column_list, LENGTH(column_list) - 2);
-    SET select_list = LEFT(select_list, LENGTH(select_list) - 2);
+    SET column_list = LEFT(column_list, CHAR_LENGTH(column_list) - 2);
+    SET select_list = LEFT(select_list, CHAR_LENGTH(select_list) - 2);
 
     -- Set the join clause if it is an incremental insert
     IF is_incremental THEN
