@@ -16,6 +16,7 @@ BEGIN
     INTO @column_labels
     FROM mamba_concept_metadata
     WHERE flat_table_name = flat_encounter_table_name
+      AND concept_id IS NOT NULL
       AND concept_datatype IS NOT NULL;
 
     IF @column_labels IS NOT NULL THEN
