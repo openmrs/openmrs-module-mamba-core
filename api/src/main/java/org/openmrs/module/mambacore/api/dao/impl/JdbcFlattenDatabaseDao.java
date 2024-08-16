@@ -59,7 +59,9 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
                         .collect(Collectors.joining("\n"))
                         .replaceAll(MYSQL_COMMENT_REGEX, "");
 
-                DataSource dataSource = ConnectionPoolManager.getInstance().getDataSource();
+                DataSource dataSource = ConnectionPoolManager
+                        .getInstance()
+                        .getDefaultDataSource();
 
                 try (Connection connection = dataSource.getConnection()) {
                     executeStatements(connection, sqlScript, props);

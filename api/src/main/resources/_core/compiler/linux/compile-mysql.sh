@@ -144,8 +144,8 @@ function read_config_metadata_into_mamba_dim_concept_metadata() {
 "$'
 
 SET @is_incremental = 0;
-SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config(@is_incremental);
-CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, @report_data, '\''mamba_concept_metadata'\'');
+-- SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config(@is_incremental);
+CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, '\''mamba_concept_metadata'\'');
 
 '"
 -- \$END
@@ -162,8 +162,8 @@ function read_config_metadata_into_mamba_dim_concept_metadata_incremental() {
 "$'
 
 SET @is_incremental = 1;
-SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config(@is_incremental);
-CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, @report_data, '\''mamba_concept_metadata'\'');
+-- SET @report_data = fn_mamba_generate_json_from_mamba_flat_table_config(@is_incremental);
+CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, '\''mamba_concept_metadata'\'');
 
 '"
 -- \$END

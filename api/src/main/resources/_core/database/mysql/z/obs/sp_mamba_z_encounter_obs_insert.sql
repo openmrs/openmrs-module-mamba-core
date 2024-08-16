@@ -6,7 +6,7 @@ CREATE PROCEDURE sp_mamba_z_encounter_obs_insert()
 BEGIN
     DECLARE total_records INT;
     DECLARE batch_size INT DEFAULT 1000000; -- 1 million batches
-    DECLARE offset INT DEFAULT 0;
+    DECLARE mamba_offset INT DEFAULT 0;
 
     SELECT COUNT(*)
     INTO total_records
@@ -16,7 +16,7 @@ BEGIN
                          FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
     WHERE o.encounter_id IS NOT NULL;
 
-    WHILE offset < total_records
+    WHILE mamba_offset < total_records
         DO
             SET @sql = CONCAT('INSERT INTO mamba_z_encounter_obs (obs_id,
                                        encounter_id,
@@ -77,14 +77,14 @@ BEGIN
                      INNER JOIN (SELECT DISTINCT concept_id, concept_uuid
                                  FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
             WHERE o.encounter_id IS NOT NULL
-            ORDER BY o.obs_id ASC -- Use a unique column for ordering to avoid the duplicates error because of using offset
-            LIMIT ', batch_size, ' OFFSET ', offset);
+            ORDER BY o.obs_id ASC -- Use a unique column for ordering to avoid the duplicates error because of using mamba_offset
+            LIMIT ', batch_size, ' OFFSET ', mamba_offset);
 
             PREPARE stmt FROM @sql;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
 
-            SET offset = offset + batch_size;
+            SET mamba_offset = mamba_offset + batch_size;
         END WHILE;
 END //
 

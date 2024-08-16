@@ -33,7 +33,9 @@ BEGIN
                     concept_uuid,
                     concept_answer_obs
     FROM mamba_concept_metadata
-    WHERE flat_table_name = @tbl_name;
+    WHERE flat_table_name = @tbl_name
+      AND concept_id IS NOT NULL
+      AND concept_datatype IS NOT NULL;
 
     SELECT GROUP_CONCAT(DISTINCT
                         CONCAT('MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',

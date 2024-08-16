@@ -18,9 +18,9 @@ public class ConnectionPoolManager {
 	
 	private static final BasicDataSource dataSource = new BasicDataSource();
 	
+	private final MambaETLProperties props = MambaETLProperties.getInstance();
+	
 	private ConnectionPoolManager() {
-		
-		MambaETLProperties props = MambaETLProperties.getInstance();
 		
 		dataSource.setDriverClassName(props.getOpenmrsDbDriver());
 		dataSource.setUsername(props.getMambaETLuser());
@@ -38,7 +38,12 @@ public class ConnectionPoolManager {
 		return instance;
 	}
 	
-	public BasicDataSource getDataSource() {
+	public BasicDataSource getDefaultDataSource() {
+		return dataSource;
+	}
+	
+	public BasicDataSource getEtlDataSource() {
+		dataSource.setDefaultSchema(props.getEtlDatababase());
 		return dataSource;
 	}
 }

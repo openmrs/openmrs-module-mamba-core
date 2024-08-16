@@ -43,9 +43,9 @@ BEGIN
 
             SET counter = counter + 1;
             SET current_auto_flat_table_name = CONCAT(
-                    IF(LENGTH(previous_auto_flat_table_name) <= 57,
+                    IF(CHAR_LENGTH(previous_auto_flat_table_name) <= 57,
                        previous_auto_flat_table_name,
-                       LEFT(previous_auto_flat_table_name, LENGTH(previous_auto_flat_table_name) - 3)
+                       LEFT(previous_auto_flat_table_name, CHAR_LENGTH(previous_auto_flat_table_name) - 3)
                     ),
                     '_',
                     counter);

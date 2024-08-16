@@ -8,7 +8,7 @@ DROP PROCEDURE IF EXISTS sp_mamba_flat_table_config_insert_helper_manual;
 DELIMITER //
 
 CREATE PROCEDURE sp_mamba_flat_table_config_insert_helper_manual(
-    IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4
+    IN report_data JSON
 )
 BEGIN
 
@@ -18,7 +18,7 @@ BEGIN
     DECLARE report_enc_type_uuid VARCHAR(50);
     DECLARE report_enc_name VARCHAR(500);
 
-    SET session group_concat_max_len = 20000;
+    SET session group_concat_max_len = 200000;
 
     SELECT JSON_EXTRACT(report_data, '$.flat_report_metadata') INTO @report_array;
     SELECT JSON_LENGTH(@report_array) INTO report_array_len;
