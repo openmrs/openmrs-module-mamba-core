@@ -26,6 +26,7 @@ public class ConnectionPoolManager {
 		dataSource.setUsername(props.getMambaETLuser());
 		dataSource.setPassword(props.getMambaETLuserPassword());
 		dataSource.setUrl(props.getOpenmrsDbConnectionUrl());
+		dataSource.setDefaultSchema(props.getEtlDatababase());
 		
 		dataSource.setInitialSize(props.getConnectionInitialSize());
 		dataSource.setMaxTotal(props.getConnectionMaxTotal());

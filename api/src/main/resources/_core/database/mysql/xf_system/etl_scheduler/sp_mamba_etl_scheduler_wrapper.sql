@@ -8,6 +8,7 @@ BEGIN
 
     DECLARE etl_ever_scheduled TINYINT(1);
     DECLARE incremental_mode TINYINT(1);
+    DECLARE incremental_mode_cascaded TINYINT(1);
 
     SELECT COUNT(1)
     INTO etl_ever_scheduled
@@ -18,12 +19,14 @@ BEGIN
     FROM _mamba_etl_user_settings;
 
     IF etl_ever_scheduled <= 1 OR incremental_mode = 0 THEN
+        SET incremental_mode_cascaded = 0;
         CALL sp_mamba_data_processing_drop_and_flatten();
     ELSE
+        SET incremental_mode_cascaded = 1;
         CALL sp_mamba_data_processing_increment_and_flatten();
     END IF;
 
-    CALL sp_mamba_data_processing_etl();
+    CALL sp_mamba_data_processing_etl(incremental_mode_cascaded);
 
 END //
 
