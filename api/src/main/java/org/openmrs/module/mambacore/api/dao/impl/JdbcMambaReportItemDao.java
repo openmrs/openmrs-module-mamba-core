@@ -48,7 +48,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
         DataSource dataSource = ConnectionPoolManager
                 .getInstance()
-                .getDataSource();
+                .getEtlDataSource();
 
         try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall("{CALL sp_mamba_get_report_column_names(?)}")) {

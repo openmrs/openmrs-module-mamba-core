@@ -18,15 +18,14 @@ public class ConnectionPoolManager {
 	
 	private static final BasicDataSource dataSource = new BasicDataSource();
 	
+	private final MambaETLProperties props = MambaETLProperties.getInstance();
+	
 	private ConnectionPoolManager() {
-		
-		MambaETLProperties props = MambaETLProperties.getInstance();
 		
 		dataSource.setDriverClassName(props.getOpenmrsDbDriver());
 		dataSource.setUsername(props.getMambaETLuser());
 		dataSource.setPassword(props.getMambaETLuserPassword());
 		dataSource.setUrl(props.getOpenmrsDbConnectionUrl());
-		dataSource.setDefaultSchema(props.getEtlDatababase());
 		
 		dataSource.setInitialSize(props.getConnectionInitialSize());
 		dataSource.setMaxTotal(props.getConnectionMaxTotal());
@@ -39,7 +38,12 @@ public class ConnectionPoolManager {
 		return instance;
 	}
 	
-	public BasicDataSource getDataSource() {
+	public BasicDataSource getDefaultDataSource() {
+		return dataSource;
+	}
+	
+	public BasicDataSource getEtlDataSource() {
+		dataSource.setDefaultSchema(props.getEtlDatababase());
 		return dataSource;
 	}
 }
