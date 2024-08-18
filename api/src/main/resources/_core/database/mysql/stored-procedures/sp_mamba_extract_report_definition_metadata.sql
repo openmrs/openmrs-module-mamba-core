@@ -25,9 +25,9 @@ BEGIN
                 SELECT JSON_EXTRACT(@report_array, CONCAT('$[', @report_count, ']')) INTO @report;
                 SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, '$.report_name')) INTO @report_name;
                 SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, '$.report_id')) INTO @report_id;
-                SELECT CONCAT('sp_mamba_', @report_id, '_query') INTO @report_procedure_name;
-                SELECT CONCAT('sp_mamba_', @report_id, '_columns_query') INTO @report_columns_procedure_name;
-                SELECT CONCAT('mamba_dim_', @report_id) INTO @table_name;
+                SELECT CONCAT('sp_mamba_report_', @report_id, '_query') INTO @report_procedure_name;
+                SELECT CONCAT('sp_mamba_report_', @report_id, '_columns_query') INTO @report_columns_procedure_name;
+                SELECT CONCAT('mamba_report_', @report_id) INTO @table_name;
                 SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, CONCAT('$.report_sql.sql_query'))) INTO @sql_query;
                 SELECT JSON_EXTRACT(@report, CONCAT('$.report_sql.query_params')) INTO @query_params_array;
 
