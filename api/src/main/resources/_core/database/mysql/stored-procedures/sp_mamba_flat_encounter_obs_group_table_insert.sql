@@ -28,7 +28,7 @@ BEGIN
          (SELECT DISTINCT obs_question_concept_id
           FROM mamba_z_encounter_obs eo
                    INNER JOIN mamba_obs_group og
-                              on eo.obs_group_id = og.obs_id
+                              on eo.obs_id = og.obs_id
           WHERE obs_group_id IS NOT NULL
             AND og.obs_group_concept_name = obs_group_concept_name) eo
          ON cm.concept_id = eo.obs_question_concept_id
