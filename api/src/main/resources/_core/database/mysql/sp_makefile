@@ -132,6 +132,11 @@ xf_system/sp_mamba_dim_table_insert.sql
 xf_system/sp_mamba_truncate_table.sql
 xf_system/sp_mamba_drop_table.sql
 
+xf_system/etl_multiselect_questions/sp_mamba_multiselect_questions.sql
+xf_system/etl_multiselect_questions/sp_mamba_multiselect_questions_create.sql
+xf_system/etl_multiselect_questions/sp_mamba_multiselect_questions_insert.sql
+xf_system/etl_multiselect_questions/sp_mamba_multiselect_questions_update.sql
+
 #############################################################################
 ####### Prepare all the necessary flattening SPs that will be invoked #######
 #############################################################################
