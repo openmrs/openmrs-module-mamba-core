@@ -62,6 +62,8 @@ BEGIN
 
     CALL sp_mamba_flat_encounter_obs_group_table_insert_all;
 
+    CALL sp_mamba_multiselect_questions;
+
 END //
 
 DELIMITER ;
