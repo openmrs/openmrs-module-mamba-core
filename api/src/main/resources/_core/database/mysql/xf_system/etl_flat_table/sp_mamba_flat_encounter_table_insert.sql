@@ -2,20 +2,31 @@ DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_insert;
 
 DELIMITER //
 
+-- NOTE: this script was merged with the sp_mamba_flat_table_obs_incremental_insert script
+-- NOTE: ONLY difference was the filter  WHERE o.encounter_id = ''', @enc_id, '''
+-- NOTE: Here we were only inserting all obs/encounters for this flat table
+-- NOTE: Where as in the sp_mamba_flat_table_obs_incremental_insert we were only updating the encounter in the flat table that has changes
+
 CREATE PROCEDURE sp_mamba_flat_encounter_table_insert(
-    IN flat_encounter_table_name VARCHAR(60) CHARACTER SET UTF8MB4
+    IN flat_encounter_table_name VARCHAR(60) CHARACTER SET UTF8MB4,
+    IN encounter_id INT -- Optional parameter for incremental insert
 )
 BEGIN
-
     SET session group_concat_max_len = 20000;
     SET @tbl_name = flat_encounter_table_name;
+    SET @enc_id = encounter_id;
+
+    -- Handle the optional encounter_id parameter by setting a default value if NULL
+    IF @enc_id IS NULL THEN
+        SET @enc_id = 0; -- or another appropriate default value
+    END IF;
 
     -- Precompute the concept metadata table to minimize repeated queries
-    CREATE TEMPORARY TABLE mamba_temp_concept_metadata
+    CREATE TEMPORARY TABLE IF NOT EXISTS mamba_temp_concept_metadata
     (
         id                  INT          NOT NULL,
-        flat_table_name     VARCHAR(60)  NOT NULL UNIQUE,
-        encounter_type_uuid CHAR(38)     NOT NULL UNIQUE,
+        flat_table_name     VARCHAR(60)  NOT NULL,
+        encounter_type_uuid CHAR(38)     NOT NULL,
         column_label        VARCHAR(255) NOT NULL,
         concept_uuid        CHAR(38)     NOT NULL,
         obs_value_column    VARCHAR(50),
@@ -30,6 +41,8 @@ BEGIN
     )
         ENGINE = MEMORY
         CHARSET = UTF8MB4;
+
+    TRUNCATE TABLE mamba_temp_concept_metadata;
 
     INSERT INTO mamba_temp_concept_metadata
     SELECT DISTINCT id,
@@ -62,7 +75,9 @@ BEGIN
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_temp_concept_metadata tcm
                     ON tcm.concept_uuid = o.obs_question_uuid
-                WHERE o.encounter_type_uuid = ''', @tbl_encounter_type_uuid, '''
+                WHERE 1=1 ',
+                IF(@enc_id <> 0, CONCAT('AND o.encounter_id = ', @enc_id), ''),
+                ' AND o.encounter_type_uuid = ''', @tbl_encounter_type_uuid, '''
                 AND tcm.concept_answer_obs = 0
                 AND tcm.obs_value_column IS NOT NULL
                 AND o.obs_group_id IS NULL AND o.voided = 0
@@ -86,7 +101,9 @@ BEGIN
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_temp_concept_metadata tcm
                     ON tcm.concept_uuid = o.obs_value_coded_uuid
-                WHERE o.encounter_type_uuid = ''', @tbl_encounter_type_uuid, '''
+                WHERE 1=1 ',
+                IF(@enc_id <> 0, CONCAT('AND o.encounter_id = ', @enc_id), ''),
+                ' AND o.encounter_type_uuid = ''', @tbl_encounter_type_uuid, '''
                 AND tcm.concept_answer_obs = 1
                 AND tcm.obs_value_column IS NOT NULL
                 AND o.obs_group_id IS NULL AND o.voided = 0
@@ -98,8 +115,6 @@ BEGIN
         EXECUTE inserttbl;
         DEALLOCATE PREPARE inserttbl;
     END IF;
-
-    DROP TEMPORARY TABLE IF EXISTS mamba_temp_concept_metadata;
 
 END //
 

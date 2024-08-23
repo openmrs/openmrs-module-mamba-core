@@ -12,6 +12,7 @@ BEGIN
     DECLARE report_json JSON;
     DECLARE done INT DEFAULT FALSE;
     DECLARE cur CURSOR FOR
+        -- selects rows where incremental_record is 1. If is_incremental is not 1, it selects all rows.
         SELECT table_json_data
         FROM mamba_flat_table_config
         WHERE (IF(is_incremental = 1, incremental_record = 1, 1));
