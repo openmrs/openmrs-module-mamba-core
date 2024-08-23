@@ -18,11 +18,13 @@ BEGIN
         obs_value_column   VARCHAR(50),
         concept_uuid       CHAR(38)     NOT NULL,
         concept_answer_obs INT,
+        flat_table_name     VARCHAR(60)          NOT NULL,
 
         INDEX mamba_idx_id (id),
         INDEX mamba_idx_column_label (column_label),
         INDEX mamba_idx_concept_uuid (concept_uuid),
-        INDEX mamba_idx_concept_answer_obs (concept_answer_obs)
+        INDEX mamba_idx_concept_answer_obs (concept_answer_obs),
+        INDEX mamba_idx_flat_table_name (flat_table_name)
     )
         CHARSET = UTF8MB4;
 
@@ -31,7 +33,8 @@ BEGIN
                     column_label,
                     fn_mamba_get_obs_value_column(concept_datatype) AS obs_value_column,
                     concept_uuid,
-                    concept_answer_obs
+                    concept_answer_obs,
+                    flat_table_name
     FROM mamba_concept_metadata
     WHERE flat_table_name = @tbl_name
       AND concept_id IS NOT NULL
