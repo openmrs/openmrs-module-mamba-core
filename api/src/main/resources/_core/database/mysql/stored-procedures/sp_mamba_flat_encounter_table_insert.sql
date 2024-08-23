@@ -14,11 +14,11 @@ BEGIN
     CREATE TEMPORARY TABLE mamba_temp_concept_metadata
     (
         id                 INT          NOT NULL,
+        flat_table_name    VARCHAR(60)  NOT NULL,
         column_label       VARCHAR(255) NOT NULL,
         obs_value_column   VARCHAR(50),
         concept_uuid       CHAR(38)     NOT NULL,
         concept_answer_obs INT,
-        flat_table_name     VARCHAR(60)          NOT NULL,
 
         INDEX mamba_idx_id (id),
         INDEX mamba_idx_column_label (column_label),
@@ -30,11 +30,11 @@ BEGIN
 
     INSERT INTO mamba_temp_concept_metadata
     SELECT DISTINCT id,
+                    flat_table_name,
                     column_label,
                     fn_mamba_get_obs_value_column(concept_datatype) AS obs_value_column,
                     concept_uuid,
-                    concept_answer_obs,
-                    flat_table_name
+                    concept_answer_obs
     FROM mamba_concept_metadata
     WHERE flat_table_name = @tbl_name
       AND concept_id IS NOT NULL
