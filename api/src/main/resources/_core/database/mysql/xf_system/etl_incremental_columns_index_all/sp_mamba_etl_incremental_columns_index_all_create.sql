@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS mamba_etl_incremental_columns_index_all
     INDEX mamba_idx_retired (retired),
     INDEX mamba_idx_voided (voided)
 )
+    ENGINE = MEMORY
     CHARSET = UTF8MB4;
 
 -- $END

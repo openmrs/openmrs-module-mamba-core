@@ -13,12 +13,13 @@ BEGIN
     -- Precompute the concept metadata table to minimize repeated queries
     CREATE TEMPORARY TABLE mamba_temp_concept_metadata
     (
-        id                 INT          NOT NULL,
-        flat_table_name    VARCHAR(60)  NOT NULL,
-        column_label       VARCHAR(255) NOT NULL,
-        obs_value_column   VARCHAR(50),
-        concept_uuid       CHAR(38)     NOT NULL,
-        concept_answer_obs INT,
+        id                  INT          NOT NULL,
+        flat_table_name     VARCHAR(60)  NOT NULL,
+        encounter_type_uuid CHAR(38)     NOT NULL,
+        column_label        VARCHAR(255) NOT NULL,
+        concept_uuid        CHAR(38)     NOT NULL,
+        obs_value_column    VARCHAR(50),
+        concept_answer_obs  INT,
 
         INDEX mamba_idx_id (id),
         INDEX mamba_idx_column_label (column_label),
@@ -26,14 +27,16 @@ BEGIN
         INDEX mamba_idx_concept_answer_obs (concept_answer_obs),
         INDEX mamba_idx_flat_table_name (flat_table_name)
     )
+        ENGINE = MEMORY
         CHARSET = UTF8MB4;
 
     INSERT INTO mamba_temp_concept_metadata
     SELECT DISTINCT id,
                     flat_table_name,
+                    encounter_type_uuid,
                     column_label,
-                    fn_mamba_get_obs_value_column(concept_datatype) AS obs_value_column,
                     concept_uuid,
+                    fn_mamba_get_obs_value_column(concept_datatype) AS obs_value_column,
                     concept_answer_obs
     FROM mamba_concept_metadata
     WHERE flat_table_name = @tbl_name
@@ -47,6 +50,8 @@ BEGIN
     INTO @column_labels
     FROM mamba_temp_concept_metadata;
 
+    SELECT DISTINCT encounter_type_uuid INTO @tbl_encounter_type_uuid FROM mamba_temp_concept_metadata;
+
     IF @column_labels IS NOT NULL THEN
         -- First Insert: concept_answer_obs = 0
         SET @insert_stmt = CONCAT(
@@ -56,7 +61,7 @@ BEGIN
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_temp_concept_metadata tcm
                     ON tcm.concept_uuid = o.obs_question_uuid
-                WHERE tcm.flat_table_name = ''', @tbl_name, '''
+                WHERE o.encounter_type_uuid = ''', @tbl_encounter_type_uuid, '''
                 AND tcm.concept_answer_obs = 0
                 AND tcm.obs_value_column IS NOT NULL
                 AND o.obs_group_id IS NULL AND o.voided = 0
@@ -80,7 +85,7 @@ BEGIN
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_temp_concept_metadata tcm
                     ON tcm.concept_uuid = o.obs_value_coded_uuid
-                WHERE tcm.flat_table_name = ''', @tbl_name, '''
+                WHERE o.encounter_type_uuid = ''', @tbl_encounter_type_uuid, '''
                 AND tcm.concept_answer_obs = 1
                 AND tcm.obs_value_column IS NOT NULL
                 AND o.obs_group_id IS NULL AND o.voided = 0
