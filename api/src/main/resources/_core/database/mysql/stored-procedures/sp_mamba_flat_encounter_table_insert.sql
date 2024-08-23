@@ -14,8 +14,8 @@ BEGIN
     CREATE TEMPORARY TABLE mamba_temp_concept_metadata
     (
         id                  INT          NOT NULL,
-        flat_table_name     VARCHAR(60)  NOT NULL,
-        encounter_type_uuid CHAR(38)     NOT NULL,
+        flat_table_name     VARCHAR(60)  NOT NULL UNIQUE,
+        encounter_type_uuid CHAR(38)     NOT NULL UNIQUE,
         column_label        VARCHAR(255) NOT NULL,
         concept_uuid        CHAR(38)     NOT NULL,
         obs_value_column    VARCHAR(50),
@@ -25,7 +25,8 @@ BEGIN
         INDEX mamba_idx_column_label (column_label),
         INDEX mamba_idx_concept_uuid (concept_uuid),
         INDEX mamba_idx_concept_answer_obs (concept_answer_obs),
-        INDEX mamba_idx_flat_table_name (flat_table_name)
+        INDEX mamba_idx_flat_table_name (flat_table_name),
+        INDEX mamba_idx_encounter_type_uuid (encounter_type_uuid)
     )
         ENGINE = MEMORY
         CHARSET = UTF8MB4;
