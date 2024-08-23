@@ -53,7 +53,8 @@ BEGIN
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_temp_concept_metadata tcm
                     ON tcm.concept_uuid = o.obs_question_uuid
-                WHERE tcm.concept_answer_obs = 0
+                WHERE tcm.flat_table_name = ''', @tbl_name, '''
+                AND tcm.concept_answer_obs = 0
                 AND tcm.obs_value_column IS NOT NULL
                 AND o.obs_group_id IS NULL AND o.voided = 0
                 GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
@@ -76,7 +77,8 @@ BEGIN
                 FROM mamba_z_encounter_obs o
                     INNER JOIN mamba_temp_concept_metadata tcm
                     ON tcm.concept_uuid = o.obs_value_coded_uuid
-                WHERE tcm.concept_answer_obs = 1
+                WHERE tcm.flat_table_name = ''', @tbl_name, '''
+                AND tcm.concept_answer_obs = 1
                 AND tcm.obs_value_column IS NOT NULL
                 AND o.obs_group_id IS NULL AND o.voided = 0
                 GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
