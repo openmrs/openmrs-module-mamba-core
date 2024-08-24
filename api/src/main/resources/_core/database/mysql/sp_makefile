@@ -62,7 +62,6 @@ xf_system/etl_report/sp_mamba_get_report_column_names.sql
 #xf_system/etl_report/sp_mamba_generate_report_columns_wrapper.sql
 #xf_system/etl_report/sp_mamba_generate_report.sql
 
-xf_system/sp_mamba_truncate_tables_before_incremental.sql
 xf_system/sp_mamba_reset_incremental_update_flag.sql
 xf_system/sp_mamba_reset_incremental_update_flag_all.sql
 
