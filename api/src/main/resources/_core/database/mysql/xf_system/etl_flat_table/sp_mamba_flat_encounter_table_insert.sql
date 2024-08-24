@@ -16,9 +16,17 @@ BEGIN
     SET @tbl_name = flat_encounter_table_name;
     SET @enc_id = encounter_id;
 
+    -- called outside the incremental script
     -- Handle the optional encounter_id parameter by setting a default value if NULL
     IF @enc_id IS NULL THEN
-        SET @enc_id = 0; -- or another appropriate default value
+        SET @enc_id = 0;
+    ELSE
+        -- called through the incremental script
+        -- if enc_id exits in the table @tbl_name, then delete the record (to be replaced with the new one)
+        SET @delete_stmt = CONCAT('DELETE FROM `', @tbl_name, '` WHERE encounter_id = ', @enc_id);
+        PREPARE deletetb FROM @delete_stmt;
+        EXECUTE deletetb;
+        DEALLOCATE PREPARE deletetb;
     END IF;
 
     -- Precompute the concept metadata table to minimize repeated queries
