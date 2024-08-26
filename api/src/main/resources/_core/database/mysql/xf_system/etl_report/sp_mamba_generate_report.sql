@@ -22,7 +22,9 @@ BEGIN
     (
         column_name     VARCHAR(255),
         parameter_value VARCHAR(255)
-    );
+    )
+        ENGINE = MEMORY
+        CHARSET = UTF8MB4;
 
     -- SET num_objects = JSON_LENGTH(JSON_EXTRACT(json_arguments, '$.arguments'));
     SET num_objects = JSON_LENGTH(arguments);

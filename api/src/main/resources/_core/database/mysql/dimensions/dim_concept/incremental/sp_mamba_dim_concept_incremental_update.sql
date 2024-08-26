@@ -32,7 +32,8 @@ CREATE TEMPORARY TABLE mamba_temp_computed_concept_name
     computed_name   VARCHAR(255) NOT NULL,
     tbl_column_name VARCHAR(60)  NOT NULL,
     INDEX mamba_idx_concept_id (concept_id)
-)
+)ENGINE = MEMORY
+ CHARSET = UTF8MB4 AS
 SELECT c.concept_id,
        CASE
            WHEN TRIM(cn.name) IS NULL OR TRIM(cn.name) = '' THEN CONCAT('UNKNOWN_CONCEPT_NAME', '_', c.concept_id)

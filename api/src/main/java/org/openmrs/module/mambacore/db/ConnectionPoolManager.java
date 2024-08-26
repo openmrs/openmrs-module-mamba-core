@@ -14,9 +14,9 @@ import org.openmrs.module.mambacore.util.MambaETLProperties;
 
 public class ConnectionPoolManager {
 	
-	private static ConnectionPoolManager instance = null;
-	
 	private static final BasicDataSource dataSource = new BasicDataSource();
+	
+	private static ConnectionPoolManager instance = null;
 	
 	private final MambaETLProperties props = MambaETLProperties.getInstance();
 	
@@ -43,7 +43,23 @@ public class ConnectionPoolManager {
 	}
 	
 	public BasicDataSource getEtlDataSource() {
-		dataSource.setDefaultSchema(props.getEtlDatababase());
-		return dataSource;
+		
+		String etlDatabase = props.getEtlDatababase();
+		String modifiedUrl = getModifiedUrl(dataSource.getUrl(), etlDatabase);
+		
+		BasicDataSource etlDataSource = new BasicDataSource();
+		etlDataSource.setDefaultSchema(etlDatabase);
+		etlDataSource.setUrl(modifiedUrl);
+		etlDataSource.setDriverClassName(dataSource.getDriverClassName());
+		etlDataSource.setUsername(props.getMambaETLuser());
+		etlDataSource.setPassword(props.getMambaETLuserPassword());
+		etlDataSource.setInitialSize(dataSource.getInitialSize());
+		etlDataSource.setMaxTotal(dataSource.getMaxTotal());
+		
+		return etlDataSource;
+	}
+	
+	private String getModifiedUrl(String originalUrl, String newDatabase) {
+		return originalUrl.replaceAll("(/)[^/?]+(?=\\?|$)", "$1" + newDatabase);
 	}
 }

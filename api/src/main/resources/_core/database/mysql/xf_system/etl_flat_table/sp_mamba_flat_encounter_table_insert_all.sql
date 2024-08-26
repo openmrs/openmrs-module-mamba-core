@@ -1,9 +1,9 @@
--- Flatten all Modified and New Encounters
-DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_incremental_insert_all;
+-- Flatten all Encounters given in Config folder
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_insert_all;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_flat_encounter_table_incremental_insert_all()
+CREATE PROCEDURE sp_mamba_flat_encounter_table_insert_all()
 BEGIN
 
     DECLARE tbl_name VARCHAR(60) CHARACTER SET UTF8MB4;
@@ -11,10 +11,7 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
 
     DECLARE cursor_flat_tables CURSOR FOR
-        SELECT DISTINCT cm.flat_table_name
-        FROM mamba_z_encounter_obs eo
-                 INNER JOIN mamba_concept_metadata cm ON eo.encounter_type_uuid = cm.encounter_type_uuid
-        WHERE eo.incremental_record = 1;
+        SELECT DISTINCT(flat_table_name) FROM mamba_concept_metadata;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
@@ -27,7 +24,7 @@ BEGIN
             LEAVE computations_loop;
         END IF;
 
-        CALL sp_mamba_flat_encounter_table_insert(tbl_name);
+        CALL sp_mamba_flat_encounter_table_insert(tbl_name, NULL); -- Insert all OBS/Encounters for this flat table
 
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;

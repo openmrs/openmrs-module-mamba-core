@@ -44,13 +44,17 @@ BEGIN
 
     CALL sp_mamba_dim_orders_incremental;
 
+    -- incremental inserts into the mamba_z_encounter_obs table only
     CALL sp_mamba_z_encounter_obs_incremental;
 
     CALL sp_mamba_flat_table_incremental_create_all;
 
+    -- create and insert into flat tables whose columns or table names have been modified/added (determined by json_data hash)
     CALL sp_mamba_flat_table_incremental_insert_all;
 
-    CALL sp_mamba_flat_table_obs_incremental_insert_all;
+    -- insert from mamba_z_encounter_obs into the flat table OBS that are either MODIFIED or CREATED/NEW
+    -- (Deletes and inserts an entire Encounter (by id) if one of the obs is modified)
+    CALL sp_mamba_flat_table_incremental_update_encounter;
 
     CALL sp_mamba_reset_incremental_update_flag_all;
 

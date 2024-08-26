@@ -25,7 +25,7 @@ BEGIN
             LEAVE computations_loop;
         END IF;
 
-        CALL sp_mamba_flat_encounter_table_insert(tbl_name);
+        CALL sp_mamba_flat_encounter_table_insert(tbl_name, NULL); -- Insert all OBS/Encounters for this flat table
 
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;

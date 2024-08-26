@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS sp_mamba_flat_table_obs_incremental_insert_all;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_table_incremental_update_encounter;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_flat_table_obs_incremental_insert_all()
+CREATE PROCEDURE sp_mamba_flat_table_incremental_update_encounter()
 BEGIN
 
     DECLARE tbl_name VARCHAR(60) CHARACTER SET UTF8MB4;
@@ -27,7 +27,7 @@ BEGIN
             LEAVE computations_loop;
         END IF;
 
-        CALL sp_mamba_flat_table_obs_incremental_insert(encounter_id, tbl_name);
+        CALL sp_mamba_flat_encounter_table_insert(tbl_name, encounter_id); -- Update only OBS/Encounters that have been modified for this flat table
 
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;
