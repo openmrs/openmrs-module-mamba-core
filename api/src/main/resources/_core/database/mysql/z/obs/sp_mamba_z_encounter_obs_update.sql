@@ -1,7 +1,6 @@
 -- $BEGIN
 
 CREATE TEMPORARY TABLE mamba_temp_value_coded_values
-    ENGINE = MEMORY
     CHARSET = UTF8MB4 AS
 SELECT m.concept_id AS concept_id,
        m.uuid       AS concept_uuid,

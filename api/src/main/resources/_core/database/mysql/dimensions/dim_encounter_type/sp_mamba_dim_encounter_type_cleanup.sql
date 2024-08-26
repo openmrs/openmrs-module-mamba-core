@@ -22,7 +22,6 @@ BEGIN
         encounter_type_id    INT,
         auto_flat_table_name VARCHAR(60)
     )
-        ENGINE = MEMORY
         CHARSET = UTF8MB4;
 
     TRUNCATE TABLE mamba_dim_encounter_type_temp;

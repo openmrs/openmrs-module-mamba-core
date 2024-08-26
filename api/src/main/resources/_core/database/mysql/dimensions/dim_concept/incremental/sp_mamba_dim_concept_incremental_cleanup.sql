@@ -23,8 +23,7 @@ BEGIN
         concept_id             INT,
         auto_table_column_name VARCHAR(60)
 
-    ) ENGINE = MEMORY
-      CHARSET = UTF8MB4;
+    ) CHARSET = UTF8MB4;
 
     TRUNCATE TABLE mamba_dim_concept_temp;
 

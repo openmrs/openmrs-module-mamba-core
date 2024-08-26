@@ -47,7 +47,6 @@ BEGIN
         INDEX mamba_idx_flat_table_name (flat_table_name),
         INDEX mamba_idx_encounter_type_uuid (encounter_type_uuid)
     )
-        ENGINE = MEMORY
         CHARSET = UTF8MB4;
 
     TRUNCATE TABLE mamba_temp_concept_metadata;

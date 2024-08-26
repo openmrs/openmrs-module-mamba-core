@@ -8,7 +8,6 @@ CREATE TEMPORARY TABLE mamba_temp_obs_group_ids
     INDEX mamba_idx_obs_group_id (obs_group_id),
     INDEX mamba_idx_visit_id (row_num)
 )
-    ENGINE = MEMORY
     CHARSET = UTF8MB4;
 
 INSERT INTO mamba_temp_obs_group_ids
