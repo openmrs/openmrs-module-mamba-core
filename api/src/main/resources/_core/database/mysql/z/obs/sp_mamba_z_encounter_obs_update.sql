@@ -1,7 +1,23 @@
--- $BEGIN
+DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_update;
 
-CREATE TEMPORARY TABLE mamba_temp_value_coded_values
-    CHARSET = UTF8MB4 AS
+DELIMITER
+//
+
+CREATE PROCEDURE sp_mamba_z_encounter_obs_update()
+BEGIN
+    DECLARE
+total_records INT;
+    DECLARE
+batch_size INT DEFAULT 100000; -- 1 million batches
+    DECLARE
+mamba_offset INT DEFAULT 0;
+
+SELECT COUNT(*)
+INTO total_records
+FROM mamba_z_encounter_obs;
+CREATE
+TEMPORARY TABLE mamba_temp_value_coded_values
+        CHARSET = UTF8MB4 AS
 SELECT m.concept_id AS concept_id,
        m.uuid       AS concept_uuid,
        m.name       AS concept_name
@@ -12,13 +28,21 @@ WHERE concept_id in (SELECT DISTINCT obs_value_coded
 CREATE INDEX mamba_idx_concept_id ON mamba_temp_value_coded_values (concept_id);
 
 -- update obs_value_coded (UUIDs & Concept value names)
+WHILE
+mamba_offset < total_records
+        DO
+            -- Perform the batch update
 UPDATE mamba_z_encounter_obs z
+    JOIN (SELECT encounter_id FROM mamba_z_encounter_obs GROUP BY encounter_id ORDER BY encounter_id LIMIT batch_size OFFSET mamba_offset ) AS filter
+ON filter.encounter_id=z.encounter_id
     INNER JOIN mamba_temp_value_coded_values mtv
     ON z.obs_value_coded = mtv.concept_id
-SET z.obs_value_text       = mtv.concept_name,
-    z.obs_value_coded_uuid = mtv.concept_uuid
+    SET z.obs_value_text = mtv.concept_name, z.obs_value_coded_uuid = mtv.concept_uuid
 WHERE z.obs_value_coded IS NOT NULL;
-
+COMMIT;
+SET
+mamba_offset = mamba_offset + batch_size;
+END WHILE;
 -- update column obs_value_boolean (Concept values)
 UPDATE mamba_z_encounter_obs z
 SET obs_value_boolean =
@@ -33,6 +57,8 @@ WHERE z.obs_value_coded IS NOT NULL
        FROM mamba_dim_concept c
        WHERE c.datatype = 'Boolean');
 
-DROP TEMPORARY TABLE IF EXISTS mamba_temp_value_coded_values;
-
--- $END
+DROP
+TEMPORARY TABLE IF EXISTS mamba_temp_value_coded_values;
+END
+//
+DELIMITER ;
