@@ -33,11 +33,12 @@ mamba_offset < total_records
         DO
             -- Perform the batch update
 UPDATE mamba_z_encounter_obs z
-    JOIN (SELECT encounter_id FROM mamba_z_encounter_obs GROUP BY encounter_id ORDER BY encounter_id LIMIT batch_size OFFSET mamba_offset ) AS filter
+    JOIN (SELECT encounter_id FROM mamba_z_encounter_obs ORDER BY encounter_id LIMIT batch_size OFFSET mamba_offset ) AS filter
 ON filter.encounter_id=z.encounter_id
     INNER JOIN mamba_temp_value_coded_values mtv
     ON z.obs_value_coded = mtv.concept_id
-    SET z.obs_value_text = mtv.concept_name, z.obs_value_coded_uuid = mtv.concept_uuid
+    SET z.obs_value_text = mtv.concept_name,
+    z.obs_value_coded_uuid = mtv.concept_uuid
 WHERE z.obs_value_coded IS NOT NULL;
 COMMIT;
 SET
