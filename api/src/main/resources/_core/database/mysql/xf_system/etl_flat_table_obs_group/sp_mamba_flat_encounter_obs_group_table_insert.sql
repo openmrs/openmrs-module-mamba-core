@@ -1,11 +1,11 @@
-DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert(
-    IN flat_encounter_table_name VARCHAR(60) CHARACTER SET UTF8MB4,
-    IN obs_group_concept_name VARCHAR(255) CHARACTER SET UTF8MB4,
-    IN encounter_id INT -- Optional parameter for incremental insert
+DROP PROCEDURE IF EXISTS `sp_mamba_flat_encounter_obs_group_table_insert`;
+
+CREATE PROCEDURE `sp_mamba_flat_encounter_obs_group_table_insert`(
+    IN `flat_encounter_table_name` VARCHAR(60) CHARACTER SET UTF8MB4,
+    `obs_group_concept_name` VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
     -- Set maximum length for GROUP_CONCAT
