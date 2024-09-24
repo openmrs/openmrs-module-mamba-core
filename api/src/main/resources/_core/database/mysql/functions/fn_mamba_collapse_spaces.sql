@@ -9,6 +9,9 @@ BEGIN
     DECLARE result TEXT;
     SET result = input_text;
 
+    -- First replace tabs and other whitespace characters with spaces
+    SET result = REPLACE(result, '\t', ' '); -- Replace tabs with a single space
+
     -- Loop to collapse multiple spaces into one
     WHILE INSTR(result, '  ') > 0
         DO
