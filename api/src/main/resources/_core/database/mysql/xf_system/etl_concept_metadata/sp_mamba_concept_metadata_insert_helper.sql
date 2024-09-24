@@ -74,47 +74,34 @@ BEGIN
 
             SET @col_count = 0;
             SET @table_name = JSON_UNQUOTE(@flat_table_name);
-            SET @current_table_count = 1;
+
 
             WHILE @col_count < @column_keys_array_len
                 DO
                     SELECT JSON_EXTRACT(@column_keys_array, CONCAT('$[', @col_count, ']')) INTO @field_name;
                     SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
 
-                    IF @col_count > @table_partition_number THEN
-
-                        SET @table_name = CONCAT(LEFT(JSON_UNQUOTE(@flat_table_name), 57), '_', @current_table_count);
-                        SET @current_table_count = @current_table_count;
-
-                        INSERT INTO mamba_concept_metadata
-                        (report_name,
-                         flat_table_name,
-                         encounter_type_uuid,
-                         column_label,
-                         concept_uuid,
-                         incremental_record)
-                        VALUES (JSON_UNQUOTE(@report_name),
-                                JSON_UNQUOTE(@table_name),
-                                JSON_UNQUOTE(@encounter_type),
-                                JSON_UNQUOTE(@field_name),
-                                JSON_UNQUOTE(@concept_uuid),
-                                is_incremental_record);
-
+                    IF @col_count < @table_partition_number THEN
+                        SET @table_name = @table_name;
+                    ELSEIF @col_count = @table_partition_number THEN
+                        SET @table_name = CONCAT(LEFT(JSON_UNQUOTE(@flat_table_name), 57), '_', CEIL(@col_count/@table_partition_number));
                     ELSE
-                        INSERT INTO mamba_concept_metadata
-                        (report_name,
-                         flat_table_name,
-                         encounter_type_uuid,
-                         column_label,
-                         concept_uuid,
-                         incremental_record)
-                        VALUES (JSON_UNQUOTE(@report_name),
-                                JSON_UNQUOTE(@flat_table_name),
-                                JSON_UNQUOTE(@encounter_type),
-                                JSON_UNQUOTE(@field_name),
-                                JSON_UNQUOTE(@concept_uuid),
-                                is_incremental_record);
+                        SET @table_name = CONCAT(LEFT(JSON_UNQUOTE(@flat_table_name), 57), '_', CEIL(@col_count/@table_partition_number)-1);
                     END IF;
+
+                    INSERT INTO mamba_concept_metadata
+                    (report_name,
+                     flat_table_name,
+                     encounter_type_uuid,
+                     column_label,
+                     concept_uuid,
+                     incremental_record)
+                    VALUES (JSON_UNQUOTE(@report_name),
+                            JSON_UNQUOTE(@table_name),
+                            JSON_UNQUOTE(@encounter_type),
+                            JSON_UNQUOTE(@field_name),
+                            JSON_UNQUOTE(@concept_uuid),
+                            is_incremental_record);
                     SET @col_count = @col_count + 1;
                 END WHILE;
         END IF;
