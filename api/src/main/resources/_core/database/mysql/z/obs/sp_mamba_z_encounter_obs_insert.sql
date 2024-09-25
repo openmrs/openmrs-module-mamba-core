@@ -4,9 +4,9 @@ DELIMITER //
 
 CREATE PROCEDURE sp_mamba_z_encounter_obs_insert()
 BEGIN
-    DECLARE total_records INT;
     DECLARE batch_size INT DEFAULT 1000000; -- 1 million batches
-    DECLARE last_obs_id INT DEFAULT 0;
+    DECLARE batch_last_obs_id INT DEFAULT 0;
+    DECLARE last_obs_id INT;
 
     CREATE TEMPORARY TABLE IF NOT EXISTS mamba_temp_obs_data AS
     SELECT o.obs_id,
@@ -44,11 +44,9 @@ BEGIN
 
     CREATE INDEX idx_obs_id ON mamba_temp_obs_data (obs_id);
 
-    SELECT COUNT(*)
-    INTO total_records
-    FROM mamba_temp_obs_data;
+    SELECT MAX(obs_id) INTO last_obs_id FROM mamba_temp_obs_data;
 
-    WHILE last_obs_id < (SELECT MAX(obs_id) FROM mamba_temp_obs_data)
+    WHILE batch_last_obs_id < last_obs_id
         DO
             START TRANSACTION;
             INSERT INTO mamba_z_encounter_obs (obs_id,
@@ -106,18 +104,15 @@ BEGIN
                    voided_by,
                    void_reason
             FROM mamba_temp_obs_data
-            WHERE obs_id > last_obs_id -- Track the last inserted obs_id
-            ORDER BY obs_id ASC -- Process in ascending order
+            WHERE obs_id > batch_last_obs_id -- Track the batch last inserted obs_id
+            ORDER BY obs_id ASC
             LIMIT batch_size;
-
-            -- Update last_obs_id to the highest obs_id from the last batch
-            SELECT MAX(obs_id)
-            INTO last_obs_id
-            FROM mamba_temp_obs_data o
-            WHERE o.obs_id > last_obs_id
-            ORDER BY o.obs_id ASC
-            LIMIT 1;
             COMMIT;
+
+            SELECT MAX(obs_id)
+            INTO batch_last_obs_id
+            FROM mamba_z_encounter_obs
+            LIMIT 1;
 
         END WHILE;
 
