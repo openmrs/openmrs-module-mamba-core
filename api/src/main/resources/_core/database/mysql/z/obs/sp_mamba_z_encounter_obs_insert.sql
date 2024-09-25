@@ -48,7 +48,6 @@ BEGIN
     INTO total_records
     FROM mamba_temp_obs_data;
 
-    -- WHILE mamba_offset < total_records
     WHILE last_obs_id < (SELECT MAX(obs_id) FROM mamba_temp_obs_data)
         DO
             START TRANSACTION;
