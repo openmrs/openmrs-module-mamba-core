@@ -7,6 +7,7 @@ BEGIN
     DECLARE total_records INT;
     DECLARE batch_size INT DEFAULT 1000000; -- 1 million batches
     DECLARE mamba_offset INT DEFAULT 0;
+    DECLARE last_obs_id INT DEFAULT 0; -- Track the last inserted obs_id
 
     SELECT COUNT(*)
     INTO total_records
@@ -16,35 +17,37 @@ BEGIN
                          FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
     WHERE o.encounter_id IS NOT NULL;
 
-    WHILE mamba_offset < total_records
+    -- WHILE mamba_offset < total_records
+    WHILE last_obs_id < (SELECT MAX(obs_id) FROM mamba_source_db.obs)
         DO
-            SET @sql = CONCAT('INSERT INTO mamba_z_encounter_obs (obs_id,
-                                       encounter_id,
-                                       visit_id,
-                                       person_id,
-                                       order_id,
-                                       encounter_datetime,
-                                       obs_datetime,
-                                       location_id,
-                                       obs_group_id,
-                                       obs_question_concept_id,
-                                       obs_value_text,
-                                       obs_value_numeric,
-                                       obs_value_coded,
-                                       obs_value_datetime,
-                                       obs_value_complex,
-                                       obs_value_drug,
-                                       obs_question_uuid,
-                                       obs_answer_uuid,
-                                       obs_value_coded_uuid,
-                                       encounter_type_uuid,
-                                       status,
-                                       previous_version,
-                                       date_created,
-                                       date_voided,
-                                       voided,
-                                       voided_by,
-                                       void_reason)
+            START TRANSACTION;
+            INSERT INTO mamba_z_encounter_obs (obs_id,
+                                               encounter_id,
+                                               visit_id,
+                                               person_id,
+                                               order_id,
+                                               encounter_datetime,
+                                               obs_datetime,
+                                               location_id,
+                                               obs_group_id,
+                                               obs_question_concept_id,
+                                               obs_value_text,
+                                               obs_value_numeric,
+                                               obs_value_coded,
+                                               obs_value_datetime,
+                                               obs_value_complex,
+                                               obs_value_drug,
+                                               obs_question_uuid,
+                                               obs_answer_uuid,
+                                               obs_value_coded_uuid,
+                                               encounter_type_uuid,
+                                               status,
+                                               previous_version,
+                                               date_created,
+                                               date_voided,
+                                               voided,
+                                               voided_by,
+                                               void_reason)
             SELECT o.obs_id,
                    o.encounter_id,
                    e.visit_id,
@@ -77,14 +80,19 @@ BEGIN
                      INNER JOIN (SELECT DISTINCT concept_id, concept_uuid
                                  FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
             WHERE o.encounter_id IS NOT NULL
-            ORDER BY o.obs_id ASC -- Use a unique column for ordering to avoid the duplicates error because of using mamba_offset
-            LIMIT ', batch_size, ' OFFSET ', mamba_offset);
+              AND o.obs_id > last_obs_id
+            ORDER BY o.obs_id ASC -- Use a unique column for ordering to avoid the 'duplicates' error because of using mamba_offset
+            LIMIT batch_size;
 
-            PREPARE stmt FROM @sql;
-            EXECUTE stmt;
-            DEALLOCATE PREPARE stmt;
+            -- Update last_obs_id to the highest obs_id from the last batch
+            SELECT MAX(obs_id)
+            INTO last_obs_id
+            FROM mamba_source_db.obs o
+            WHERE o.obs_id > last_obs_id
+            ORDER BY o.obs_id ASC
+            LIMIT 1;
+            COMMIT;
 
-            SET mamba_offset = mamba_offset + batch_size;
         END WHILE;
 END //
 

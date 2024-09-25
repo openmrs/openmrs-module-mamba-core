@@ -23,9 +23,9 @@ BEGIN
     CREATE INDEX mamba_idx_concept_id ON mamba_temp_value_coded_values (concept_id);
 
     -- update obs_value_coded (UUIDs & Concept value names)
-    WHILE
-        mamba_offset < total_records
+    WHILE mamba_offset < total_records
         DO
+            START TRANSACTION;
             -- Perform the batch update
             UPDATE mamba_z_encounter_obs z
                 JOIN (SELECT encounter_id
@@ -39,8 +39,8 @@ BEGIN
                 z.obs_value_coded_uuid = mtv.concept_uuid
             WHERE z.obs_value_coded IS NOT NULL;
             COMMIT;
-            SET
-                mamba_offset = mamba_offset + batch_size;
+            SET mamba_offset = mamba_offset + batch_size;
+
         END WHILE;
 
     -- update column obs_value_boolean (Concept values)
