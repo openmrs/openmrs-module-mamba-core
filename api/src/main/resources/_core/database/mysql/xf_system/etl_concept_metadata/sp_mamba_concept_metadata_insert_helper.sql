@@ -83,10 +83,8 @@ BEGIN
 
                     IF @col_count < @table_partition_number THEN
                         SET @table_name = @table_name;
-                    ELSEIF @col_count = @table_partition_number THEN
-                        SET @table_name = CONCAT(LEFT(JSON_UNQUOTE(@flat_table_name), 57), '_', CEIL(@col_count/@table_partition_number));
                     ELSE
-                        SET @table_name = CONCAT(LEFT(JSON_UNQUOTE(@flat_table_name), 57), '_', CEIL(@col_count/@table_partition_number)-1);
+                        SET @table_name = CONCAT(LEFT(JSON_UNQUOTE(@flat_table_name), 57), '_', FLOOR((@col_count-1)/@table_partition_number));
                     END IF;
 
                     INSERT INTO mamba_concept_metadata
