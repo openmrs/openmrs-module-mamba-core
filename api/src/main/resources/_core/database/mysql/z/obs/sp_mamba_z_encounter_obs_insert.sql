@@ -4,7 +4,7 @@ DELIMITER //
 
 CREATE PROCEDURE sp_mamba_z_encounter_obs_insert()
 BEGIN
-    DECLARE batch_size INT DEFAULT 1000000; -- 1 million batches
+    DECLARE batch_size INT DEFAULT 1000000; -- 1m batch size
     DECLARE batch_last_obs_id INT DEFAULT 0;
     DECLARE last_obs_id INT;
 
@@ -104,7 +104,7 @@ BEGIN
                    voided_by,
                    void_reason
             FROM mamba_temp_obs_data
-            WHERE obs_id > batch_last_obs_id -- Track the batch last inserted obs_id
+            WHERE obs_id > batch_last_obs_id
             ORDER BY obs_id ASC
             LIMIT batch_size;
             COMMIT;
