@@ -1,4 +1,7 @@
 -- $BEGIN
+DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_insert;
+
+DELIMITER //
 
 CREATE TEMPORARY TABLE mamba_temp_obs_group_ids
 (
