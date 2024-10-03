@@ -21,21 +21,11 @@ WHERE EXISTS (SELECT 1
 
 -- Get All records that are answer concepts
 -- SET concept_answer_obs = 1
--- UPDATE mamba_concept_metadata md
---     INNER JOIN mamba_dim_concept_answer ca
---     ON ca.answer_concept = md.concept_id
--- SET md.concept_answer_obs = 1
--- WHERE md.concept_answer_obs <> 2;
-
 UPDATE mamba_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
     ON ca.answer_concept = md.concept_id
-    LEFT JOIN mamba_dim_concept_answer ca2
-    ON ca2.concept_id = md.concept_id
-    LEFT JOIN mamba_dim_concept_answer ca3
-    ON ca3.answer_concept = ca2.concept_id
 SET md.concept_answer_obs = 1
-WHERE ca3.concept_id IS NULL;
+WHERE md.concept_answer_obs <> 2;
 
 -- Update row number
 SET @row_number = 0;
