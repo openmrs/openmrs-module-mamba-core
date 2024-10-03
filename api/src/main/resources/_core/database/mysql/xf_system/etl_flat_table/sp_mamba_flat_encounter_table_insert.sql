@@ -32,7 +32,7 @@ BEGIN
     -- Precompute the concept metadata table to minimize repeated queries
     CREATE TEMPORARY TABLE IF NOT EXISTS `mamba_temp_concept_metadata`
     (
-        `id`                 INT          NOT NULL,
+        `id`                  INT          NOT NULL,
         `flat_table_name`     VARCHAR(60)  NOT NULL,
         `encounter_type_uuid` CHAR(38)     NOT NULL,
         `column_label`        VARCHAR(255) NOT NULL,
@@ -65,16 +65,16 @@ BEGIN
       AND `concept_datatype` IS NOT NULL;
 
     SELECT GROUP_CONCAT(DISTINCT
-                            CONCAT('MAX(CASE WHEN `column_label` = ''', `column_label`, ''' THEN ',
-                                   `obs_value_column`, ' END) `', `column_label`, '`')
-                            ORDER BY `id` ASC)
+                        CONCAT('MAX(CASE WHEN `column_label` = ''', `column_label`, ''' THEN ',
+                               `obs_value_column`, ' END) `', `column_label`, '`')
+                        ORDER BY `id` ASC)
     INTO @column_labels
     FROM `mamba_temp_concept_metadata`;
 
     SELECT DISTINCT `encounter_type_uuid` INTO @tbl_encounter_type_uuid FROM `mamba_temp_concept_metadata`;
 
     IF @column_labels IS NOT NULL THEN
-        -- First Insert: `concept_answer_obs` = 0
+        -- First Insert: `concept_answer_obs` = 0 OR 2
         SET @insert_stmt = CONCAT(
                 'INSERT INTO `', @tbl_name,
                 '` SELECT `o`.`encounter_id`, MAX(`o`.`visit_id`) AS `visit_id`, `o`.`person_id`, `o`.`encounter_datetime`, MAX(`o`.`location_id`) AS `location_id`, ',
@@ -85,20 +85,22 @@ BEGIN
                 WHERE 1=1 ',
                 IF(@enc_id <> 0, CONCAT('AND `o`.`encounter_id` = ', @enc_id), ''),
                 ' AND `o`.`encounter_type_uuid` = ''', @tbl_encounter_type_uuid, '''
-                AND `tcm`.`concept_answer_obs` = 0
+                AND (`tcm`.`concept_answer_obs` = 0 OR `tcm`.`concept_answer_obs` = 2)
                 AND `tcm`.`obs_value_column` IS NOT NULL
                 AND `o`.`obs_group_id` IS NULL AND `o`.`voided` = 0
                 GROUP BY `o`.`encounter_id`, `o`.`person_id`, `o`.`encounter_datetime`
                 ORDER BY `o`.`encounter_id` ASC');
 
-    PREPARE `inserttbl` FROM @insert_stmt;
-    EXECUTE `inserttbl`;
-    DEALLOCATE PREPARE `inserttbl`;
+        PREPARE `inserttbl` FROM @insert_stmt;
+        EXECUTE `inserttbl`;
+        DEALLOCATE PREPARE `inserttbl`;
 
-    -- Second Insert: `concept_answer_obs` = 1, Handle potential duplicates
-    SET @update_stmt =
-                    (SELECT GROUP_CONCAT(CONCAT('`', `column_label`, '` = COALESCE(VALUES(`', `column_label`, '`), `', `column_label`, '`)'))
-                     FROM `mamba_temp_concept_metadata`);
+        -- Second Insert: `concept_answer_obs` = 1 OR 2, Handle potential duplicates
+        SET @update_stmt =
+                (SELECT GROUP_CONCAT(CONCAT('`', `column_label`, '` = COALESCE(VALUES(`', `column_label`, '`), `',
+                                            `column_label`, '`)'))
+                 FROM `mamba_temp_concept_metadata`);
+
 
         SET @insert_stmt = CONCAT(
                 'INSERT INTO `', @tbl_name,
@@ -110,16 +112,16 @@ BEGIN
                 WHERE 1=1 ',
                 IF(@enc_id <> 0, CONCAT('AND `o`.`encounter_id` = ', @enc_id), ''),
                 ' AND `o`.`encounter_type_uuid` = ''', @tbl_encounter_type_uuid, '''
-                AND `tcm`.`concept_answer_obs` = 1
+                AND (`tcm`.`concept_answer_obs` = 1 OR `tcm`.`concept_answer_obs` = 2)
                 AND `tcm`.`obs_value_column` IS NOT NULL
                 AND `o`.`obs_group_id` IS NULL AND `o`.`voided` = 0
                 GROUP BY `o`.`encounter_id`, `o`.`person_id`, `o`.`encounter_datetime`
                 ORDER BY `o`.`encounter_id` ASC
                 ON DUPLICATE KEY UPDATE ', @update_stmt);
 
-    PREPARE `inserttbl` FROM @insert_stmt;
-    EXECUTE `inserttbl`;
-    DEALLOCATE PREPARE `inserttbl`;
+        PREPARE `inserttbl` FROM @insert_stmt;
+        EXECUTE `inserttbl`;
+        DEALLOCATE PREPARE `inserttbl`;
     END IF;
 
     DROP TEMPORARY TABLE IF EXISTS `mamba_temp_concept_metadata`;

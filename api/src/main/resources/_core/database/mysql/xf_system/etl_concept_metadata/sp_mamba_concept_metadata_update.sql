@@ -9,21 +9,23 @@ SET md.concept_datatype = c.datatype,
     md.concept_name     = c.name
 WHERE md.id > 0;
 
--- Update to True if this field is an obs answer to an obs Question
+-- Get All records that Both a Question concept and an Answer concept
+-- SET concept_answer_obs = 2
 UPDATE mamba_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
-    ON md.concept_id = ca.answer_concept
-SET md.concept_answer_obs = 1
-WHERE md.id > 0
-  AND md.concept_id IN (SELECT DISTINCT ca.concept_id
-                        FROM mamba_dim_concept_answer ca);
+    ON md.concept_id = ca.concept_id
+SET md.concept_answer_obs = 2
+WHERE EXISTS (SELECT 1
+              FROM mamba_dim_concept_answer ca2
+              WHERE ca2.answer_concept = ca.concept_id);
 
--- Update to for multiple selects/dropdowns/options this field is an obs answer to an obs Question
--- TODO: check this implementation here
+-- Get All records that are answer concepts
+-- SET concept_answer_obs = 1
 UPDATE mamba_concept_metadata md
+    INNER JOIN mamba_dim_concept_answer ca
+    ON ca.answer_concept = md.concept_id
 SET md.concept_answer_obs = 1
-WHERE md.id > 0
-  and concept_datatype = 'N/A';
+WHERE md.concept_answer_obs <> 2;
 
 -- Update row number
 SET @row_number = 0;
