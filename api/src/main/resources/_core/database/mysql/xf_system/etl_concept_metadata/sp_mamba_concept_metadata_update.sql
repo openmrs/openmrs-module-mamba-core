@@ -9,7 +9,11 @@ SET md.concept_datatype = c.datatype,
     md.concept_name     = c.name
 WHERE md.id > 0;
 
--- Get All records that Both a Question concept and an Answer concept
+-- All Records' concept_answer_obs field is set to 0 by default
+-- what will remain with (concept_answer_obs=0) after the 2 updates
+-- are Question concepts that have other values other than concepts as answers
+
+-- First update: Get All records that are Both a Question concept and an Answer concept
 -- SET concept_answer_obs = 2
 UPDATE mamba_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
@@ -19,7 +23,7 @@ WHERE EXISTS (SELECT 1
               FROM mamba_dim_concept_answer ca2
               WHERE ca2.answer_concept = ca.concept_id);
 
--- Get All records that are answer concepts
+-- Second update: Get All records that are answer concepts (Answers to other question concepts)
 -- SET concept_answer_obs = 1
 UPDATE mamba_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
