@@ -25,10 +25,8 @@ BEGIN
     CREATE INDEX mamba_idx_concept_id ON mamba_temp_value_coded_values (concept_id);
 
     -- update obs_value_coded (UUIDs & Concept value names)
-    WHILE
-        mamba_offset < total_records
+    WHILE mamba_offset < total_records
         DO
-            -- Perform the batch update
             START TRANSACTION;
 
             UPDATE mamba_z_encounter_obs z
