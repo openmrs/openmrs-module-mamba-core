@@ -24,11 +24,13 @@ BEGIN
 
     CREATE INDEX mamba_idx_concept_id ON mamba_temp_value_coded_values (concept_id);
 
--- update obs_value_coded (UUIDs & Concept value names)
+    -- update obs_value_coded (UUIDs & Concept value names)
     WHILE
         mamba_offset < total_records
         DO
             -- Perform the batch update
+            START TRANSACTION;
+
             UPDATE mamba_z_encounter_obs z
                 JOIN (SELECT encounter_id
                       FROM mamba_z_encounter_obs
@@ -41,10 +43,11 @@ BEGIN
                 z.obs_value_coded_uuid = mtv.concept_uuid
             WHERE z.obs_value_coded IS NOT NULL;
             COMMIT;
-            SET
-                mamba_offset = mamba_offset + batch_size;
+
+            SET mamba_offset = mamba_offset + batch_size;
         END WHILE;
--- update column obs_value_boolean (Concept values)
+
+    -- update column obs_value_boolean (Concept values)
     UPDATE mamba_z_encounter_obs z
     SET obs_value_boolean =
             CASE
@@ -58,8 +61,8 @@ BEGIN
            FROM mamba_dim_concept c
            WHERE c.datatype = 'Boolean');
 
-    DROP
-        TEMPORARY TABLE IF EXISTS mamba_temp_value_coded_values;
+    DROP TEMPORARY TABLE IF EXISTS mamba_temp_value_coded_values;
+
 END //
 
 DELIMITER ;
