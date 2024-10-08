@@ -2,6 +2,7 @@ package org.openmrs.module.mambacore.api.dao.impl;
 
 import org.openmrs.module.mambacore.api.dao.FlattenDatabaseDao;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
+//import org.openmrs.module.mambacore.db.debezium.DebeziumListener;
 import org.openmrs.module.mambacore.util.MambaETLProperties;
 import org.openmrs.module.mambacore.util.StringReplacerUtil;
 import org.slf4j.Logger;
@@ -29,13 +30,26 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     private static final String MYSQL_COMMENT_REGEX = "--.*(?=\\n)";
     private static final String DELIMITER = "~-~-";
 
+//    private DebeziumListener debeziumListener = new DebeziumListener();
+
+    /**
+     * Deploy MambaETL stored procedures
+     */
     @Override
     public void deployMambaEtl() {
 
+        log.info("Deploying MambaETL...");
         MambaETLProperties props = MambaETLProperties.getInstance();
-        log.info("Deploying MambaETL, scheduled @interval: " + props.getInterval() + " seconds...");
         executeSqlScript(props);
-        log.info("Done deploying MambaETL...");
+        log.info("MambaETL deployed (with interval: " + props.getInterval() + "s )...");
+    }
+
+    /**
+     * Stream in database changes using Debezium
+     */
+    @Override
+    public void streamInDatabaseChanges() {
+        //debeziumListener.startListening();
     }
 
     private void executeSqlScript(MambaETLProperties props) {
