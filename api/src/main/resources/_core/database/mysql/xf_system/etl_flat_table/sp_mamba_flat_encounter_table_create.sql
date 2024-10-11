@@ -20,7 +20,7 @@ BEGIN
 
     IF @column_labels IS NOT NULL THEN
         SET @create_table = CONCAT(
-            'CREATE TABLE `', flat_encounter_table_name, '` (`encounter_id` INT NOT NULL, `visit_id` INT NULL, `client_id` INT NOT NULL, `encounter_datetime` DATETIME NOT NULL, `location_id` INT NULL, ', @column_labels, ', INDEX `mamba_idx_encounter_id` (`encounter_id`), INDEX `mamba_idx_visit_id` (`visit_id`), INDEX `mamba_idx_client_id` (`client_id`), INDEX `mamba_idx_encounter_datetime` (`encounter_datetime`), INDEX `mamba_idx_location_id` (`location_id`));');
+            'CREATE TABLE `', flat_encounter_table_name, '` (`encounter_id` INT PRIMARY KEY, `visit_id` INT NULL, `client_id` INT NOT NULL, `encounter_datetime` DATETIME NOT NULL, `location_id` INT NULL, ', @column_labels, ', INDEX `mamba_idx_encounter_id` (`encounter_id`), INDEX `mamba_idx_visit_id` (`visit_id`), INDEX `mamba_idx_client_id` (`client_id`), INDEX `mamba_idx_encounter_datetime` (`encounter_datetime`), INDEX `mamba_idx_location_id` (`location_id`));');
     END IF;
 
     IF @column_labels IS NOT NULL THEN
