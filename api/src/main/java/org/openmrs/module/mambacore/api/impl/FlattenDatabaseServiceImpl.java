@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PreDestroy;
+//import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +38,7 @@ public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements Fl
         executorService.submit(() -> {
             try {
                 dao.deployMambaEtl();
+                dao.streamInDatabaseChanges();
             } catch (Exception e) {
                 log.error("Error deploying Mamba ETL", e);
             }
@@ -46,7 +47,7 @@ public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements Fl
 
 
     @Override
-    @PreDestroy
+    //@PreDestroy
     public void shutdownEtlThread() {
         executorService.shutdown();
         try {

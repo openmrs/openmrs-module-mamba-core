@@ -80,6 +80,11 @@
 
         <dependency>
             <groupId>io.debezium</groupId>
+            <artifactId>debezium-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-mysql</artifactId>
         </dependency>
 
