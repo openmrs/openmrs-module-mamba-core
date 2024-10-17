@@ -1,0 +1,11 @@
+-- $BEGIN
+CREATE TABLE IF NOT EXISTS mamba_etl_test_log
+(
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    test_name VARCHAR(255) NOT NULL,
+    log_message TEXT NOT NULL,
+    log_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+CHARSET = UTF8MB4;
+
+-- $END
