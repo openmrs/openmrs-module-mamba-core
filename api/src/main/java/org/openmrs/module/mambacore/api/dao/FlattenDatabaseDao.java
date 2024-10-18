@@ -11,5 +11,13 @@ package org.openmrs.module.mambacore.api.dao;
 
 public interface FlattenDatabaseDao {
 	
+	/**
+	 * Deploy MambaETL stored procedures
+	 */
 	void deployMambaEtl();
+	
+	/**
+	 * Stream in database changes using Debezium
+	 */
+	void streamInDatabaseChanges();
 }
