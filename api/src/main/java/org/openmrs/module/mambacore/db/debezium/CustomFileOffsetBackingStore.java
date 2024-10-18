@@ -1,6 +1,14 @@
-package com.ayinza.util.debezium.application.service;
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.mambacore.db.debezium;
 
-import jakarta.inject.Inject;
 import org.apache.kafka.connect.json.JsonConverter;
 import org.apache.kafka.connect.json.JsonConverterConfig;
 import org.apache.kafka.connect.storage.FileOffsetBackingStore;
@@ -20,7 +28,6 @@ public class CustomFileOffsetBackingStore extends FileOffsetBackingStore {
     private static final JsonConverter KEY_CONVERTER = new JsonConverter();
     private static boolean disabled = false;
 
-    @Inject
     private OffsetUtils offsetUtils;
 
     public CustomFileOffsetBackingStore() {

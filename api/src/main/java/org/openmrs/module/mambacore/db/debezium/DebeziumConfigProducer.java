@@ -1,12 +1,15 @@
-package com.ayinza.util.debezium.application.model;
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.mambacore.db.debezium;
 
-import com.ayinza.utils.domain.model.Properties;
-import com.ayinza.utils.domain.model.debezium.DebeziumConstants;
-import com.ayinza.utils.domain.model.debezium.DebeziumProperties;
 import io.debezium.config.Configuration;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -14,11 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @author smallGod
- * @date: 17/10/2024
- */
-@ApplicationScoped
 public class DebeziumConfigProducer {
 
     private static final String DEBEZIUM_DIR = "debezium";
@@ -28,13 +26,11 @@ public class DebeziumConfigProducer {
     private final DebeziumProperties properties;
     private final String appDataDir;
 
-    @Inject
     public DebeziumConfigProducer(DebeziumProperties properties, Properties mainProperties) {
         this.properties = properties;
         this.appDataDir = mainProperties.getAppDataDir();
     }
 
-    @Produces
     public Configuration createDebeziumConfig() {
 
         File debeziumConfigDir = new File(appDataDir, DEBEZIUM_DIR);

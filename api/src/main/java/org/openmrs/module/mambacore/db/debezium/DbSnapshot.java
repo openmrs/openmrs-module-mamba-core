@@ -1,10 +1,15 @@
-package com.ayinza.util.debezium.domain.model;
-
 /**
- * @author smallGod
- * @date: 16/10/2024
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-public enum DbSnapshot implements ValueObject<DbSnapshot> {
+package org.openmrs.module.mambacore.db.debezium;
+
+public enum DbSnapshot {
 
     TRUE("true"),
     FALSE("false"),
@@ -28,10 +33,5 @@ public enum DbSnapshot implements ValueObject<DbSnapshot> {
 
     public String getValue() {
         return this.value;
-    }
-
-    @Override
-    public boolean isSameAs(DbSnapshot other) {
-        return this.value.equalsIgnoreCase(other.value);
     }
 }

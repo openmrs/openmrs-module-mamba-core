@@ -1,4 +1,4 @@
-package com.ayinza.util.debezium.domain.model;
+package org.openmrs.module.mambacore.db.debezium;
 
 import java.util.function.Consumer;
 

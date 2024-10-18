@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.mambacore.db.debezium;
+package org.openmrs.module.mambacore.task;
 
 import io.debezium.config.Configuration;
 import org.openmrs.module.mambacore.util.MambaETLProperties;

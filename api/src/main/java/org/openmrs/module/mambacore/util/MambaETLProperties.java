@@ -138,7 +138,7 @@ public class MambaETLProperties {
     }
 
     public String getHistoryFilePath() {
-        return "dbhistory.dat"; // TODO: put in properties file
+        return "/Users/smallgod/srv/downloads/dbhistory.dat"; // TODO: put in properties file
     }
 
     private String getProperty(Properties properties, String key, String defaultValue) {

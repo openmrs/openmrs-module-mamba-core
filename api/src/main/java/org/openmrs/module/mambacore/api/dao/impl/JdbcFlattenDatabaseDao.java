@@ -1,8 +1,11 @@
 package org.openmrs.module.mambacore.api.dao.impl;
 
+import org.openmrs.module.dbevent.DbEventSource;
+import org.openmrs.module.dbevent.DbEventSourceConfig;
+import org.openmrs.module.dbevent.EventContext;
 import org.openmrs.module.mambacore.api.dao.FlattenDatabaseDao;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
-import org.openmrs.module.mambacore.db.debezium.DebeziumListener;
+import org.openmrs.module.mambacore.db.debezium.MyEventConsumer;
 import org.openmrs.module.mambacore.util.MambaETLProperties;
 import org.openmrs.module.mambacore.util.StringReplacerUtil;
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,7 +34,7 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     private static final String MYSQL_COMMENT_REGEX = "--.*(?=\\n)";
     private static final String DELIMITER = "~-~-";
 
-    private DebeziumListener debeziumListener = new DebeziumListener();
+    //private DebeziumListener debeziumListener = new DebeziumListener();
 
     /**
      * Deploy MambaETL stored procedures
@@ -49,7 +53,14 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
      */
     @Override
     public void streamInDatabaseChanges() {
-        debeziumListener.startListening();
+        //debeziumListener.startListening();
+        EventContext ctx = new EventContext();
+        DbEventSourceConfig config = new DbEventSourceConfig(100002, "mamba-debezium", ctx);
+        config.configureTablesToInclude(Arrays.asList("obs", "patient", "encounter", "encounter_type", "location"));
+        DbEventSource eventSource = new DbEventSource(config);
+        MyEventConsumer consumer = new MyEventConsumer();
+        eventSource.setEventConsumer(consumer);
+        eventSource.start();
     }
 
     private void executeSqlScript(MambaETLProperties props) {

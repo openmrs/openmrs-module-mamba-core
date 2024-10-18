@@ -1,13 +1,9 @@
-package com.ayinza.util.debezium.application.service;
+package org.openmrs.module.mambacore.db.debezium;
 
-import com.ayinza.utils.application.model.debezium.DbChangeToEvent;
-import com.ayinza.utils.domain.model.debezium.DbEvent;
-import com.ayinza.utils.domain.model.debezium.DbEventStatus;
-import com.ayinza.utils.domain.model.debezium.EventConsumer;
 import io.debezium.engine.ChangeEvent;
-import jakarta.inject.Inject;
 import org.apache.kafka.connect.source.SourceRecord;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -19,11 +15,11 @@ import java.util.function.Function;
  */
 public class DebeziumConsumer implements Consumer<ChangeEvent<SourceRecord, SourceRecord>> {
 
+    protected static final Logger logger = LoggerFactory.getLogger(DebeziumConsumer.class);
+
     private final DbEventSourceConfig eventSourceConfig;
-    @Inject
+
     private final EventConsumer eventConsumer;
-    @Inject
-    private Logger logger;
     private boolean stopped = false;
     private boolean disabled = false;
 

@@ -1,6 +1,5 @@
-package com.ayinza.util.debezium.application.model;
+package org.openmrs.module.mambacore.db.debezium;
 
-import com.ayinza.utils.domain.model.debezium.ObjectMap;
 import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Struct;
 
@@ -24,10 +23,5 @@ public class ObjectMapImpl extends HashMap<String, Object> implements ObjectMap 
                 put(field.name(), struct.get(field));
             }
         }
-    }
-
-    @Override
-    public ObjectMapImpl fromContract() {
-        return this;
     }
 }

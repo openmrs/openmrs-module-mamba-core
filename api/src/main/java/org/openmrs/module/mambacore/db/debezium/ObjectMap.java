@@ -1,14 +1,11 @@
-package com.ayinza.util.debezium.domain.model;
-
-import com.ayinza.utils.domain.model.Contract;
-
+package org.openmrs.module.mambacore.db.debezium;
 
 import java.util.Map;
 
 /**
  * Simple HashMap extension that contains utility methods for retrieving / converting values to certain types
  */
-public interface ObjectMap extends Contract<ObjectMap>, Map<String, Object> {
+public interface ObjectMap extends Map<String, Object> {
 
     /**
      * @return the value with the given key cast as an Integer

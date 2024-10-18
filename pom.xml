@@ -45,11 +45,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
-        <openmrsPlatformVersion>2.0.0</openmrsPlatformVersion> <!-- for MySQL 8 use: 2.4> -->
+        <openmrsPlatformVersion>2.0.0</openmrsPlatformVersion>
         <webservicesRestVersion>2.21.0</webservicesRestVersion>
         <apache.commons.dbcp>2.11.0</apache.commons.dbcp>
         <jacksonCoreVersion>2.15.3</jacksonCoreVersion>
-        <debezium.version>1.9.7.Final</debezium.version>
+        <debezium.version>1.8.0.Final</debezium.version>
+        <rocksdb.version>9.6.1</rocksdb.version>
 
     </properties>
 
@@ -142,80 +143,95 @@
                 </exclusions>
             </dependency>
 
+<!--            <dependency>-->
+<!--                <groupId>io.debezium</groupId>-->
+<!--                <artifactId>debezium-api</artifactId>-->
+<!--                <version>${debezium.version}</version>-->
+<!--                <exclusions>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.slf4j</groupId>-->
+<!--                        <artifactId>slf4j-api</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>io.debezium</groupId>-->
+<!--                <artifactId>debezium-embedded</artifactId>-->
+<!--                <version>${debezium.version}</version>-->
+<!--                <exclusions>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>javax.ws.rs</groupId>-->
+<!--                        <artifactId>javax.ws.rs-api</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.glassfish.hk2.external</groupId>-->
+<!--                        <artifactId>aopalliance-repackaged</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--                        <artifactId>jackson-databind</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--                        <artifactId>jackson-core</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--                        <artifactId>jackson-annotations</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>com.fasterxml.jackson.datatype</groupId>-->
+<!--                        <artifactId>jackson-datatype-jsr310</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>javax.servlet</groupId>-->
+<!--                        <artifactId>javax.servlet-api</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.apache.commons</groupId>-->
+<!--                        <artifactId>commons-lang3</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.slf4j</groupId>-->
+<!--                        <artifactId>slf4j-api</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.slf4j</groupId>-->
+<!--                        <artifactId>slf4j-log4j12</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>io.debezium</groupId>-->
+<!--                <artifactId>debezium-connector-mysql</artifactId>-->
+<!--                <version>${debezium.version}</version>-->
+<!--                <exclusions>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>mysql</groupId>-->
+<!--                        <artifactId>mysql-connector-java</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>org.rocksdb</groupId>-->
+<!--                <artifactId>rocksdbjni</artifactId>-->
+<!--                <version>${rocksdb.version}</version>-->
+<!--            </dependency>-->
+
             <dependency>
-                <groupId>io.debezium</groupId>
-                <artifactId>debezium-embedded</artifactId>
-                <version>${debezium.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>aopalliance-repackaged</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-databind</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-core</artifactId>
-                    </exclusion>
-                    <!--<exclusion>
-                        <groupId>com.fasterxml.jackson.datatype</groupId>
-                        <artifactId>jackson-datatype-jdk8</artifactId>
-                    </exclusion>-->
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.datatype</groupId>
-                        <artifactId>jackson-datatype-jsr310</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>commons-lang3</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>dbevent-omod</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <type>pom</type>
             </dependency>
 
             <dependency>
-                <groupId>io.debezium</groupId>
-                <artifactId>debezium-connector-mysql</artifactId>
-                <version>${debezium.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>io.debezium</groupId>
-                <artifactId>debezium-api</artifactId>
-                <version>${debezium.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>dbevent-api</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
         </dependencies>

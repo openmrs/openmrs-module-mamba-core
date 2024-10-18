@@ -73,19 +73,24 @@
             <artifactId>commons-dbcp2</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-embedded</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>io.debezium</groupId>-->
+        <!--            <artifactId>debezium-embedded</artifactId>-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>io.debezium</groupId>-->
+        <!--            <artifactId>debezium-api</artifactId>-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>io.debezium</groupId>-->
+        <!--            <artifactId>debezium-connector-mysql</artifactId>-->
+        <!--        </dependency>-->
 
         <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-connector-mysql</artifactId>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>dbevent-api</artifactId>
         </dependency>
 
     </dependencies>

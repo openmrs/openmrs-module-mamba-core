@@ -1,200 +1,112 @@
-package com.ayinza.util.debezium.application.model;
-
-import com.ayinza.utils.domain.model.debezium.DebeziumProperties;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * <p>
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.mambacore.db.debezium;
 
 import java.util.List;
 
-/**
- * Implementation of DebeziumProperties to fetch configuration from MicroProfile Config.
- *
- * @author smallGod
- * @date: 15/09/2024
- */
-@ApplicationScoped
 public class DebeziumPropertiesImpl implements DebeziumProperties {
 
-    @Inject
-    @ConfigProperty(name = "name")
     private String connectorName;
 
     // Database connection properties
-    @Inject
-    @ConfigProperty(name = "database.hostname")
     private String dbHostname;
 
-    @Inject
-    @ConfigProperty(name = "database.port")
     private int dbPort;
 
-    @Inject
-    @ConfigProperty(name = "database.name")
     private String dbName;
 
-    @Inject
-    @ConfigProperty(name = "database.user")
     private String dbUser;
 
-    @Inject
-    @ConfigProperty(name = "database.password")
     private String dbPassword;
 
-    @Inject
-    @ConfigProperty(name = "database.server.id", defaultValue = "85744")
-    private String dbServerId;// Server ID for MySQL replication
+    private String dbServerId = "85744";// Server ID for MySQL replication
 
-    @Inject
-    @ConfigProperty(name = "database.server.name", defaultValue = "debezium-app-connector")
     private String dbServerName;
 
-    @Inject
-    @ConfigProperty(name = "database.include.list", defaultValue = "")
     private String dbIncludeList;
 
-    @Inject
-    @ConfigProperty(name = "database.exclude.list", defaultValue = "")
     private String dbExcludeList;
 
-    @Inject
-    @ConfigProperty(name = "database.timezone", defaultValue = "UTC")
-    private String databaseTimeZone;
+    private String databaseTimeZone = "UTC";
 
-    @Inject
-    @ConfigProperty(name = "table.include.list", defaultValue = "")
     private List<String> tableIncludeList;
 
-    @Inject
-    @ConfigProperty(name = "table.exclude.list", defaultValue = "")
     private List<String> tableExcludeList;
 
     // Offset storage-related properties
-    @Inject
-    @ConfigProperty(name = "offset.storage.file.name", defaultValue = "offsets.dat")
-    private String offsetStorageFileName;
+    private String offsetStorageFileName = "offsets.dat";
 
-    @Inject
-    @ConfigProperty(name = "offset.storage.dir", defaultValue = "/tmp")
-    private String offsetStorageDir;
+    private String offsetStorageDir = "/tmp";
 
-    @Inject
-    @ConfigProperty(name = "offset.storage.impl", defaultValue = "org.apache.kafka.connect.storage.FileOffsetBackingStore")
-    private String offsetStorageImpl;
+    private String offsetStorageImpl = "org.apache.kafka.connect.storage.FileOffsetBackingStore";
 
-    @Inject
-    @ConfigProperty(name = "offset.flush.interval.ms", defaultValue = "60000")
-    private int offsetFlushIntervalMs;// 60 seconds: interval at which Debezium will persist the current offset position
+    private int offsetFlushIntervalMs = 60000;// 60 seconds: interval at which Debezium will persist the current offset position
 
-    @Inject
-    @ConfigProperty(name = "offset.flush.timeout.ms", defaultValue = "15000")
-    private int offsetFlushTimeoutMs;
+    private int offsetFlushTimeoutMs = 15000;
 
-    @Inject
-    @ConfigProperty(name = "offset.flush.size", defaultValue = "1000")
-    private int offsetFlushSize;
+    private int offsetFlushSize = 1000;
 
     // Snapshot-related properties
-    @Inject
-    @ConfigProperty(name = "snapshot.mode", defaultValue = "when_needed")
-    private String snapshotMode;
+    private String snapshotMode = "when_needed";
 
-    @Inject
-    @ConfigProperty(name = "snapshot.locking.mode", defaultValue = "none")
-    private String snapshotLockingMode;
+    private String snapshotLockingMode = "none";
 
-    @Inject
-    @ConfigProperty(name = "snapshot.fetch.size", defaultValue = "10000")
-    private int snapshotFetchSize;
+    private int snapshotFetchSize = 10000;
 
-    @Inject
-    @ConfigProperty(name = "snapshot.include.collection.list", defaultValue = "")
     private String snapshotIncludeCollectionList;// Specify tables to include during snapshot
 
-    @Inject
-    @ConfigProperty(name = "snapshot.exclude.collection.list", defaultValue = "")
     private String snapshotExcludeCollectionList;
 
-    @Inject
-    @ConfigProperty(name = "snapshot.delay.ms", defaultValue = "0")
-    private long snapshotDelayMs;
+    private long snapshotDelayMs = 0;
 
     // Connector-related properties
-    @Inject
-    @ConfigProperty(name = "connector.class", defaultValue = "io.debezium.connector.mysql.MySqlConnector")
-    private String connectorClass;
+    private String connectorClass = "io.debezium.connector.mysql.MySqlConnector";
 
-    @Inject
-    @ConfigProperty(name = "database.history.impl", defaultValue = "io.debezium.relational.history.FileDatabaseHistory")
-    private String databaseHistoryImpl;
+    private String databaseHistoryImpl = "io.debezium.relational.history.FileDatabaseHistory";
 
-    @Inject
-    @ConfigProperty(name = "database.history.file.name", defaultValue = "dbhistory.dat")
-    private String databaseHistoryFileName;
+    private String databaseHistoryFileName = "dbhistory.dat";
 
     // Heartbeat properties
-    @Inject
-    @ConfigProperty(name = "heartbeat.interval.ms", defaultValue = "0")
-    private long heartbeatIntervalMs;// No heartbeat by default
+    private long heartbeatIntervalMs = 0;// No heartbeat by default
 
-    @Inject
-    @ConfigProperty(name = "heartbeat.topics.prefix", defaultValue = "__debezium-heartbeat")
-    private String heartbeatTopicsPrefix;
+    private String heartbeatTopicsPrefix = "__debezium-heartbeat";
 
     // Event-related properties
-    @Inject
-    @ConfigProperty(name = "max.batch.size", defaultValue = "2048")
-    private int maxBatchSize;
+    private int maxBatchSize = 2048;
 
-    @Inject
-    @ConfigProperty(name = "max.queue.size", defaultValue = "8192")
-    private int maxQueueSize;
+    private int maxQueueSize = 8192;
 
-    @Inject
-    @ConfigProperty(name = "poll.interval.ms", defaultValue = "500")
-    private long pollIntervalMs;
+    private long pollIntervalMs = 500;
 
-    @Inject
-    @ConfigProperty(name = "schema.refresh.mode", defaultValue = "columns_diff")
-    private String schemaRefreshMode;// How schema changes are handled, can also be 'columns_diff_exclude_unchanged_toast'
+    private String schemaRefreshMode = "columns_diff";// How schema changes are handled, can also be 'columns_diff_exclude_unchanged_toast'
 
-    @Inject
-    @ConfigProperty(name = "tombstones.on.delete", defaultValue = "false")
-    private boolean tombstonesOnDelete;
+    private boolean tombstonesOnDelete = false;
 
-    @Inject
-    @ConfigProperty(name = "provide.transaction.metadata", defaultValue = "false")
-    private boolean provideTransactionMetadata;
+    private boolean provideTransactionMetadata = false;
 
     // Error handling-related properties
-    @Inject
-    @ConfigProperty(name = "max.retries", defaultValue = "10")
-    private int maxRetries;// Max retry attempts for failed tasks
 
-    @Inject
-    @ConfigProperty(name = "retry.delay.ms", defaultValue = "1000")
-    private long retryDelayMs;
+    private int maxRetries = 10;// Max retry attempts for failed tasks
 
-    @Inject
-    @ConfigProperty(name = "max.retry.duration.ms", defaultValue = "60000")
-    private long maxRetryDurationMs;
+    private long retryDelayMs = 1000;
+
+    private long maxRetryDurationMs = 60000;
 
     // Additional general configurations
-    @Inject
-    @ConfigProperty(name = "include.schema.changes", defaultValue = "true")
-    private boolean includeSchemaChanges;
+    private boolean includeSchemaChanges = true;
 
-    @Inject
-    @ConfigProperty(name = "include.query", defaultValue = "false")
-    private boolean includeQuery;
+    private boolean includeQuery = false;
 
-    @Inject
-    @ConfigProperty(name = "decimal.handling.mode", defaultValue = "precise")
-    private String decimalHandlingMode;// How to handle decimal types: 'precise', 'string', 'double'
+    private String decimalHandlingMode = "precise";// How to handle decimal types: 'precise', 'string', 'double'
 
-    @Inject
-    @ConfigProperty(name = "binary.handling.mode", defaultValue = "bytes")
-    private String binaryHandlingMode;// How to handle binary fields: 'bytes', 'base64'
+    private String binaryHandlingMode = "bytes";// How to handle binary fields: 'bytes', 'base64'
 
     @Override
     public String getConnectorName() {

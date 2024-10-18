@@ -68,7 +68,7 @@ BEGIN
     -- Set the join clause if it is an incremental insert
     IF is_incremental THEN
         SET join_clause = CONCAT(
-                ' INNER JOIN  ic',
+                ' INNER JOIN mamba_etl_incremental_columns_index_new ic',
                 ' ON tb.', pkey_column, ' = ic.incremental_table_pkey');
     END IF;
 
