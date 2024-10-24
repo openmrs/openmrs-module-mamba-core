@@ -38,6 +38,7 @@ BEGIN
         `column_label`        VARCHAR(255) NOT NULL,
         `concept_uuid`        CHAR(38)     NOT NULL,
         `obs_value_column`    VARCHAR(50),
+        `concept_datatype`    VARCHAR(50),
         `concept_answer_obs`  INT,
 
         INDEX `mamba_idx_id` (`id`),
@@ -58,6 +59,7 @@ BEGIN
                     `column_label`,
                     `concept_uuid`,
                     fn_mamba_get_obs_value_column(`concept_datatype`) AS `obs_value_column`,
+                    `concept_datatype`,
                     `concept_answer_obs`
     FROM `mamba_concept_metadata`
     WHERE `flat_table_name` = @tbl_name
@@ -85,7 +87,7 @@ BEGIN
                 WHERE 1=1 ',
                 IF(@enc_id <> 0, CONCAT('AND `o`.`encounter_id` = ', @enc_id), ''),
                 ' AND `o`.`encounter_type_uuid` = ''', @tbl_encounter_type_uuid, '''
-                AND (`tcm`.`concept_answer_obs` = 0 OR `tcm`.`concept_answer_obs` = 2)
+                AND (`tcm`.`concept_answer_obs` = 0 OR `tcm`.`concept_datatype` != ''Coded'')
                 AND `tcm`.`obs_value_column` IS NOT NULL
                 AND `o`.`obs_group_id` IS NULL AND `o`.`voided` = 0
                 GROUP BY `o`.`encounter_id`, `o`.`person_id`, `o`.`encounter_datetime`
