@@ -30,7 +30,6 @@ public class DebeziumConfigProducer {
         this.appDataDir = mainProperties.getAppDataDir();
     }
 
-    @Produces
     public Configuration createDebeziumConfig() {
 
         File debeziumConfigDir = new File(appDataDir, DEBEZIUM_DIR);
