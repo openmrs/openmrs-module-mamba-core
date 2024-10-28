@@ -66,12 +66,11 @@ public class DbChangeServiceImpl implements DbChangeService {
         }
 
         try {
-            engine.close();
-            executor.shutdown();
-            consumer.cancel();
-            if (offsetBackingStore != null) {
-                offsetBackingStore.stop();
-            }
+
+            this.consumer.cancel();
+            this.offsetBackingStore.stop();
+            this.executor.shutdown();
+            this.engine.close();
 
             try {
                 while (!this.executor.awaitTermination(5L, TimeUnit.SECONDS)) {
@@ -84,7 +83,9 @@ public class DbChangeServiceImpl implements DbChangeService {
 
         } catch (Exception e) {
             logger.error("Error stopping Debezium engine", e);
-            executor.shutdownNow();
+            if (executor != null) {
+                executor.shutdownNow();
+            }
         } finally {
             engine = null;
             executor = null;
