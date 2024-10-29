@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_obs_group_insert;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_mamba_z_encounter_obs_insert()
+CREATE PROCEDURE sp_mamba_obs_group_insert()
 BEGIN
     DECLARE total_records INT;
     DECLARE batch_size INT DEFAULT 1000000; -- 1 million records per batch
