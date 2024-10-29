@@ -10,16 +10,16 @@
 package org.openmrs.module.mambacore.debezium;
 
 public interface DbChangeService {
-
-    void start();
-
-    void stop();
-
-    void reset();
-
-    void disable();
-
-    void enable();
-
-    boolean isDisabled();
+	
+	void start();
+	
+	void stop();
+	
+	void reset();
+	
+	void disable();
+	
+	void enable();
+	
+	boolean isDisabled();
 }

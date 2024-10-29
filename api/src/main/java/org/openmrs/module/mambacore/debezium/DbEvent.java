@@ -10,5 +10,6 @@
 package org.openmrs.module.mambacore.debezium;
 
 public interface DbEvent {
-    boolean isSchemaEvent();
+	
+	boolean isSchemaEvent();
 }

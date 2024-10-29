@@ -1,11 +1,10 @@
 package org.openmrs.module.mambacore.api.dao.impl;
 
-import org.openmrs.module.dbevent.DbEventSource;
-import org.openmrs.module.dbevent.DbEventSourceConfig;
-import org.openmrs.module.dbevent.EventContext;
+
 import org.openmrs.module.mambacore.api.dao.FlattenDatabaseDao;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
-import org.openmrs.module.mambacore.db.debezium.MyEventConsumer;
+import org.openmrs.module.mambacore.debezium.DbChangeConsumer;
+import org.openmrs.module.mambacore.debezium.DbChangeServiceImpl;
 import org.openmrs.module.mambacore.util.MambaETLProperties;
 import org.openmrs.module.mambacore.util.StringReplacerUtil;
 import org.slf4j.Logger;
@@ -34,7 +33,11 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     private static final String MYSQL_COMMENT_REGEX = "--.*(?=\\n)";
     private static final String DELIMITER = "~-~-";
 
-    //private DebeziumListener debeziumListener = new DebeziumListener();
+    private DbChangeServiceImpl dbChangeService = new DbChangeServiceImpl();
+
+    public JdbcFlattenDatabaseDao() {
+        DbChangeConsumer consumer = new DbChangeServiceImpl();
+    }
 
     /**
      * Deploy MambaETL stored procedures

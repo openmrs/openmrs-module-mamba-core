@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.mambacore.debezium;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openmrs.BaseOpenmrsData;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +33,7 @@ public class DbEventConsumerImpl implements EventConsumer {
         } else {
 
             DbCrudEvent event = (DbCrudEvent) dbEvent;
+
             Integer primaryKey = event.getPrimaryKey().getInteger("id");
             String tableName = event.getTableName();
             DbOperation operation = event.getOperation();
@@ -64,16 +63,8 @@ public class DbEventConsumerImpl implements EventConsumer {
                 default:
                     break;
             }
-
         }
     }
-
-    private BaseOpenmrsData getNewDbObject(DbCrudEvent event, Class<? extends BaseOpenmrsData> clazz) {
-        ObjectMap createObject = event.getNewState();
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.convertValue(createObject, clazz);
-    }
-
     @Override
     public void preStartup() {
         EventConsumer.super.preStartup();

@@ -1,12 +1,3 @@
-/**
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
- * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
- * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
- * graphic logo is a trademark of OpenMRS Inc.
- */
 package org.openmrs.module.mambacore.debezium;
 
 import org.apache.kafka.connect.runtime.WorkerConfig;
@@ -26,23 +17,26 @@ import java.util.concurrent.Future;
 
 public class RocksDBOffsetBackingStore implements OffsetBackingStore, AutoCloseable {
 
-    private static final Logger log = LoggerFactory.getLogger(RocksDBOffsetBackingStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(RocksDBOffsetBackingStore.class);
 
     private RocksDB db;
 
-    public RocksDBOffsetBackingStore() {
+    private RocksDBOffsetBackingStore() {
         RocksDB.loadLibrary();
+    }
+
+    public static RocksDBOffsetBackingStore getInstance() {
+        return SingletonHelper.INSTANCE;
     }
 
     @Override
     public void configure(WorkerConfig config) {
-
         try {
-            log.debug("Configuring RocksDBOffsetBackingStore...");
+            logger.debug("Configuring RocksDBOffsetBackingStore...");
             Options options = new Options().setCreateIfMissing(true);
             db = RocksDB.open(options, "/tmp/rocksdb");
         } catch (Exception e) {
-            log.error("Error while configuring RocksDB", e);
+            logger.error("Error while configuring RocksDB", e);
             throw new RuntimeException(e);
         }
     }
@@ -53,17 +47,17 @@ public class RocksDBOffsetBackingStore implements OffsetBackingStore, AutoClosea
 
     @Override
     public void start() {
-        log.debug("Starting RocksDBOffsetBackingStore...");
+        logger.debug("Starting RocksDBOffsetBackingStore...");
     }
 
     @Override
     public void stop() {
-        log.debug("Stopping RocksDBOffsetBackingStore...");
+        logger.debug("Stopping RocksDBOffsetBackingStore...");
         if (db != null) {
             try {
                 db.close();
             } catch (Exception e) {
-                log.error("Error while closing RocksDB", e);
+                logger.error("Error while closing RocksDB", e);
                 throw new RuntimeException(e);
             } finally {
                 db = null;
@@ -110,5 +104,10 @@ public class RocksDBOffsetBackingStore implements OffsetBackingStore, AutoClosea
     @Override
     public void close() throws Exception {
         stop();  // Delegate to stop() to ensure cleanup is handled in one place
+    }
+
+    // Static inner helper class for lazy-loaded, thread-safe singleton instance
+    private static class SingletonHelper {
+        private static final RocksDBOffsetBackingStore INSTANCE = new RocksDBOffsetBackingStore();
     }
 }

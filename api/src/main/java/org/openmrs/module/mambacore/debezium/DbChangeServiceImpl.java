@@ -31,13 +31,17 @@ public class DbChangeServiceImpl implements DbChangeService {
 
     private Configuration debeziumConfig;
 
-    private RocksDBOffsetBackingStore offsetBackingStore;
-
     private Optional<DebeziumEngine<ChangeEvent<SourceRecord, SourceRecord>>> engine = Optional.empty();
 
     private ExecutorService executor;
 
     private boolean disabled = false; // Flag to track whether the service is disabled
+
+    public DbChangeServiceImpl(DbChangeConsumer consumer,
+                               Configuration debeziumConfig) {
+        this.consumer = consumer;
+        this.debeziumConfig = debeziumConfig;
+    }
 
     @Override
     public void start() {
@@ -66,13 +70,13 @@ public class DbChangeServiceImpl implements DbChangeService {
 
     @Override
     public void stop() {
-        if (engine.isEmpty()) {
+        if (!engine.isPresent()) {
             logger.warn("Debezium engine is not running.");
             return;
         }
 
         try {
-            offsetBackingStore.stop();
+            RocksDBOffsetBackingStore.getInstance().stop();
             executor.shutdown();
             engine.get().close();
 
