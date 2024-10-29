@@ -18,6 +18,7 @@ import org.apache.kafka.connect.source.SourceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -32,26 +33,32 @@ public class DbChangeServiceImpl implements DbChangeService {
 
     private RocksDBOffsetBackingStore offsetBackingStore;
 
-    private DebeziumEngine<ChangeEvent<SourceRecord, SourceRecord>> engine;
+    private Optional<DebeziumEngine<ChangeEvent<SourceRecord, SourceRecord>>> engine = Optional.empty();
 
     private ExecutorService executor;
+
+    private boolean disabled = false; // Flag to track whether the service is disabled
 
     @Override
     public void start() {
 
-        if (engine != null) {
+        if (engine.isPresent()) {
             logger.warn("Debezium engine is already running.");
             return;
         }
+        if (disabled) {
+            logger.warn("Debezium engine is disabled and cannot be started. Start it manually");
+            return;
+        }
 
-        engine = DebeziumEngine.create(Connect.class)
+        engine = Optional.of(DebeziumEngine.create(Connect.class)
                 .using(debeziumConfig.asProperties())
                 .notifying(consumer)
                 .using(OffsetCommitPolicy.always())
-                .build();
+                .build());
 
         executor = Executors.newSingleThreadExecutor();
-        executor.execute(engine);
+        executor.execute(engine.get());
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
 
         logger.info("Debezium engine started.");
@@ -59,43 +66,57 @@ public class DbChangeServiceImpl implements DbChangeService {
 
     @Override
     public void stop() {
-
-        if (engine == null) {
+        if (engine.isEmpty()) {
             logger.warn("Debezium engine is not running.");
             return;
         }
 
         try {
+            offsetBackingStore.stop();
+            executor.shutdown();
+            engine.get().close();
 
-            this.consumer.cancel();
-            this.offsetBackingStore.stop();
-            this.executor.shutdown();
-            this.engine.close();
-
-            try {
-                while (!this.executor.awaitTermination(5L, TimeUnit.SECONDS)) {
+            if (executor != null) {
+                if (!executor.awaitTermination(5L, TimeUnit.SECONDS)) {
                     logger.info("Waiting 5 seconds for the Debezium engine to shut down...");
+                    executor.shutdownNow();
                 }
-            } catch (InterruptedException ie) {
-                logger.error("Interrupted while waiting for termination", ie);
-                Thread.currentThread().interrupt();
             }
-
+        } catch (InterruptedException ie) {
+            logger.error("Interrupted while waiting for termination", ie);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             logger.error("Error stopping Debezium engine", e);
-            if (executor != null) {
-                executor.shutdownNow();
-            }
+            executor.shutdownNow();
         } finally {
-            engine = null;
+            engine = Optional.empty();
             executor = null;
         }
     }
 
     @Override
     public void reset() {
+        enable(); // Reset enables the service again
         stop();
         start();
         logger.info("Debezium engine restarted.");
+    }
+
+    @Override
+    public void disable() {
+        disabled = true;
+        stop();
+        logger.warn("Debezium engine disabled due to error.");
+    }
+
+    @Override
+    public void enable() {
+        disabled = false;
+        logger.info("Debezium engine enabled.");
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return disabled;
     }
 }

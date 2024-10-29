@@ -16,4 +16,10 @@ public interface DbChangeService {
     void stop();
 
     void reset();
+
+    void disable();
+
+    void enable();
+
+    boolean isDisabled();
 }

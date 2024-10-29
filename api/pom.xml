@@ -73,25 +73,25 @@
             <artifactId>commons-dbcp2</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>io.debezium</groupId>-->
-        <!--            <artifactId>debezium-embedded</artifactId>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>io.debezium</groupId>-->
-        <!--            <artifactId>debezium-api</artifactId>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>io.debezium</groupId>-->
-        <!--            <artifactId>debezium-connector-mysql</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>io.debezium</groupId>
+            <artifactId>debezium-embedded</artifactId>
+        </dependency>
 
         <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>dbevent-api</artifactId>
+            <groupId>io.debezium</groupId>
+            <artifactId>debezium-connector-mysql</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.rocksdb</groupId>
+            <artifactId>rocksdbjni</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-lang3</artifactId>-->
+<!--        </dependency>-->
 
     </dependencies>
 

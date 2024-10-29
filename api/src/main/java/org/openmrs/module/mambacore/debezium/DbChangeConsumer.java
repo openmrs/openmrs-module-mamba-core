@@ -27,11 +27,14 @@ public class DbChangeConsumer implements Consumer<ChangeEvent<SourceRecord, Sour
 
     private final EventConsumer eventConsumer;
     private final DbChangeToEventMapper eventMapper;
-    private boolean disabled = false;
+    private final DbChangeService dbChangeService;
 
-    public DbChangeConsumer(EventConsumer eventConsumer, DbChangeToEventMapper eventMapper) {
+    public DbChangeConsumer(EventConsumer eventConsumer,
+                            DbChangeToEventMapper eventMapper,
+                            DbChangeService dbChangeService) {
         this.eventConsumer = eventConsumer;
         this.eventMapper = eventMapper;
+        this.dbChangeService = dbChangeService;
     }
 
     /**
@@ -47,8 +50,8 @@ public class DbChangeConsumer implements Consumer<ChangeEvent<SourceRecord, Sour
     public final void accept(ChangeEvent<SourceRecord, SourceRecord> changeEvent) {
 
         try {
-            if (disabled) {
-                logger.error("The Debezium consumer has been stopped prior to processing: " + changeEvent);
+            if (dbChangeService.isDisabled()) {
+                logger.error("The Debezium consumer has been stopped and is disabled, skipping processing.");
                 return;
             }
 
@@ -57,11 +60,7 @@ public class DbChangeConsumer implements Consumer<ChangeEvent<SourceRecord, Sour
             eventConsumer.accept(dbEvent);
         } catch (Throwable t) {
             logger.error("An error occurred processing change event: " + changeEvent, t);
-            disabled = true;
+            dbChangeService.disable();
         }
-    }
-
-    public void cancel() {
-        this.disabled = true;
     }
 }
