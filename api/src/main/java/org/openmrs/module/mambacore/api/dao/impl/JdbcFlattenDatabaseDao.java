@@ -1,10 +1,14 @@
 package org.openmrs.module.mambacore.api.dao.impl;
 
 
+import io.debezium.config.Configuration;
 import org.openmrs.module.mambacore.api.dao.FlattenDatabaseDao;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
 import org.openmrs.module.mambacore.debezium.DbChangeConsumer;
 import org.openmrs.module.mambacore.debezium.DbChangeServiceImpl;
+import org.openmrs.module.mambacore.debezium.DbChangeToEventMapper;
+import org.openmrs.module.mambacore.debezium.DbEventConsumerImpl;
+import org.openmrs.module.mambacore.debezium.EventConsumer;
 import org.openmrs.module.mambacore.util.MambaETLProperties;
 import org.openmrs.module.mambacore.util.StringReplacerUtil;
 import org.slf4j.Logger;
@@ -20,7 +24,6 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,10 +36,7 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     private static final String MYSQL_COMMENT_REGEX = "--.*(?=\\n)";
     private static final String DELIMITER = "~-~-";
 
-    private DbChangeServiceImpl dbChangeService = new DbChangeServiceImpl();
-
     public JdbcFlattenDatabaseDao() {
-        DbChangeConsumer consumer = new DbChangeServiceImpl();
     }
 
     /**
@@ -56,14 +56,16 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
      */
     @Override
     public void streamInDatabaseChanges() {
-        //debeziumListener.startListening();
-        EventContext ctx = new EventContext();
-        DbEventSourceConfig config = new DbEventSourceConfig(100002, "mamba-debezium", ctx);
-        config.configureTablesToInclude(Arrays.asList("obs", "patient", "encounter", "encounter_type", "location"));
-        DbEventSource eventSource = new DbEventSource(config);
-        MyEventConsumer consumer = new MyEventConsumer();
-        eventSource.setEventConsumer(consumer);
-        eventSource.start();
+
+        EventConsumer eventConsumer = new DbEventConsumerImpl();
+        DbChangeToEventMapper eventMapper = new DbChangeToEventMapper();
+        Configuration debeziumConfig = Configuration.create().build();
+
+        DbChangeConsumer dbChangeConsumer = new DbChangeConsumer(eventConsumer, eventMapper);
+        DbChangeServiceImpl dbChangeService = new DbChangeServiceImpl(debeziumConfig);
+
+        dbChangeService.addDbChangeListener(dbChangeConsumer);
+        dbChangeService.start();
     }
 
     private void executeSqlScript(MambaETLProperties props) {

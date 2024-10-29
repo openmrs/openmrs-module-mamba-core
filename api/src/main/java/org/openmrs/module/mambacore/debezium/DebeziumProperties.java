@@ -1,104 +1,182 @@
-/**
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
- * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
- * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
- * graphic logo is a trademark of OpenMRS Inc.
- */
 package org.openmrs.module.mambacore.debezium;
 
+import org.openmrs.module.mambacore.util.MambaETLProperties;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 
-public interface DebeziumProperties {
+public class DebeziumProperties {
 
-    String getConnectorName();
+    private static volatile DebeziumProperties instance;
 
-    String getOffsetStorageDir();
+    private final String connectorClass;
 
-    String getOffsetStorage();
+    private final String connectorName;
 
-    int getOffsetFlushIntervalMs();
+    private final String dbHostname;
 
-    int getOffsetFlushTimeoutMs();
+    private final int dbPort;
 
-    int getOffsetFlushSize();
+    private final String dbName;
 
-    String getSnapshotMode();
+    private final String dbUser;
 
-    String getSnapshotLockingMode();
+    private final String dbPassword;
 
-    int getSnapshotFetchSize();
+    private final String dbServerId;
 
-    List<String> getSnapshotIncludeCollectionList();
+    private final String dbServerName;
+    private final String databaseTimeZone;
+    private final String offsetStorageDir;
+    private final String offsetStorage;
+    private final String schemaHistoryInternal;
+    private final int maxBatchSize;
+    private final int maxQueueSize;
+    private final long pollIntervalMs;
+    private final String schemaRefreshMode;
+    private final String topicPrefix;
+    private Optional<List<String>> dbIncludeList;
+    private Optional<List<String>> dbExcludeList;
+    private Optional<List<String>> tableIncludeList;
+    private Optional<List<String>> tableExcludeList;
 
-    List<String> getSnapshotExcludeCollectionList();
+    private DebeziumProperties() {
 
-    long getSnapshotDelayMs();
+        MambaETLProperties mambaProps = MambaETLProperties.getInstance();
 
-    String getConnectorClass();
+        this.connectorClass = mambaProps.getProperty("connection.driver_class");
+        this.topicPrefix = mambaProps.getProperty("connection.url");
+        this.schemaHistoryInternal = mambaProps.getProperty("mambaetl.analysis.db.username", mambaProps.getProperty("connection.username"));
 
-    String getDatabaseHistoryImpl();
+        this.connectorName = getIntProperty(mambaProps, "mambaetl.analysis.columns", 40);
+        this.dbHostname = getProperty(mambaProps, "mambaetl.analysis.db.etl_database", "analysis_db");
+        this.dbPort = getProperty(mambaProps, "mambaetl.analysis.locale", "en");
+        this.dbName = mambaProps.getOpenmrsDatabase();
+        this.dbUser = getIntProperty(mambaProps, "mambaetl.analysis.incremental_mode", 1);
+        this.dbPassword = getIntProperty(mambaProps, "mambaetl.analysis.automated_flattening", 0);
+        this.dbServerId = getIntProperty(mambaProps, "mambaetl.analysis.etl_interval", 300);
+        this.dbServerName = Arrays.asList("obs", "encounter");
+        this.databaseTimeZone = Arrays.asList("obs", "encounter");
 
-    String getDatabaseHistoryFileName();
+        this.dbIncludeList = Arrays.asList("obs", "encounter");
+        this.dbExcludeList = Arrays.asList("obs", "encounter");
+        this.tableIncludeList = Arrays.asList("obs", "encounter");
+        this.tableExcludeList = Arrays.asList("obs", "encounter");
 
-    String getSchemaHistoryInternal();
+        this.offsetStorage = Arrays.asList("obs", "encounter");
+        this.offsetStorageDir = Arrays.asList("obs", "encounter");
 
-    // Heartbeat properties
-    long getHeartbeatIntervalMs();
+        this.maxBatchSize = Arrays.asList("obs", "encounter");
+        this.maxQueueSize = Arrays.asList("obs", "encounter");
+        this.pollIntervalMs = Arrays.asList("obs", "encounter");
+        this.schemaRefreshMode = Arrays.asList("obs", "encounter");
+    }
 
-    String getHeartbeatTopicsPrefix();
+    public static synchronized DebeziumProperties getInstance() {
+        if (instance == null) {
+            instance = new DebeziumProperties();
+        }
+        return instance;
+    }
 
-    int getMaxBatchSize();
+    public String getConnectorClass() {
+        return connectorClass;
+    }
 
-    int getMaxQueueSize();
+    public String getConnectorName() {
+        return connectorName;
+    }
 
-    long getPollIntervalMs();
+    public String getDbHostname() {
+        return dbHostname;
+    }
 
-    String getSchemaRefreshMode();
+    public int getDbPort() {
+        return dbPort;
+    }
 
-    boolean isTombstonesOnDelete();
+    public String getDbName() {
+        return dbName;
+    }
 
-    boolean isProvideTransactionMetadata();
+    public String getDbUser() {
+        return dbUser;
+    }
 
-    String getDbHostname();
+    public String getDbPassword() {
+        return dbPassword;
+    }
 
-    int getDbPort();
+    public String getDbServerId() {
+        return dbServerId;
+    }
 
-    String getDbName();
+    public String getDbServerName() {
+        return dbServerName;
+    }
 
-    String getDbUser();
+    public String getDatabaseTimeZone() {
+        return databaseTimeZone;
+    }
 
-    String getDbPassword();
+    public String getOffsetStorageDir() {
+        return offsetStorageDir;
+    }
 
-    String getDbServerId();
+    public String getOffsetStorage() {
+        return offsetStorage;
+    }
 
-    String getDbServerName();
+    public String getSchemaHistoryInternal() {
+        return schemaHistoryInternal;
+    }
 
-    List<String> getDbIncludeList();
+    public int getMaxBatchSize() {
+        return maxBatchSize;
+    }
 
-    List<String> getDbExcludeList();
+    public int getMaxQueueSize() {
+        return maxQueueSize;
+    }
 
-    List<String> getTableIncludeList();
+    public long getPollIntervalMs() {
+        return pollIntervalMs;
+    }
 
-    List<String> getTableExcludeList();
+    public String getSchemaRefreshMode() {
+        return schemaRefreshMode;
+    }
 
-    String getDatabaseTimeZone();
+    public String getTopicPrefix() {
+        return topicPrefix;
+    }
 
-    int getMaxRetries();
+    public List<String> getDbIncludeList() {
+        return dbIncludeList.orElse(Collections.emptyList());
+    }
 
-    long getRetryDelayMs();
+    public List<String> getDbExcludeList() {
+        return dbExcludeList.orElse(Collections.emptyList());
+    }
 
-    long getMaxRetryDurationMs();
+    public List<String> getTableIncludeList() {
+        return tableIncludeList.orElse(Collections.emptyList());
+    }
 
-    boolean isIncludeSchemaChanges();
+    public List<String> getTableExcludeList() {
+        return tableExcludeList.orElse(Collections.emptyList());
+    }
 
-    boolean isIncludeQuery();
+    private String getProperty(Properties properties, String key, String defaultValue) {
+        String value = properties.getProperty(key);
+        return (value == null || value.isEmpty()) ? defaultValue : value.trim();
+    }
 
-    String getDecimalHandlingMode();
-
-    String getBinaryHandlingMode();
-
-    String getTopicPrefix();
+    private int getIntProperty(Properties properties, String key, int defaultValue) {
+        String value = properties.getProperty(key);
+        return (value == null || value.isEmpty()) ? defaultValue : Integer.parseInt(value.trim());
+    }
 }

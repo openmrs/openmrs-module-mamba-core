@@ -120,27 +120,6 @@ public class MambaETLProperties {
         return connectionMaxTotal;
     }
 
-    public List<String> getTablesWithChangesToStream() {
-        return tablesWithChangesToStream;
-    }
-
-    // Example MambaETLProperties methods
-    public String getSourceDatabaseHost() {
-        return "localhost"; // TODO: put in properties file
-    }
-
-    public String getSourceDatabasePort() {
-        return "3306"; // TODO: put in properties file
-    }
-
-    public String getSourceDatabaseServerId() {
-        return "85744"; // TODO: put in properties file
-    }
-
-    public String getHistoryFilePath() {
-        return "/Users/smallgod/srv/downloads/dbhistory.dat"; // TODO: put in properties file
-    }
-
     private String getProperty(Properties properties, String key, String defaultValue) {
         String value = properties.getProperty(key);
         return (value == null || value.isEmpty()) ? defaultValue : value.trim();

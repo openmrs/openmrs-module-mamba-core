@@ -18,7 +18,8 @@ import org.apache.kafka.connect.source.SourceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -27,26 +28,24 @@ public class DbChangeServiceImpl implements DbChangeService {
 
     private static final Logger logger = LoggerFactory.getLogger(DbChangeServiceImpl.class);
 
-    private DbChangeConsumer consumer;
-
-    private Configuration debeziumConfig;
-
-    private Optional<DebeziumEngine<ChangeEvent<SourceRecord, SourceRecord>>> engine = Optional.empty();
-
+    private final List<DbChangeListener> listeners = new ArrayList<DbChangeListener>();
+    private final Configuration debeziumConfig;
+    private DebeziumEngine<ChangeEvent<SourceRecord, SourceRecord>> engine = null;
     private ExecutorService executor;
+    private boolean disabled = false;
 
-    private boolean disabled = false; // Flag to track whether the service is disabled
-
-    public DbChangeServiceImpl(DbChangeConsumer consumer,
-                               Configuration debeziumConfig) {
-        this.consumer = consumer;
+    public DbChangeServiceImpl(Configuration debeziumConfig) {
         this.debeziumConfig = debeziumConfig;
+    }
+
+    public void addDbChangeListener(DbChangeListener listener) {
+        listeners.add(listener);
     }
 
     @Override
     public void start() {
 
-        if (engine.isPresent()) {
+        if (engine != null) {
             logger.warn("Debezium engine is already running.");
             return;
         }
@@ -55,22 +54,49 @@ public class DbChangeServiceImpl implements DbChangeService {
             return;
         }
 
-        engine = Optional.of(DebeziumEngine.create(Connect.class)
+        engine = DebeziumEngine.create(Connect.class)
                 .using(debeziumConfig.asProperties())
-                .notifying(consumer)
+                .notifying(new DebeziumEngine.ChangeConsumer<ChangeEvent<SourceRecord, SourceRecord>>() {
+                    @Override
+                    public void handleBatch(List<ChangeEvent<SourceRecord, SourceRecord>> changeEvents,
+                                            DebeziumEngine.RecordCommitter<ChangeEvent<SourceRecord, SourceRecord>> committer)
+                            throws InterruptedException {
+                        for (ChangeEvent<SourceRecord, SourceRecord> event : changeEvents) {
+                            notifyListeners(event);
+                            committer.markProcessed(event);
+                        }
+                        committer.markBatchFinished();
+                    }
+                })
                 .using(OffsetCommitPolicy.always())
-                .build());
+                .build();
 
         executor = Executors.newSingleThreadExecutor();
-        executor.execute(engine.get());
-        Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
+        executor.execute(engine);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                stop();
+            }
+        }));
 
         logger.info("Debezium engine started.");
     }
 
+    private void notifyListeners(ChangeEvent<SourceRecord, SourceRecord> changeEvent) {
+        for (DbChangeListener listener : listeners) {
+            try {
+                listener.onDbChange(changeEvent);
+            } catch (Exception e) {
+                this.disable();
+                break;
+            }
+        }
+    }
+
     @Override
     public void stop() {
-        if (!engine.isPresent()) {
+        if (engine == null) {
             logger.warn("Debezium engine is not running.");
             return;
         }
@@ -78,7 +104,7 @@ public class DbChangeServiceImpl implements DbChangeService {
         try {
             RocksDBOffsetBackingStore.getInstance().stop();
             executor.shutdown();
-            engine.get().close();
+            engine.close();
 
             if (executor != null) {
                 if (!executor.awaitTermination(5L, TimeUnit.SECONDS)) {
@@ -93,7 +119,7 @@ public class DbChangeServiceImpl implements DbChangeService {
             logger.error("Error stopping Debezium engine", e);
             executor.shutdownNow();
         } finally {
-            engine = Optional.empty();
+            engine = null;
             executor = null;
         }
     }

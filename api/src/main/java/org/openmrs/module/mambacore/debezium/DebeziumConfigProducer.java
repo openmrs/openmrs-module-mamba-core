@@ -22,13 +22,11 @@ public class DebeziumConfigProducer {
     private static final String DEBEZIUM_DIR = "debezium";
     private static final String SCHEMA_HISTORY_FILE_SUFFIX = "_schema_history.dat";
 
-    private final DebeziumProperties properties;
     private final String appDataDir;
 
-    public DebeziumConfigProducer(DebeziumProperties properties, Properties mainProperties) {
-        this.properties = properties;
-        this.appDataDir = mainProperties.getAppDataDir();
-    }
+    private final DebeziumProperties properties = DebeziumProperties.getInstance();
+
+    public DebeziumConfigProducer(){}
 
     public Configuration createDebeziumConfig() {
 

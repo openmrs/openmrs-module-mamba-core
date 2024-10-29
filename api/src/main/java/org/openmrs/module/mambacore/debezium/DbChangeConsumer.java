@@ -14,53 +14,27 @@ import org.apache.kafka.connect.source.SourceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Consumer;
-
-/**
- * Implementation of a Debezium ChangeEvent consumer, which abstracts the Debezium API behind a DbCrudEvent
- * and ensures that the registered DbCrudEvent EventConsumer is successfully processed before moving onto the next
- * record, with a configurable retryInterval upon failure.
- **/
-public class DbChangeConsumer implements Consumer<ChangeEvent<SourceRecord, SourceRecord>> {
+public class DbChangeConsumer implements DbChangeListener {
 
     private static final Logger logger = LoggerFactory.getLogger(DbChangeConsumer.class);
 
     private final EventConsumer eventConsumer;
     private final DbChangeToEventMapper eventMapper;
-    private final DbChangeService dbChangeService;
 
-    public DbChangeConsumer(EventConsumer eventConsumer,
-                            DbChangeToEventMapper eventMapper,
-                            DbChangeService dbChangeService) {
+    public DbChangeConsumer(EventConsumer eventConsumer, DbChangeToEventMapper eventMapper) {
         this.eventConsumer = eventConsumer;
         this.eventMapper = eventMapper;
-        this.dbChangeService = dbChangeService;
     }
 
-    /**
-     * This the primary handler for all Debezium-generated change events.  Per the
-     * <a href="https://debezium.io/documentation/reference/stable/development/engine.html">Debezium Documentation</a>
-     * this function should not throw any exceptions, as these will simply get logged and Debezium will continue onto
-     * the next source record.  So if any exception is caught, this logs the Exception, and retries again after
-     * a configurable retryInterval, until it passes.  This effectively blocks any subsequent processing.
-     *
-     * @param changeEvent the Debeziumn generated event to process
-     */
     @Override
-    public final void accept(ChangeEvent<SourceRecord, SourceRecord> changeEvent) {
-
+    public void onDbChange(ChangeEvent<SourceRecord, SourceRecord> changeEvent) {
         try {
-            if (dbChangeService.isDisabled()) {
-                logger.error("The Debezium consumer has been stopped and is disabled, skipping processing.");
-                return;
-            }
-
             DbEvent dbEvent = eventMapper.apply(changeEvent);
-            logger.debug("Notifying listener of the database event: " + dbEvent);
+            logger.debug("Notifying listener of the database event: {}", dbEvent);
             eventConsumer.accept(dbEvent);
-        } catch (Throwable t) {
-            logger.error("An error occurred processing change event: " + changeEvent, t);
-            dbChangeService.disable();
+        } catch (Throwable e) {
+            logger.error("Error processing change event: {}", changeEvent, e);
+            throw e;
         }
     }
 }

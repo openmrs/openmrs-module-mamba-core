@@ -59,16 +59,21 @@ public class DebeziumConfigProvider {
 		String source = props.getOpenmrsDatabase();
 		File dbHistoryTempFile = File.createTempFile("dbhistory_", ".dat");
 		
-		config = Configuration.create().with("name", CONNECTOR_NAME).with("connector.class", MYSQL_CONNECTOR_CLASS)
-		        .with("database.server.id", props.getSourceDatabaseServerId()).with("database.server.name", SERVER_NAME)
+		config = Configuration.create()
+				.with("name", CONNECTOR_NAME)
+				.with("connector.class", MYSQL_CONNECTOR_CLASS)
+		        .with("database.server.id", props.getSourceDatabaseServerId())
+				.with("database.server.name", SERVER_NAME)
 		        .with("database.hostname", props.getSourceDatabaseHost())
-		        .with("database.port", props.getSourceDatabasePort()).with("database.user", "root")
+		        .with("database.port", props.getSourceDatabasePort())
+				.with("database.user", "root")
 		        .with("database.password", "4#edRmgaF+k?")
 		        .with("database.include.list", source)
 		        //.with("table.include.list", getTableIncludeList(source))
 		        .with("table.include.list", "openmrs.person, openmrs.patient, openmrs.obs")
 		        .with("database.history.file.filename", dbHistoryTempFile.getAbsolutePath())
-		        .with("database.history", FILE_DB_HISTORY).with("include.schema.changes", "true").build();
+		        .with("database.history", FILE_DB_HISTORY).with("include.schema.changes", "true")
+				.build();
 	}
 	
 	private String getTableIncludeList(String source) {
