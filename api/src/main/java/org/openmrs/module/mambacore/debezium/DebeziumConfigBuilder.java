@@ -87,7 +87,7 @@ public class DebeziumConfigBuilder {
                 .with("database.port", props.getDbPort())
                 .with("database.dbname", source)
                 .with("database.include.list", source)
-                .with("table.include.list", "openmrs.person, openmrs.patient, openmrs.obs")
+                .with("table.include.list", "openmrs.person, openmrs.patient, openmrs.obs, openmrs.encounter")
                 .with("database.history.skip.unparseable.ddl", "true")
                 .with("key.column", "openmrs.obs:obs_id,openmrs.encounter:encounter_id") //TODO: change this
                 .build();
