@@ -8,11 +8,9 @@ CREATE PROCEDURE sp_mamba_etl_database_event_insert(
     IN database_operation ENUM ('CREATE', 'UPDATE', 'DELETE')
 )
 BEGIN
-    START TRANSACTION;
 
     INSERT INTO _mamba_etl_database_event (incremental_table_pkey, table_name, database_operation)
     VALUES (incremental_table_pkey, table_name, database_operation);
-    COMMIT;
 
 END //
 

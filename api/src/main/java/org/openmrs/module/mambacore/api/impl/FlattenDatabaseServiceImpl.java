@@ -16,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-//import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 @Transactional
@@ -35,29 +35,31 @@ public class FlattenDatabaseServiceImpl extends BaseOpenmrsService implements Fl
 
     @Override
     public void setupEtl() {
-        executorService.submit(() -> {
-            try {
-                dao.deployMambaEtl();
-                dao.streamInDatabaseChanges();
-            } catch (Exception e) {
-                log.error("Error deploying Mamba ETL", e);
-            }
-        });
-    }
 
+        try {
+            Future<?> deployFuture = executorService.submit(() -> {
+                dao.deployMambaEtl();
+            });
+            deployFuture.get();
+            dao.streamInDatabaseChanges();
+        } catch (Exception e) {
+            log.error("Error deploying Mamba ETL", e);
+        }
+    }
 
     @Override
     //@PreDestroy
     public void shutdownEtlThread() {
         executorService.shutdown();
         try {
-            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+            if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
                 executorService.shutdownNow();
-                if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
                     log.error("ExecutorService did not terminate");
                 }
             }
         } catch (InterruptedException e) {
+            log.error("shutdownEtlThread InterruptedException: {}", e.getLocalizedMessage());
             executorService.shutdownNow();
             Thread.currentThread().interrupt();
         }

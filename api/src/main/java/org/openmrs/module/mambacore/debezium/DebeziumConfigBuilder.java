@@ -73,7 +73,7 @@ public class DebeziumConfigBuilder {
                 .with("offset.storage.file.filename", offsetsDataFile.getAbsolutePath())
                 .with("offset.flush.interval.ms", "0")
                 .with("offset.flush.timeout.ms", "5000")
-                .with("include.schema.changes", "false")
+                .with("include.schema.changes", "true")
                 .with("database.server.id", props.getDbServerId())
                 .with("database.server.name", source)
                 .with("database.history", FILE_DB_HISTORY)
@@ -88,6 +88,8 @@ public class DebeziumConfigBuilder {
                 .with("database.dbname", source)
                 .with("database.include.list", source)
                 .with("table.include.list", "openmrs.person, openmrs.patient, openmrs.obs")
+                .with("database.history.skip.unparseable.ddl", "true")
+                .with("key.column", "openmrs.obs:obs_id,openmrs.encounter:encounter_id") //TODO: change this
                 .build();
     }
 

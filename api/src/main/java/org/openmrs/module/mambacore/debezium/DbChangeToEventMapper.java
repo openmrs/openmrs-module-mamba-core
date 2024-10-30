@@ -48,20 +48,25 @@ public class DbChangeToEventMapper
         DbOperation operation = determineOperation(valueStruct, isSchemaChangeEvent);
 
         ObjectMap primaryKey = new ObjectMapImpl(getStruct(record.key(), "key"));
+        String primaryKeyName = primaryKey.keySet().iterator().next();
+        Object primaryKeyValue = primaryKey.get(primaryKeyName);
+
+        ObjectMap parsedPK = new ObjectMapImpl();
+        parsedPK.put("id", primaryKeyValue);
+
         ObjectMap previousState = extractPreviousState(valueStruct, operation);
         ObjectMap newState = extractNewState(valueStruct, operation);
-
 
         ObjectMap source = new ObjectMapImpl(sourceStruct);
         ObjectMap values = (operation == DbOperation.DELETE) ? previousState : newState;
 
-        Long timestamp = Optional.ofNullable(valueStruct.getInt64(TIMESTAMP_FIELD))
+        Long timestamp = Optional.ofNullable(sourceStruct.schema().field(TIMESTAMP_FIELD) != null ? sourceStruct.getInt64(TIMESTAMP_FIELD) : null)
                 .orElseThrow(() -> new DebeziumException("Timestamp is missing"));
 
         if (isSchemaChangeEvent) {
-            return buildSchemaEvent(primaryKey, operation, previousState, newState, source, values, timestamp);
+            return buildSchemaEvent(parsedPK, operation, previousState, newState, source, values, timestamp);
         } else {
-            return buildCrudEvent(primaryKey, valueStruct, operation, previousState, newState, source, values, timestamp);
+            return buildCrudEvent(parsedPK, valueStruct, operation, previousState, newState, source, values, timestamp);
         }
     }
 

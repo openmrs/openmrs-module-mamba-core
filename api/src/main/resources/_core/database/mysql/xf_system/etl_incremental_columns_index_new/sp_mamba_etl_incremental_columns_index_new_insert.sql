@@ -9,8 +9,6 @@ BEGIN
 
     DECLARE pkey_column VARCHAR(255);
 
-    START TRANSACTION;
-
     -- Identify the primary key of the 'mamba_table_name'
     SELECT COLUMN_NAME
     INTO pkey_column
@@ -31,7 +29,6 @@ BEGIN
     PREPARE stmt FROM @insert_sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
-    COMMIT;
 
 END //
 
