@@ -59,7 +59,7 @@ BEGIN
     CALL sp_mamba_reset_incremental_update_flag_all;
 
     -- TODO:
-    CALL DELETE queued events from _mamba_etl_database_event after processing
+    -- CALL DELETE queued events from _mamba_etl_database_event after processing
 
 END //
 

@@ -1,6 +1,6 @@
 -- $BEGIN
 
-CREATE TABLE _mamba_etl_database_event
+CREATE TABLE IF NOT EXISTS _mamba_etl_database_event
 (
     id                     INT                                 NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY COMMENT 'Primary Key',
     incremental_table_pkey INT                                 NOT NULL COMMENT 'Primary Key of the record in this event',

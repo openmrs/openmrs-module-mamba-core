@@ -21,7 +21,7 @@ public class RocksDBOffsetBackingStore implements OffsetBackingStore, AutoClosea
 
     private RocksDB db;
 
-    private RocksDBOffsetBackingStore() {
+    public RocksDBOffsetBackingStore() { //TODO: change this implementation
         RocksDB.loadLibrary();
     }
 

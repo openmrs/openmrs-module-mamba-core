@@ -8,6 +8,7 @@ import org.openmrs.module.mambacore.debezium.DbChangeConsumer;
 import org.openmrs.module.mambacore.debezium.DbChangeServiceImpl;
 import org.openmrs.module.mambacore.debezium.DbChangeToEventMapper;
 import org.openmrs.module.mambacore.debezium.DbEventConsumerImpl;
+import org.openmrs.module.mambacore.debezium.DebeziumConfigBuilder;
 import org.openmrs.module.mambacore.debezium.EventConsumer;
 import org.openmrs.module.mambacore.util.MambaETLProperties;
 import org.openmrs.module.mambacore.util.StringReplacerUtil;
@@ -59,7 +60,7 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
         EventConsumer eventConsumer = new DbEventConsumerImpl();
         DbChangeToEventMapper eventMapper = new DbChangeToEventMapper();
-        Configuration debeziumConfig = Configuration.create().build();
+        Configuration debeziumConfig = DebeziumConfigBuilder.getInstance().build();
 
         DbChangeConsumer dbChangeConsumer = new DbChangeConsumer(eventConsumer, eventMapper);
         DbChangeServiceImpl dbChangeService = new DbChangeServiceImpl(debeziumConfig);

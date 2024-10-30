@@ -5,7 +5,6 @@ import org.openmrs.module.mambacore.util.MambaETLProperties;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
 public class DebeziumProperties {
@@ -13,23 +12,16 @@ public class DebeziumProperties {
     private static volatile DebeziumProperties instance;
 
     private final String connectorClass;
-
     private final String connectorName;
-
     private final String dbHostname;
-
     private final int dbPort;
-
     private final String dbName;
-
     private final String dbUser;
-
     private final String dbPassword;
-
     private final String dbServerId;
-
     private final String dbServerName;
     private final String databaseTimeZone;
+
     private final String offsetStorageDir;
     private final String offsetStorage;
     private final String schemaHistoryInternal;
@@ -38,41 +30,44 @@ public class DebeziumProperties {
     private final long pollIntervalMs;
     private final String schemaRefreshMode;
     private final String topicPrefix;
-    private Optional<List<String>> dbIncludeList;
-    private Optional<List<String>> dbExcludeList;
-    private Optional<List<String>> tableIncludeList;
-    private Optional<List<String>> tableExcludeList;
+    private final String appDataDir;
+    private final List<String> dbIncludeList;
+    private final List<String> dbExcludeList;
+    private final List<String> tableIncludeList;
+    private final List<String> tableExcludeList;
 
     private DebeziumProperties() {
 
         MambaETLProperties mambaProps = MambaETLProperties.getInstance();
 
-        this.connectorClass = mambaProps.getProperty("connection.driver_class");
-        this.topicPrefix = mambaProps.getProperty("connection.url");
-        this.schemaHistoryInternal = mambaProps.getProperty("mambaetl.analysis.db.username", mambaProps.getProperty("connection.username"));
+        this.connectorClass = "io.debezium.connector.mysql.MySqlConnector";
+        this.topicPrefix = "debezium";
+        this.schemaHistoryInternal = "io.debezium.storage.file.history.FileSchemaHistory";
 
-        this.connectorName = getIntProperty(mambaProps, "mambaetl.analysis.columns", 40);
-        this.dbHostname = getProperty(mambaProps, "mambaetl.analysis.db.etl_database", "analysis_db");
-        this.dbPort = getProperty(mambaProps, "mambaetl.analysis.locale", "en");
+        this.connectorName = "mamba_debezium_connector";
+        this.dbHostname = "localhost";
+        this.dbPort = 3306;
         this.dbName = mambaProps.getOpenmrsDatabase();
-        this.dbUser = getIntProperty(mambaProps, "mambaetl.analysis.incremental_mode", 1);
-        this.dbPassword = getIntProperty(mambaProps, "mambaetl.analysis.automated_flattening", 0);
-        this.dbServerId = getIntProperty(mambaProps, "mambaetl.analysis.etl_interval", 300);
-        this.dbServerName = Arrays.asList("obs", "encounter");
-        this.databaseTimeZone = Arrays.asList("obs", "encounter");
+        this.dbUser = mambaProps.getMambaETLuser();
+        this.dbPassword = mambaProps.getMambaETLuserPassword();
+        this.dbServerId = "85744";
+        this.dbServerName = "debezium-app-connector";
+        this.databaseTimeZone = "UTC";
 
-        this.dbIncludeList = Arrays.asList("obs", "encounter");
-        this.dbExcludeList = Arrays.asList("obs", "encounter");
+        this.dbIncludeList = Collections.singletonList(mambaProps.getOpenmrsDatabase());
+        this.dbExcludeList = Collections.emptyList();
         this.tableIncludeList = Arrays.asList("obs", "encounter");
-        this.tableExcludeList = Arrays.asList("obs", "encounter");
+        this.tableExcludeList = Collections.emptyList();
 
-        this.offsetStorage = Arrays.asList("obs", "encounter");
-        this.offsetStorageDir = Arrays.asList("obs", "encounter");
+        this.offsetStorage = "org.openmrs.module.mambacore.debezium.RocksDBOffsetBackingStore";
+        this.offsetStorageDir = "/tmp/rocksdb";
 
-        this.maxBatchSize = Arrays.asList("obs", "encounter");
-        this.maxQueueSize = Arrays.asList("obs", "encounter");
-        this.pollIntervalMs = Arrays.asList("obs", "encounter");
-        this.schemaRefreshMode = Arrays.asList("obs", "encounter");
+        this.maxBatchSize = 1024;
+        this.maxQueueSize = 2000;
+        this.pollIntervalMs = 5000;
+        this.schemaRefreshMode = "initial";
+
+        this.appDataDir = "/tmp";
     }
 
     public static synchronized DebeziumProperties getInstance() {
@@ -155,19 +150,23 @@ public class DebeziumProperties {
     }
 
     public List<String> getDbIncludeList() {
-        return dbIncludeList.orElse(Collections.emptyList());
+        return dbIncludeList != null ? dbIncludeList : Collections.emptyList();
     }
 
     public List<String> getDbExcludeList() {
-        return dbExcludeList.orElse(Collections.emptyList());
+        return dbExcludeList != null ? dbExcludeList : Collections.emptyList();
     }
 
     public List<String> getTableIncludeList() {
-        return tableIncludeList.orElse(Collections.emptyList());
+        return tableIncludeList != null ? tableIncludeList : Collections.emptyList();
     }
 
     public List<String> getTableExcludeList() {
-        return tableExcludeList.orElse(Collections.emptyList());
+        return tableExcludeList != null ? tableExcludeList : Collections.emptyList();
+    }
+
+    public String getAppDataDir() {
+        return appDataDir;
     }
 
     private String getProperty(Properties properties, String key, String defaultValue) {
