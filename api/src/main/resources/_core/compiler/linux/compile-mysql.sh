@@ -428,8 +428,8 @@ function make_buildfile_liquibase_compatible(){
 
   > "$cleaned_liquibase_file"
 
-  end_pattern="^[[:space:]]*(end|END)[[:space:]]*[/|//][[:space:]]*"
-  delimiter_pattern="^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[;|//][[:space:]]*"
+  end_pattern=r"^[[:space:]]*(end|END)[[:space:]]*[\r\n]*[/|//][[:space:]]*"
+  delimiter_pattern=r"^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[\r\n]*[;|//][[:space:]]*"
 
   while IFS= read -r line; do
 
