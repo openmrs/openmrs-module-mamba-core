@@ -22,4 +22,6 @@ public interface DbChangeService {
 	void enable();
 	
 	boolean isDisabled();
+	
+	void addDbChangeListener(DbChangeListener listener);
 }

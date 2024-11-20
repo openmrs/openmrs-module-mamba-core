@@ -42,8 +42,11 @@ public class DbEventConsumerImpl implements EventConsumer {
                     + " - Operation: " + event.getOperation());
 
             switch (operation) {
+
                 case CREATE:
+
                 case UPDATE:
+
                 case DELETE:
                     DataSource dataSource = ConnectionPoolManager
                             .getInstance()

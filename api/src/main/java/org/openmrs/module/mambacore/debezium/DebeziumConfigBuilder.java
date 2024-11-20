@@ -87,9 +87,9 @@ public class DebeziumConfigBuilder {
                 .with("database.port", props.getDbPort())
                 .with("database.dbname", source)
                 .with("database.include.list", source)
-                .with("table.include.list", "openmrs.person, openmrs.patient, openmrs.obs, openmrs.encounter")
+                .with("table.include.list", "openmrs.location, openmrs.patient_identifier_type, openmrs.concept_datatype, openmrs.concept_name, openmrs.concept, openmrs.concept_answer, openmrs.encounter_type, openmrs.encounter, openmrs.person_name, openmrs.person, openmrs.person_attribute_type, openmrs.person_attribute, openmrs.person_address, openmrs.user, openmrs.relationship, openmrs.patient_identifier, openmrs.orders, openmrs.obs")
                 .with("database.history.skip.unparseable.ddl", "true")
-                .with("key.column", "openmrs.obs:obs_id,openmrs.encounter:encounter_id") //TODO: change this
+                .with("key.column", "openmrs.location:location_id, openmrs.patient_identifier_type:patient_identifier_type_id, openmrs.concept_datatype:concept_datatype_id, openmrs.concept_name:concept_name_id, openmrs.concept:concept_id, openmrs.concept_answer:concept_answer_id, openmrs.encounter_type:encounter_type_id, openmrs.encounter:encounter_id, openmrs.person_name:person_name_id, openmrs.person:person_id, openmrs.person_attribute_type:person_attribute_type_id, openmrs.person_attribute:person_attribute_id, openmrs.person_address:person_address_id, openmrs.user:user_id, openmrs.relationship:relationship_id, openmrs.patient_identifier:patient_identifier_id, openmrs.orders:orders_id, openmrs.obs:obs_idlo") //TODO: change this
                 .build();
     }
 

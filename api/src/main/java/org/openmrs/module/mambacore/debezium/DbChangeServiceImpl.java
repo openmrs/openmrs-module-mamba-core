@@ -38,6 +38,7 @@ public class DbChangeServiceImpl implements DbChangeService {
         this.debeziumConfig = debeziumConfig;
     }
 
+    @Override
     public void addDbChangeListener(DbChangeListener listener) {
         listeners.add(listener);
     }
@@ -102,7 +103,6 @@ public class DbChangeServiceImpl implements DbChangeService {
         }
 
         try {
-            RocksDBOffsetBackingStore.getInstance().stop();
             executor.shutdown();
             engine.close();
 
