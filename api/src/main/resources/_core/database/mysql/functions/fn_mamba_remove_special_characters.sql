@@ -1,6 +1,6 @@
-DELIMITER //
+DROP FUNCTION IF EXISTS fn_mamba_remove_special_characters;
 
-DROP FUNCTION IF EXISTS fn_mamba_remove_special_characters //
+DELIMITER //
 
 CREATE FUNCTION fn_mamba_remove_special_characters(input_text VARCHAR(255))
     RETURNS VARCHAR(255)
