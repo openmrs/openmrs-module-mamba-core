@@ -24,8 +24,7 @@ BEGIN
         FROM mamba_z_encounter_obs o
         INNER JOIN temp_concept_metadata tcm
             ON tcm.concept_uuid = o.obs_question_uuid
-        WHERE 1=1 '
-                   );
+        WHERE 1=1 ');
 
     -- Add encounter_id filter if provided
     IF p_encounter_id IS NOT NULL THEN
@@ -41,10 +40,8 @@ BEGIN
           AND o.obs_group_id IS NULL
           AND o.voided = 0
         GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
-        ORDER BY o.encounter_id ASC'
-                   );
+        ORDER BY o.encounter_id ASC');
 
-    -- Execute the statement
     SET @sql = sql_stmt;
     PREPARE stmt FROM @sql;
     EXECUTE stmt;

@@ -8,6 +8,7 @@ CREATE PROCEDURE sp_mamba_flat_encounter_table_insert(
 )
 BEGIN
 
+    -- Cleanup
     DROP TEMPORARY TABLE IF EXISTS temp_concept_metadata;
 
     SET session group_concat_max_len = 20000;
@@ -96,8 +97,6 @@ BEGIN
              );
     END IF;
 
-    -- Cleanup
-    DROP TEMPORARY TABLE IF EXISTS temp_concept_metadata;
 END //
 
 DELIMITER ;
