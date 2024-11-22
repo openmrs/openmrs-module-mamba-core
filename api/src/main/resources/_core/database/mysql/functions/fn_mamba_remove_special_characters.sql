@@ -13,7 +13,6 @@ BEGIN
     DECLARE char_index INT DEFAULT 1;
     DECLARE current_char CHAR(1);
 
-    -- Handle null input
     IF input_text IS NULL THEN
         RETURN NULL;
     END IF;
