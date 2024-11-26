@@ -14,15 +14,14 @@ BEGIN
 
     -- Handle incremental updates
     IF p_encounter_id IS NOT NULL THEN
-        -- Delete existing record for the encounter
+
         SET @delete_stmt = CONCAT('DELETE FROM `', p_flat_table_name, '` WHERE `encounter_id` = ?');
         PREPARE stmt FROM @delete_stmt;
-        SET @encounter_id = p_encounter_id;  -- Bind the variable
-        EXECUTE stmt USING @encounter_id;     -- Use the bound variable
+        SET @encounter_id = p_encounter_id; -- Bind the variable
+        EXECUTE stmt USING @encounter_id; -- Use the bound variable
         DEALLOCATE PREPARE stmt;
     END IF;
 
-    -- Create and populate temporary metadata table
     CREATE TEMPORARY TABLE IF NOT EXISTS temp_concept_metadata
     (
         `id`                  INT          NOT NULL,
@@ -72,24 +71,21 @@ BEGIN
     INTO @column_labels
     FROM temp_concept_metadata;
 
-    -- Get encounter type UUID
     SELECT DISTINCT `encounter_type_uuid`
     INTO @encounter_type_uuid
     FROM temp_concept_metadata
     LIMIT 1;
 
-    -- Process data if columns exist
     IF @column_labels IS NOT NULL THEN
-        -- Handle non-coded concepts first
-        CALL sp_mamba_flat_encounter_table_non_coded_concepts_insert(
+
+        CALL sp_mamba_flat_encounter_table_question_concepts_insert(
                 p_flat_table_name,
                 p_encounter_id,
                 @encounter_type_uuid,
                 @column_labels
              );
 
-        -- Handle coded concepts
-        CALL sp_mamba_flat_encounter_table_coded_concepts_insert(
+        CALL sp_mamba_flat_encounter_table_answer_concepts_insert(
                 p_flat_table_name,
                 p_encounter_id,
                 @encounter_type_uuid,

@@ -88,7 +88,6 @@ IF @column_labels IS NOT NULL THEN
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_question_uuid` ',
             'WHERE eo.`obs_group_id` IS NOT NULL ',
-            'AND tcm.`concept_answer_obs` = 0 ',
             'AND eo.`voided` = 0 ',
             IF(@enc_id <> 0, CONCAT('AND eo.`encounter_id` = ', @enc_id, ' '), ''),
             'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` '
@@ -113,7 +112,6 @@ SET @update_stmt = (
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_value_coded_uuid` ',
             'WHERE eo.`obs_group_id` IS NOT NULL ',
-            'AND tcm.`concept_answer_obs` = 1 ',
             'AND eo.`voided` = 0 ',
             IF(@enc_id <> 0, CONCAT('AND eo.`encounter_id` = ', @enc_id, ' '), ''),
             'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` ',
