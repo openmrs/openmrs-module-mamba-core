@@ -35,7 +35,7 @@ BEGIN
     -- Add remaining conditions
     SET sql_stmt = CONCAT(sql_stmt,
                           ' AND o.encounter_type_uuid = ''', p_encounter_type_uuid, '''
-          AND (tcm.concept_answer_obs = 0 OR tcm.concept_datatype != ''Coded'')
+          -- AND (tcm.concept_answer_obs = 0 OR tcm.concept_datatype != ''Coded'')
           AND tcm.obs_value_column IS NOT NULL
           AND o.obs_group_id IS NULL
           AND o.voided = 0

@@ -8,7 +8,6 @@ CREATE PROCEDURE sp_mamba_flat_encounter_table_insert(
 )
 BEGIN
 
-    -- Cleanup
     DROP TEMPORARY TABLE IF EXISTS temp_concept_metadata;
 
     SET session group_concat_max_len = 20000;
@@ -18,7 +17,8 @@ BEGIN
         -- Delete existing record for the encounter
         SET @delete_stmt = CONCAT('DELETE FROM `', p_flat_table_name, '` WHERE `encounter_id` = ?');
         PREPARE stmt FROM @delete_stmt;
-        EXECUTE stmt USING p_encounter_id;
+        SET @encounter_id = p_encounter_id;  -- Bind the variable
+        EXECUTE stmt USING @encounter_id;     -- Use the bound variable
         DEALLOCATE PREPARE stmt;
     END IF;
 

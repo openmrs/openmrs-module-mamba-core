@@ -45,14 +45,13 @@ BEGIN
     -- Add remaining conditions and ON DUPLICATE KEY UPDATE clause
     SET sql_stmt = CONCAT(sql_stmt,
                           ' AND o.encounter_type_uuid = ''', p_encounter_type_uuid, '''
-          AND (tcm.concept_answer_obs = 1 OR tcm.concept_answer_obs = 2)
+          -- AND (tcm.concept_answer_obs = 1 OR tcm.concept_answer_obs = 2)
           AND tcm.obs_value_column IS NOT NULL
           AND o.obs_group_id IS NULL
           AND o.voided = 0
         GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
         ORDER BY o.encounter_id ASC
-        ON DUPLICATE KEY UPDATE ', update_columns
-                   );
+        ON DUPLICATE KEY UPDATE ', update_columns);
 
     -- Execute the statement
     SET @sql = sql_stmt;
