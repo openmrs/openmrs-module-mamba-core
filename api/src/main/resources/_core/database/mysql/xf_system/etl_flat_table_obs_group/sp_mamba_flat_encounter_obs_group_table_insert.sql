@@ -80,15 +80,14 @@ SELECT DISTINCT `encounter_type_uuid` INTO @tbl_encounter_type_uuid FROM `mamba_
 
 -- Check if column labels are generated
 IF @column_labels IS NOT NULL THEN
-        -- Insert statement for observations without coded answers (`concept_answer_obs = 0`)
-        SET @insert_stmt = CONCAT(
+
+    SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
             'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, ',
             @column_labels, ' ',
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_question_uuid` ',
             'WHERE eo.`obs_group_id` IS NOT NULL ',
-            'AND tcm.`concept_answer_obs` = 0 ',
             'AND eo.`voided` = 0 ',
             IF(@enc_id <> 0, CONCAT('AND eo.`encounter_id` = ', @enc_id, ' '), ''),
             'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` '
@@ -98,7 +97,6 @@ PREPARE inserttbl FROM @insert_stmt;
 EXECUTE inserttbl;
 DEALLOCATE PREPARE inserttbl;
 
--- Insert statement for observations with coded answers (`concept_answer_obs = 1`), handle potential duplicates
 SET @update_stmt = (
             SELECT GROUP_CONCAT(
                 CONCAT('`', `column_label`, '` = COALESCE(VALUES(`', `column_label`, '`), `', `column_label`, '`)')
@@ -113,7 +111,6 @@ SET @update_stmt = (
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_value_coded_uuid` ',
             'WHERE eo.`obs_group_id` IS NOT NULL ',
-            'AND tcm.`concept_answer_obs` = 1 ',
             'AND eo.`voided` = 0 ',
             IF(@enc_id <> 0, CONCAT('AND eo.`encounter_id` = ', @enc_id, ' '), ''),
             'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` ',
