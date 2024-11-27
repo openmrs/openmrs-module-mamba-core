@@ -80,8 +80,8 @@ SELECT DISTINCT `encounter_type_uuid` INTO @tbl_encounter_type_uuid FROM `mamba_
 
 -- Check if column labels are generated
 IF @column_labels IS NOT NULL THEN
-        -- Insert statement for observations without coded answers (`concept_answer_obs = 0`)
-        SET @insert_stmt = CONCAT(
+
+    SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
             'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, ',
             @column_labels, ' ',
@@ -97,7 +97,6 @@ PREPARE inserttbl FROM @insert_stmt;
 EXECUTE inserttbl;
 DEALLOCATE PREPARE inserttbl;
 
--- Insert statement for observations with coded answers (`concept_answer_obs = 1`), handle potential duplicates
 SET @update_stmt = (
             SELECT GROUP_CONCAT(
                 CONCAT('`', `column_label`, '` = COALESCE(VALUES(`', `column_label`, '`), `', `column_label`, '`)')
