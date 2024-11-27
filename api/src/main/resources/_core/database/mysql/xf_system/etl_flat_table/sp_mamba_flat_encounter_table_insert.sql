@@ -41,7 +41,6 @@ BEGIN
         INDEX idx_encounter_type_uuid (`encounter_type_uuid`)
     ) CHARSET = UTF8MB4;
 
-    -- Populate metadata
     INSERT INTO temp_concept_metadata
     SELECT DISTINCT `id`,
                     `flat_table_name`,
