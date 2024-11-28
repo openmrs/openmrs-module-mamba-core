@@ -27,8 +27,6 @@ BEGIN
     -- update obs_value_coded (UUIDs & Concept value names)
     WHILE mamba_offset < total_records
         DO
-            START TRANSACTION;
-
             UPDATE mamba_z_encounter_obs z
                 JOIN (SELECT encounter_id
                       FROM mamba_z_encounter_obs
@@ -40,7 +38,6 @@ BEGIN
             SET z.obs_value_text       = mtv.concept_name,
                 z.obs_value_coded_uuid = mtv.concept_uuid
             WHERE z.obs_value_coded IS NOT NULL;
-            COMMIT;
 
             SET mamba_offset = mamba_offset + batch_size;
         END WHILE;

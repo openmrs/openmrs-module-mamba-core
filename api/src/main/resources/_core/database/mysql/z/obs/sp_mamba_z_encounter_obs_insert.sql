@@ -48,7 +48,6 @@ BEGIN
 
     WHILE batch_last_obs_id < last_obs_id
         DO
-            START TRANSACTION;
             INSERT INTO mamba_z_encounter_obs (obs_id,
                                                encounter_id,
                                                visit_id,
@@ -107,7 +106,6 @@ BEGIN
             WHERE obs_id > batch_last_obs_id
             ORDER BY obs_id ASC
             LIMIT batch_size;
-            COMMIT;
 
             SELECT MAX(obs_id)
             INTO batch_last_obs_id
