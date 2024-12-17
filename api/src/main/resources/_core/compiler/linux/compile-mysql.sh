@@ -295,18 +295,18 @@ CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_event
 -- Setup a trigger that trims record off _mamba_etl_schedule to just leave 20 latest records.
 -- to avoid the table growing too big
 
- CREATE TRIGGER _mamba_etl_scheduler_trim_log_table
-     AFTER INSERT ON _mamba_etl_schedule
-     FOR EACH ROW
+ CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_trim_log_event
+ ON SCHEDULE EVERY 3 HOUR -- Adjust the schedule as needed
+ DO
  BEGIN
      DELETE FROM _mamba_etl_schedule
      WHERE id NOT IN (
          SELECT id FROM (
-                            SELECT id
-                            FROM _mamba_etl_schedule
-                            ORDER BY id DESC
-                                LIMIT 20
-                        ) AS recent_records
+             SELECT id
+             FROM _mamba_etl_schedule
+             ORDER BY id DESC
+             LIMIT 20
+         ) AS recent_records
      );
  END;
 
