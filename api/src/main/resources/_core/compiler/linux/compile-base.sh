@@ -14,7 +14,16 @@ add_option() {
 while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:u:" opt; do
   case "${opt}" in
   h) add_option "-h" "${OPTARG}" ;;
-  t) add_option "-t" "${OPTARG}" ;;
+  t)
+    # Check if the directory path contains spaces
+    if [[ "${OPTARG}" =~ [[:space:]] ]]; then
+      # Escape spaces
+      escaped_path=$(printf '%q' "${OPTARG}")
+      add_option "-t" "${escaped_path}"
+    else
+      add_option "-t" "${OPTARG}"
+    fi
+    ;;
   n)
     case "${OPTARG}" in
     mysql | postgres | sqlserver | oracle)
@@ -67,6 +76,12 @@ fi
 # Validate required arguments
 if [[ -z "$database_engine" ]]; then
   echo "=================== ERROR: Missing database engine. Use -n mysql|postgres|sqlserver|oracle." >&2
+  exit 1
+fi
+
+# Check if jq is installed
+if ! command -v jq &> /dev/null; then
+  echo "Error: jq is not installed. Please install jq and try again." >&2
   exit 1
 fi
 
