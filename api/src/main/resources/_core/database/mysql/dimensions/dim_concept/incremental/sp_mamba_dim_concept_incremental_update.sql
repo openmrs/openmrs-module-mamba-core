@@ -29,8 +29,8 @@ WHERE c.incremental_record = 1;
 CREATE TEMPORARY TABLE mamba_temp_computed_concept_name
 (
     concept_id      INT          NOT NULL,
-    computed_name   VARCHAR(255) COLLATE utf8mb4_general_ci NOT NULL,
-    tbl_column_name VARCHAR(60)  COLLATE utf8mb4_general_ci NOT NULL,
+    computed_name   VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    tbl_column_name VARCHAR(60)  COLLATE utf8mb4_unicode_ci NOT NULL,
     INDEX mamba_idx_concept_id (concept_id)
 )CHARSET = UTF8MB4 AS
 SELECT c.concept_id,
@@ -38,7 +38,7 @@ SELECT c.concept_id,
            WHEN TRIM(cn.name) IS NULL OR TRIM(cn.name) = '' THEN CONCAT('UNKNOWN_CONCEPT_NAME', '_', c.concept_id)
            WHEN c.retired = 1 THEN CONCAT(TRIM(cn.name), '_', 'RETIRED')
            ELSE TRIM(cn.name)
-           END COLLATE utf8mb4_general_ci AS computed_name,
+           END COLLATE utf8mb4_unicode_ci AS computed_name,
        TRIM(LOWER(LEFT(REPLACE(REPLACE(fn_mamba_remove_special_characters(
                                                CASE
                                                    WHEN TRIM(cn.name) IS NULL OR TRIM(cn.name) = ''
@@ -46,7 +46,7 @@ SELECT c.concept_id,
                                                    WHEN c.retired = 1 THEN CONCAT(TRIM(cn.name), '_', 'RETIRED')
                                                    ELSE TRIM(cn.name)
                                                    END
-                                       ) COLLATE utf8mb4_general_ci, ' ', '_'), '__', '_'), 60))) AS tbl_column_name
+                                       ) COLLATE utf8mb4_unicode_ci, ' ', '_'), '__', '_'), 60))) AS tbl_column_name
 FROM mamba_dim_concept c
          LEFT JOIN mamba_dim_concept_name cn ON c.concept_id = cn.concept_id;
 

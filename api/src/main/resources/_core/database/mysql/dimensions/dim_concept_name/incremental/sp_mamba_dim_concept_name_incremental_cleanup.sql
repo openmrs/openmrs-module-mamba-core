@@ -3,8 +3,8 @@
 DELETE FROM mamba_dim_concept_name
 WHERE voided <> 0
    OR locale_preferred <> 1
-   OR locale COLLATE utf8mb4_general_ci NOT IN (
-       SELECT DISTINCT(concepts_locale) COLLATE utf8mb4_general_ci 
+   OR locale COLLATE utf8mb4_unicode_ci NOT IN (
+       SELECT DISTINCT(concepts_locale) COLLATE utf8mb4_unicode_ci 
        FROM _mamba_etl_user_settings
    );
 

@@ -4,7 +4,7 @@
 UPDATE mamba_dim_concept c
     INNER JOIN mamba_dim_concept_datatype dt
     ON c.datatype_id = dt.concept_datatype_id
-SET c.datatype = dt.name COLLATE utf8mb4_general_ci
+SET c.datatype = dt.name COLLATE utf8mb4_unicode_ci
 WHERE c.concept_id > 0;
 
 CREATE TEMPORARY TABLE mamba_temp_computed_concept_name
