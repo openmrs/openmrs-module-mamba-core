@@ -29,6 +29,8 @@ public class MambaETLProperties {
 	private final String openmrsDatabase;
 	
 	private final String etlDatababase;
+
+	private final String databaseVendor;
 	
 	private final int connectionInitialSize = 4;
 	
@@ -54,6 +56,7 @@ public class MambaETLProperties {
 		this.incremental = getIntProperty(properties, "mambaetl.analysis.incremental_mode", 1);
 		this.automated = getIntProperty(properties, "mambaetl.analysis.automated_flattening", 0);
 		this.interval = getIntProperty(properties, "mambaetl.analysis.etl_interval", 300);
+		this.databaseVendor = getProperty(properties, "mambaetl.analysis.db_vendor", "mysql");
 	}
 	
 	public static synchronized MambaETLProperties getInstance() {
@@ -98,6 +101,10 @@ public class MambaETLProperties {
 	public String getMambaETLuserPassword() {
 		return mambaETLuserPassword;
 	}
+
+	public String getDatabaseVendor() {
+        return databaseVendor;
+    }
 	
 	public String getOpenmrsDatabase() {
 		return openmrsDatabase;

@@ -9,13 +9,14 @@ CREATE PROCEDURE sp_mamba_etl_user_settings_insert(
     IN table_partition_number INT,
     IN incremental_mode_switch TINYINT(1),
     IN automatic_flattening_mode_switch TINYINT(1),
-    IN etl_interval_seconds INT
+    IN etl_interval_seconds INT,
+    IN database_vendor VARCHAR(256) CHARACTER SET UTF8MB4
 )
 BEGIN
 
     SET @insert_stmt = CONCAT(
-            'INSERT INTO _mamba_etl_user_settings (`openmrs_database`, `etl_database`, `concepts_locale`, `table_partition_number`, `incremental_mode_switch`, `automatic_flattening_mode_switch`, `etl_interval_seconds`) VALUES (''',
-            openmrs_database, ''', ''', etl_database, ''', ''', concepts_locale, ''', ', table_partition_number, ', ', incremental_mode_switch, ', ', automatic_flattening_mode_switch, ', ', etl_interval_seconds, ');');
+            'INSERT INTO _mamba_etl_user_settings (`openmrs_database`, `etl_database`, `concepts_locale`, `table_partition_number`, `incremental_mode_switch`, `automatic_flattening_mode_switch`, `etl_interval_seconds`, `database_vendor`) VALUES (''',
+            openmrs_database, ''', ''', etl_database, ''', ''', concepts_locale, ''', ', table_partition_number, ', ', incremental_mode_switch, ', ', automatic_flattening_mode_switch, ', ', etl_interval_seconds, ', ', database_vendor,');');
 
     PREPARE inserttbl FROM @insert_stmt;
     EXECUTE inserttbl;

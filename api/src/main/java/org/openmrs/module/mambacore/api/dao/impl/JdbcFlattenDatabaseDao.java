@@ -96,6 +96,7 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
                     statement.setInt(5, props.getIncremental());
                     statement.setInt(6, props.getAutomated());
                     statement.setInt(7, props.getInterval());
+                    statement.setString(8, props.getDatabaseVendor());
                 } else if (props != null && sql.contains("CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_event")) {
                     statement.setInt(1, props.getInterval());
                 }
