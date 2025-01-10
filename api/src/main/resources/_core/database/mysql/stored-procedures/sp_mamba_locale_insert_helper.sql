@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS sp_mamba_locale_insert_helper;
 DELIMITER //
 
 CREATE PROCEDURE sp_mamba_locale_insert_helper(
-    IN concepts_locale CHAR(4) CHARACTER SET UTF8MB4
+    IN concepts_locale CHAR(4) CHARACTER SET UTF8MB4 COLLATE utf8mb4_general_ci
 )
 BEGIN
 
