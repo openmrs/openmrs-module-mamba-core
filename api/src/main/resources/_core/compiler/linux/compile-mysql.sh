@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Add this at the start of the script
+LOG_FILE="mamba_compile.log"
+
+function log_message() {
+    local message=$1
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[$timestamp] $message" | tee -a "$LOG_FILE"
+}
+
 # Usage info
 function show_help() {
 cat << EOF
@@ -26,6 +35,16 @@ put in the create_stored_procedures.sql file and views in a create_views.sql fil
     -u incremental_mode_switch  Configuration switch to turn on/off the incremental update feature
 
 EOF
+}
+
+# Add this function after show_help()
+function validate_locale() {
+    local locale=$1
+    # Check if locale is valid format (e.g., 'en', 'fr', etc)
+    if [[ ! $locale =~ ^[a-z]{2}$ ]]; then
+        echo "Error: Invalid locale format. Must be 2 letter language code (e.g., 'en')"
+        exit 1
+    fi
 }
 
 echo "ARG 1  : $1"
@@ -563,20 +582,26 @@ function consolidateSPsCallerFile() {
 
 }
 
+# Add this function
+function handle_file_error() {
+    local operation=$1
+    local file=$2
+    echo "Error: Failed to $operation file: $file" >&2
+    exit 1
+}
+
+# Modify file operations to use error handling
 function create_directory_if_absent(){
     DIR="$1"
-
     if [ ! -d "$DIR" ]; then
-        mkdir "$DIR"
+        mkdir "$DIR" || handle_file_error "create directory" "$DIR"
     fi
 }
 
 function exit_if_file_absent(){
     FILE="$1"
     if [ ! -f "$FILE" ]; then
-        echo "We couldn't find this file. Please correct and try again"
-        echo "$FILE"
-        exit 1
+        handle_file_error "find" "$FILE"
     fi
 }
 
@@ -678,6 +703,18 @@ while getopts ":h:t:n:d:a:v:s:k:o:c:l:p:u:" opt; do
     esac
 done
 shift "$((OPTIND-1))"
+
+# Check MySQL version before proceeding
+check_mysql_version
+
+# Set up database collation early
+set_database_collation
+
+# Set up cleanup trap
+trap cleanup EXIT
+
+# Start logging
+log_message "Starting compilation process for MySQL"
 
 if [ ! -n "$stored_procedures" ] && [ ! -n "$views" ]
 then
@@ -994,3 +1031,51 @@ fi
 
 # function to copy mamba_main.sql to the build directory
 copy_mamba_main_sql_to_build_dir
+
+# Add this function after the existing functions
+function set_database_collation() {
+    # Ensure consistent collation across database
+    SQL_CONTENTS="
+-- \$BEGIN
+ALTER DATABASE $analysis_database CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Set session variables for consistent string handling
+SET SESSION character_set_client = utf8mb4;
+SET SESSION character_set_connection = utf8mb4;
+SET SESSION character_set_results = utf8mb4;
+SET SESSION collation_connection = utf8mb4_unicode_ci;
+-- \$END
+"
+    echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_set_database_collation.sql"
+}
+
+# Modify the main script to use this validation
+if [ -n "$concepts_locale" ]; then
+    validate_locale "$concepts_locale"
+fi
+
+function cleanup() {
+    # Remove temporary files
+    rm -f "$temp_file" 2>/dev/null
+    rm -f "$cleaned_jdbc_file.tmp" 2>/dev/null
+    rm -f "$cleaned_liquibase_file.tmp" 2>/dev/null
+    
+    # Log completion
+    log_message "Cleanup completed"
+}
+
+# Add trap for cleanup
+trap cleanup EXIT
+
+function check_mysql_version() {
+    local mysql_version=$(mysql --version | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
+    local major_version=$(echo $mysql_version | cut -d. -f1)
+    local minor_version=$(echo $mysql_version | cut -d. -f2)
+    
+    if [ "$major_version" -lt 5 ] || ([ "$major_version" -eq 5 ] && [ "$minor_version" -lt 7 ]); then
+        log_message "Error: MySQL version $mysql_version is not supported. Minimum required version is 5.7"
+        exit 1
+    fi
+    
+    log_message "MySQL version $mysql_version detected"
+}
