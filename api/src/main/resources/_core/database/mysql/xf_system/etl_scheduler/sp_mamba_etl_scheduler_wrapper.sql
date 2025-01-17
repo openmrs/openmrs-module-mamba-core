@@ -26,6 +26,7 @@ BEGIN
         CALL sp_mamba_data_processing_increment_and_flatten();
     END IF;
 
+    CALL sp_mamba_data_processing_etl(incremental_mode_cascaded);
 
 END //
 
