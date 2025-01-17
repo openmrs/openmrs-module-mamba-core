@@ -30,6 +30,7 @@ xf_system/sp_mamba_system_drop_all_tables.sql
 xf_system/etl_scheduler/sp_mamba_etl_scheduler_wrapper.sql
 xf_system/etl_scheduler/sp_mamba_etl_schedule_table_create.sql
 xf_system/etl_scheduler/sp_mamba_etl_schedule.sql
+xf_system/etl_scheduler/sp_mamba_etl_schedule_trim_log_event.sql
 
 xf_system/sp_mamba_etl_setup.sql
 

@@ -296,19 +296,9 @@ CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_event
 -- to avoid the table growing too big
 
  CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_trim_log_event
- ON SCHEDULE EVERY 3 HOUR -- Adjust the schedule as needed
- DO
- BEGIN
-     DELETE FROM _mamba_etl_schedule
-     WHERE id NOT IN (
-         SELECT id FROM (
-             SELECT id
-             FROM _mamba_etl_schedule
-             ORDER BY id DESC
-             LIMIT 20
-         ) AS recent_records
-     );
- END;
+    ON SCHEDULE EVERY 3 HOUR -- Adjust the schedule as needed
+        STARTS CURRENT_TIMESTAMP
+    DO CALL sp_mamba_etl_schedule_trim_log_event();
 
  ~-~-
 "
