@@ -277,6 +277,9 @@ SET GLOBAL event_scheduler = ON;
 -- Drop/Create the Event responsible for firing up the ETL process
 DROP EVENT IF EXISTS _mamba_etl_scheduler_event;
 
+-- Drop/Create the Event responsible for maintaining event logs at a max. 20 elements
+DROP EVENT IF EXISTS _mamba_etl_scheduler_trim_log_event;
+
 ~-~-
 
 -- Setup ETL configurations
