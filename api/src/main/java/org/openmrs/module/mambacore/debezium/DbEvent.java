@@ -7,17 +7,9 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.mambacore.api.dao;
+package org.openmrs.module.mambacore.debezium;
 
-public interface FlattenDatabaseDao {
+public interface DbEvent {
 	
-	/**
-	 * Deploy MambaETL stored procedures
-	 */
-	void deployMambaEtl();
-	
-	/**
-	 * Stream in database changes using Debezium
-	 */
-	void streamInDatabaseChanges();
+	boolean isSchemaEvent();
 }
