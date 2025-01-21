@@ -286,6 +286,7 @@ DROP EVENT IF EXISTS _mamba_etl_scheduler_trim_log_event;
 
 -- Setup ETL configurations
 CALL sp_mamba_etl_setup(?, ?, ?, ?, ?, ?, ?);
+
 -- pass them from the runtime properties file
 
 ~-~-
