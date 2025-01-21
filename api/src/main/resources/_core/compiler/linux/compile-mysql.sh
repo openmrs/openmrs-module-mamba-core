@@ -279,8 +279,14 @@ DROP EVENT IF EXISTS _mamba_etl_scheduler_event;
 
 ~-~-
 
+-- Drop/Create the Event responsible for maintaining event logs at a max. 20 elements
+DROP EVENT IF EXISTS _mamba_etl_scheduler_trim_log_event;
+
+~-~-
+
 -- Setup ETL configurations
-CALL sp_mamba_etl_setup(?, ?, ?, ?, ?,?,?);
+CALL sp_mamba_etl_setup(?, ?, ?, ?, ?, ?, ?);
+
 -- pass them from the runtime properties file
 
 ~-~-
@@ -291,6 +297,16 @@ CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_event
     DO CALL sp_mamba_etl_schedule();
 
 ~-~-
+
+-- Setup a trigger that trims record off _mamba_etl_schedule to just leave 20 latest records.
+-- to avoid the table growing too big
+
+ CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_trim_log_event
+    ON SCHEDULE EVERY 3 HOUR
+        STARTS CURRENT_TIMESTAMP
+    DO CALL sp_mamba_etl_schedule_trim_log_event();
+
+ ~-~-
 "
 }
 

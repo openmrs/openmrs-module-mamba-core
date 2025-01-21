@@ -20,7 +20,7 @@ BEGIN
     SET modified_string = input_text;
 
     -- Define special characters to remove
-    SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã\\|[]{}\'~`.';
+    SET special_chars = '!@#$%^&*?/,()"-=+£:;><ã\\|[]{}\'~`.'; -- TODO: Added '.' xter as well but Remove after adding backtick support
 
     -- Remove each special character
     WHILE char_index <= CHAR_LENGTH(special_chars) DO
