@@ -1,6 +1,6 @@
 -- $BEGIN
 
-INSERT INTO mamba_dim_encounter (encounter_id,
+INSERT INTO mamba_dim_encounter_diagnosis (encounter_id,
                                  uuid,
                                  encounter_type,
                                  encounter_type_uuid,
@@ -28,7 +28,7 @@ SELECT e.encounter_id,
        e.voided,
        e.voided_by,
        e.void_reason
-FROM mamba_source_db.encounter e
+FROM mamba_source_db.encounter_diagnosis e
          INNER JOIN mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid
