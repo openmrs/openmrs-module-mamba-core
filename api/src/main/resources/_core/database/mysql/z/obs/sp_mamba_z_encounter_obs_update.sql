@@ -5,14 +5,10 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_z_encounter_obs_update()
 BEGIN
     DECLARE total_records INT;
-    DECLARE batch_size INT DEFAULT 1000000; -- 1 million batches
+    DECLARE batch_size INT DEFAULT 100000; -- batch size
     DECLARE mamba_offset INT DEFAULT 0;
 
-    SELECT COUNT(*)
-    INTO total_records
-    FROM mamba_z_encounter_obs;
-    CREATE
-        TEMPORARY TABLE mamba_temp_value_coded_values
+    CREATE TEMPORARY TABLE mamba_temp_value_coded_values
         CHARSET = UTF8MB4 AS
     SELECT m.concept_id AS concept_id,
            m.uuid       AS concept_uuid,
@@ -21,28 +17,37 @@ BEGIN
     WHERE concept_id in (SELECT DISTINCT obs_value_coded
                          FROM mamba_z_encounter_obs
                          WHERE obs_value_coded IS NOT NULL);
-
     CREATE INDEX mamba_idx_concept_id ON mamba_temp_value_coded_values (concept_id);
 
-    -- update obs_value_coded (UUIDs & Concept value names)
+    SELECT COUNT(*)
+    INTO total_records
+    FROM mamba_z_encounter_obs z
+             INNER JOIN mamba_temp_value_coded_values mtv
+                        ON z.obs_value_coded = mtv.concept_id
+    WHERE z.obs_value_coded IS NOT NULL;
+
     WHILE mamba_offset < total_records
         DO
-            UPDATE mamba_z_encounter_obs z
-                JOIN (SELECT encounter_id
-                      FROM mamba_z_encounter_obs
-                      ORDER BY encounter_id
-                      LIMIT batch_size OFFSET mamba_offset) AS filter
-                ON filter.encounter_id = z.encounter_id
-                INNER JOIN mamba_temp_value_coded_values mtv
-                ON z.obs_value_coded = mtv.concept_id
-            SET z.obs_value_text       = mtv.concept_name,
-                z.obs_value_coded_uuid = mtv.concept_uuid
-            WHERE z.obs_value_coded IS NOT NULL;
+            -- update obs_value_coded (UUIDs & Concept value names)
+            SET @sql = CONCAT('UPDATE mamba_z_encounter_obs z
+                        INNER JOIN (
+                            SELECT concept_id, concept_name, concept_uuid
+                            FROM mamba_temp_value_coded_values mtv
+                            ORDER BY concept_id
+                            LIMIT ', batch_size, 'OFFSET', mamba_offset,'
+                        ) AS mtv
+                        ON z.obs_value_coded = mtv.concept_id
+                        SET z.obs_value_text = mtv.concept_name,
+                            z.obs_value_coded_uuid = mtv.concept_uuid
+                        WHERE z.obs_value_coded IS NOT NULL');
+            PREPARE stmt FROM @sql;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
             SET mamba_offset = mamba_offset + batch_size;
         END WHILE;
 
-    -- update column obs_value_boolean (Concept values)
+-- update column obs_value_boolean (Concept values)
     UPDATE mamba_z_encounter_obs z
     SET obs_value_boolean =
             CASE
