@@ -12,7 +12,7 @@ BEGIN
     DECLARE obsValueColumn VARCHAR(20);
 
     CASE LOWER(conceptDatatype)
-        
+
         WHEN 'text' THEN SET obsValueColumn = 'obs_value_text'; -- Free text values
 
         WHEN 'coded' THEN SET obsValueColumn = 'obs_value_text'; -- Coded concept IDs stored as text
@@ -27,7 +27,7 @@ BEGIN
 
         WHEN 'numeric' THEN SET obsValueColumn = 'obs_value_numeric'; -- Numeric measurements
 
-        ELSE SET obsValueColumn = 'obs_value_text'; -- Default fallback
+        ELSE SET obsValueColumn = 'obs_value_text';
         END CASE;
 
     RETURN (obsValueColumn);
