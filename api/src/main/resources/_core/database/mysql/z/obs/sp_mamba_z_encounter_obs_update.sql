@@ -5,7 +5,7 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_z_encounter_obs_update()
 BEGIN
     DECLARE v_total_records INT;
-    DECLARE v_batch_size INT DEFAULT 100000; -- batch size
+    DECLARE v_batch_size INT DEFAULT 1000000; -- batch size
     DECLARE v_offset INT DEFAULT 0;
     DECLARE v_rows_affected INT;
     
