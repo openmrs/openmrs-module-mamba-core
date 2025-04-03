@@ -36,9 +36,15 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
     public List<MambaReportItem> getMambaReport(MambaReportCriteria criteria) {
         String argumentsJson = "";
         try {
+
             ObjectMapper objectMapper = new ObjectMapper();
+
             argumentsJson = objectMapper.writeValueAsString(criteria.getSearchFields());
             log.debug("Query arguments {}", argumentsJson);
+
+            argumentsJson = objectMapper.writeValueAsString(criteria.getPagination());
+            log.debug("Pagination arguments {}", argumentsJson);
+
         } catch (Exception exc) {
             log.error("Failed to get MambaReport", exc);
         }
@@ -49,6 +55,9 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
         DataSource dataSource = ConnectionPoolManager
                 .getInstance()
                 .getEtlDataSource();
+
+        Integer pageNumger = criteria.getPagination().getPageNumber();
+        Integer pageSize = criteria.getPagination().getPageSize();
 
         try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall("{CALL sp_mamba_get_report_column_names(?)}")) {
