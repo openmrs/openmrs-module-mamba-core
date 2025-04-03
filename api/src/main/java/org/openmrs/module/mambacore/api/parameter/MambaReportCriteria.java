@@ -25,6 +25,9 @@ public class MambaReportCriteria implements Serializable {
     @JsonProperty("arguments")
     private List<MambaReportSearchField> searchFields = new ArrayList<>();
 
+    @JsonProperty("pagination")
+    private MambaReportPagination pagination = new MambaReportPagination();
+
     public MambaReportCriteria() {
         this(null);
     }
@@ -47,5 +50,13 @@ public class MambaReportCriteria implements Serializable {
 
     public void setSearchFields(List<MambaReportSearchField> searchFields) {
         this.searchFields = searchFields;
+    }
+
+    public MambaReportPagination getPagination() {
+        return pagination;
+    }
+
+    public void setPagination(MambaReportPagination pagination) {
+        this.pagination = pagination;
     }
 }

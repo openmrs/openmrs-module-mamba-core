@@ -57,6 +57,10 @@ public class MambaReportResource implements Searchable {
 
             if (paramName.equals("report_id")) {
                 searchCriteria.setReportId(paramValue);
+            } else if (paramName.equals("page_number")) {
+                searchCriteria.getPagination().setPageNumber(Integer.parseInt(paramValue));
+            } else if (paramName.equals("page_size")) {
+                searchCriteria.getPagination().setPageSize(Integer.parseInt(paramValue));
             } else {
                 searchCriteria.getSearchFields().add(new MambaReportSearchField(paramName, paramValue));
             }
