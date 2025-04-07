@@ -17,7 +17,7 @@ BEGIN
                                                    ORDER BY id DESC
                                                    LIMIT 1), TRUE));
     SET running_mamba_sp = (SELECT COALESCE(
-                                           (SELECT IF(COUNT(*) > 0, TRUE, FALSE)
+                                           (SELECT IF(COUNT(*) = 0, TRUE, FALSE)
                                             FROM performance_schema.events_statements_current
                                             WHERE SQL_TEXT = 'CALL sp_mamba_etl_scheduler_wrapper()'
                                             ORDER BY EVENT_ID DESC
