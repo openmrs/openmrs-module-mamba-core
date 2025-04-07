@@ -18,6 +18,8 @@ BEGIN
     DECLARE time_taken BIGINT;
     DECLARE etl_is_ready_to_run BOOLEAN DEFAULT FALSE;
 
+    -- cleanup stuck schedule
+    CALL sp_mamba_etl_un_stuck_scheduler();
     -- check if _mamba_etl_schedule is empty(new) or last transaction_status
     -- is 'COMPLETED' AND it was a 'SUCCESS' AND its 'end_time' was set.
     SET etl_is_ready_to_run = (SELECT COALESCE(
