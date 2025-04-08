@@ -22,7 +22,12 @@ BEGIN
                                              OR SQL_TEXT = 'CALL sp_mamba_etl_scheduler_wrapper()');
     IF running_schedule_record AND no_running_mamba_sp THEN
         SET last_schedule_record_id = (SELECT MAX(id) FROM _mamba_etl_schedule limit 1);
-        DELETE FROM _mamba_etl_schedule WHERE id = last_schedule_record_id;
+        UPDATE _mamba_etl_schedule
+        SET end_time                   = NOW(),
+            completion_status          = 'SUCCESS',
+            transaction_status         = 'COMPLETED',
+            success_or_error_message   = 'Stuck schedule updated'
+            WHERE id = last_schedule_record_id;
     END IF;
 
 END //
