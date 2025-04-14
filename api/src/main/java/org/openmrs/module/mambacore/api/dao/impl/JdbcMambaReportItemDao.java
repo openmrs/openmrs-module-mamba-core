@@ -130,6 +130,6 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
     @Override
     public Integer getMambaReportSize(MambaReportCriteria criteria) {
-
+        return 220000;//TODO:
     }
 }

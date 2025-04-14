@@ -324,49 +324,57 @@ function read_config_report_definition_metadata() {
       echo "reports.json file not found, is null or is not a regular file. Will not read report_definition."
       json_string='{"report_definitions": []}'
 
-      echo "-- \$BEGIN" > "$REPORT_DEFINITION_FILE"
-      echo "-- \$END" >> "$REPORT_DEFINITION_FILE"
+      echo "-- $BEGIN" > "$REPORT_DEFINITION_FILE"
+      echo "-- $END" >> "$REPORT_DEFINITION_FILE"
       return
     fi
 
     # Get the total number of report_definitions
     total_reports=$(jq '.report_definitions | length' <<< "$json_string")
 
+    # Clear the variable before the loop
+    create_report_procedure=""
+
     # Iterate through each report_definition
     for ((i = 0; i < total_reports; i++)); do
 
         reportId=$(jq -r ".report_definitions[$i].report_id" <<< "$json_string")
+        paginate_flag=$(jq ".report_definitions[$i].report_sql.paginate" <<< "$json_string") # Check if true
 
         report_procedure_name="sp_mamba_report_${reportId}_query"
         report_columns_procedure_name="sp_mamba_report_${reportId}_columns_query"
-        report_size_procedure_name="sp_mamba_report_${reportId}_size_query"
+        report_size_procedure_name="sp_mamba_report_${reportId}_size_query" # Name for the count SP
         report_columns_table_name="mamba_report_$reportId"
 
         sql_query=$(jq -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string")
         # echo "SQL Query: $sql_query"
 
-        # Iterate through query_params and save values before printing
-        query_params=$(jq -c ".report_definitions[$i].report_sql.query_params[] | select(length > 0) | {name, type}" <<< "$json_string")
-        in_parameters=""
+        # --- Generate IN parameters strings ---
+        # 1. Parameters EXCLUDING pagination (for count query)
+        in_query_parameters=""
+        query_params_list=$(jq -c ".report_definitions[$i].report_sql.query_params[]? | select(length > 0) | {name, type}" <<< "$json_string") # Added ? for optional query_params
         while IFS= read -r entry; do
             queryName=$(jq -r '.name' <<< "$entry")
             queryType=$(jq -r '.type' <<< "$entry")
-
-            # Check if queryName and queryType are not null or empty before concatenating
             if [[ -n "$queryName" && -n "$queryType" ]]; then
-                in_parameters+="IN $queryName $queryType, "
+                in_query_parameters+="IN $queryName $queryType, "
             fi
-        done <<< "$query_params"
+        done <<< "$query_params_list"
+        in_query_parameters="${in_query_parameters%, }" # Remove trailing comma
 
-        # Remove trailing comma
-        in_parameters="${in_parameters%, }"
+        # 2. Parameters INCLUDING pagination if needed (for main/columns query)
+        in_parameters_with_pagination="$in_query_parameters"
+        if [[ "$paginate_flag" == "true" ]]; then
+            if [[ -n "$in_parameters_with_pagination" ]]; then
+                 in_parameters_with_pagination+=", " # Add comma if other params exist
+            fi
+            # Add the standard pagination parameters
+            in_parameters_with_pagination+="IN page_number INT, IN page_size INT"
+        fi
+        # --- End Parameter Generation ---
 
-        # Print concatenated pairs if there are any
-        #if [ -n "$in_parameters" ]; then
-        #    echo "Query Params: $in_parameters"
-        #fi
-
-create_report_procedure+="
+        # --- Generate Main Report SP Definition ---
+        create_report_procedure+="
 
 -- ---------------------------------------------------------------------------------------------
 -- ----------------------  $report_procedure_name  ----------------------------
@@ -376,18 +384,21 @@ DROP PROCEDURE IF EXISTS $report_procedure_name;
 
 DELIMITER //
 
-CREATE PROCEDURE $report_procedure_name($in_parameters)
+-- Uses parameters including pagination if enabled
+CREATE PROCEDURE $report_procedure_name($in_parameters_with_pagination)
 BEGIN
 
-$sql_query;
+$sql_query; -- Original query with potential LIMIT/OFFSET
 
 END //
 
 DELIMITER ;
 
 "
+        # --- End Main Report SP ---
 
-create_report_procedure+="
+        # --- Generate Columns Report SP Definition ---
+        create_report_procedure+="
 
 -- ---------------------------------------------------------------------------------------------
 -- ----------------------  $report_columns_procedure_name  ----------------------------
@@ -397,32 +408,94 @@ DROP PROCEDURE IF EXISTS $report_columns_procedure_name;
 
 DELIMITER //
 
-CREATE PROCEDURE $report_columns_procedure_name($in_parameters)
+-- Uses parameters including pagination if enabled
+CREATE PROCEDURE $report_columns_procedure_name($in_parameters_with_pagination)
 BEGIN
 
 -- Create Table to store report column names with no rows
 DROP TABLE IF EXISTS $report_columns_table_name;
+
+-- Use original query but force LIMIT 0 to get structure without data
 CREATE TABLE $report_columns_table_name AS
 $sql_query
 LIMIT 0;
 
--- Select report column names from Table
+-- Select report column names from the temporary table structure
+-- Using information_schema might be slightly more robust if CREATE TABLE AS has issues
 SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
 INTO @column_names
 FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = '$report_columns_table_name';
+WHERE TABLE_SCHEMA = DATABASE() -- Use current database
+  AND TABLE_NAME = '$report_columns_table_name';
 
--- Update Table with report column names
-UPDATE mamba_dim_report_definition
-SET result_column_names = @column_names
-WHERE report_id='$reportId';
+-- Update Table definition with report column names (optional, depends on your usage)
+-- UPDATE mamba_dim_report_definition
+-- SET result_column_names = @column_names
+-- WHERE report_id='$reportId';
+
+-- Return the column names as a result set
+SELECT @column_names AS column_names;
+
+-- Clean up the temporary table
+DROP TABLE IF EXISTS $report_columns_table_name;
 
 END //
 
 DELIMITER ;
 
 "
-    done
+        # --- End Columns Report SP ---
+
+        # --- Generate Count Query from Original SQL Query ---
+        # Start with the original query
+        count_query_temp="$sql_query"
+
+        # Remove ORDER BY clause first (if it exists at the end, case-insensitive)
+        count_query_temp=$(echo "$count_query_temp" | sed -E 's/ORDER BY +.*$//I')
+
+        # Remove LIMIT ... OFFSET ... clause (if it exists at the end, case-insensitive)
+        count_query_temp=$(echo "$count_query_temp" | sed -E 's/LIMIT +.* +OFFSET +.*$//I')
+
+        # Remove LIMIT ... clause (if it exists at the end, case-insensitive)
+        count_query_temp=$(echo "$count_query_temp" | sed -E 's/LIMIT +.*$//I')
+
+        # Trim trailing whitespace that might be left after removals
+        count_query_temp=$(echo "$count_query_temp" | sed -E 's/[[:space:]]*$//')
+
+        # Replace the initial SELECT clause with SELECT COUNT(*) (case-insensitive, greedy)
+        # This assumes the structure SELECT ... FROM ...
+        count_query=$(echo "$count_query_temp" | sed -E 's/^SELECT.*FROM/SELECT COUNT(*) FROM/I')
+        # --- End Count Query Generation ---
+
+        # --- Generate Size/Count Report SP Definition ---
+        # Only generate if paginate is true and the count query could be constructed
+        if [[ -n "$count_query" && "$paginate_flag" == "true" ]]; then
+            create_report_procedure+="
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  $report_size_procedure_name  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS $report_size_procedure_name;
+
+DELIMITER //
+
+-- Uses only non-pagination query parameters
+CREATE PROCEDURE $report_size_procedure_name($in_query_parameters)
+BEGIN
+
+-- This query counts the total records based on the main query's criteria,
+-- excluding pagination (LIMIT/OFFSET) and ordering (ORDER BY).
+$count_query;
+
+END //
+
+DELIMITER ;
+
+"
+        fi
+        # --- End Size/Count Report SP ---
+
+    done # End of the loop iterating through report_definitions
 
     # Now Read in the contents for the Mysql Part - to insert into Tables
     if [ ! -z "$FILENAME" ] && [ -f "$FILENAME" ]; then
@@ -430,10 +503,10 @@ DELIMITER ;
         JSON_CONTENTS=$(cat "$FILENAME" | sed "s/'/''/g") # Read in the contents for the JSON file and escape single quotes
 
         REPORT_DEFINITION_CONTENT=$(cat <<EOF
--- \$BEGIN
+-- $BEGIN
 SET @report_definition_json = '$JSON_CONTENTS';
 CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
--- \$END
+-- $END
 EOF
 )
     fi

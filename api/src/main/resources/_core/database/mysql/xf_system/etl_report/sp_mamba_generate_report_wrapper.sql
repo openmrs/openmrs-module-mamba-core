@@ -52,12 +52,6 @@ BEGIN
 
     CLOSE cursor_parameter_names;
 
-    SET page_number = IFNULL((JSON_EXTRACT(parameter_list, CONCAT('$['page_number'].value'))), 'NULL');
-    SET page_size = IFNULL((JSON_EXTRACT(parameter_list, CONCAT('$['page_size'].value'))), 'NULL');
-
-    SET sql_args = IFNULL(CONCAT_WS(', ', sql_args, page_number), NULL);
-    SET sql_args = IFNULL(CONCAT_WS(', ', sql_args, page_size), NULL);
-
     SET @sql = CONCAT('CALL ', proc_name, '(', IFNULL(sql_args, ''), ')');
 
     PREPARE stmt FROM @sql;
