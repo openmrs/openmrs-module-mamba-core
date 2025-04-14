@@ -83,7 +83,7 @@ IF @column_labels IS NOT NULL THEN
 
     SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
-            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`',
+            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`, ',
             @column_labels, ' ',
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_question_uuid` ',
@@ -106,7 +106,7 @@ SET @update_stmt = (
 
         SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
-            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` ',
+            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` , ',
             @column_labels, ' ',
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_value_coded_uuid` ',
