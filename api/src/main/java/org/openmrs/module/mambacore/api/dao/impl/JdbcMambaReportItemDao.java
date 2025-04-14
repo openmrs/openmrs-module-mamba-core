@@ -14,6 +14,7 @@ import org.openmrs.module.mambacore.api.dao.MambaReportItemDao;
 import org.openmrs.module.mambacore.api.model.MambaReportItem;
 import org.openmrs.module.mambacore.api.model.MambaReportItemColumn;
 import org.openmrs.module.mambacore.api.parameter.MambaReportCriteria;
+import org.openmrs.module.mambacore.api.parameter.MambaReportSearchField;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +35,20 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
     @Override
     public List<MambaReportItem> getMambaReport(MambaReportCriteria criteria) {
+
+        Integer pageNumber = criteria.getPageNumber();
+        Integer pageSize = criteria.getPageSize();
+
         String argumentsJson = "";
         try {
 
             ObjectMapper objectMapper = new ObjectMapper();
 
+            criteria.getSearchFields().add(new MambaReportSearchField("page_number", String.valueOf(pageNumber)));
+            criteria.getSearchFields().add(new MambaReportSearchField("page_size", String.valueOf(pageSize)));
+
             argumentsJson = objectMapper.writeValueAsString(criteria.getSearchFields());
             log.debug("Query arguments {}", argumentsJson);
-
-//            argumentsJson = objectMapper.writeValueAsString(criteria.getPagination());
-//            log.debug("Pagination arguments {}", argumentsJson);
 
         } catch (Exception exc) {
             log.error("Failed to get MambaReport", exc);
@@ -56,8 +61,6 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
                 .getInstance()
                 .getEtlDataSource();
 
-        Integer pageNumger = criteria.getPageNumber();
-        Integer pageSize = criteria.getPageSize();
 
         try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall("{CALL sp_mamba_get_report_column_names(?)}")) {
@@ -80,6 +83,8 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
         try (Connection connection = dataSource.getConnection();
              CallableStatement statement = connection.prepareCall("{CALL sp_mamba_generate_report_wrapper(?, ?, ?)}")) {
+
+            System.out.println("Query arguments here: " + argumentsJson);
 
             statement.setInt("generate_columns_flag", 0);
             statement.setString("report_identifier", criteria.getReportId());
@@ -152,9 +157,14 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
             statement.setString("report_identifier", criteria.getReportId());
             statement.setString("parameter_list", argumentsJson);
 
+            System.out.println("Query report_identifier: " + criteria.getReportId());
+            System.out.println("Query arguments: " + argumentsJson);
+
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
-                return resultSet.getInt(1);
+                if (resultSet.next()) {  // Move to the first row
+                    return resultSet.getInt(1);
+                }
             }
         } catch (SQLException e) {
             log.error("Failed to get MambaReport", e);
