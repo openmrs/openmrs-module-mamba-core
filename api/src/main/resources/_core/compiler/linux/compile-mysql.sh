@@ -339,6 +339,7 @@ function read_config_report_definition_metadata() {
 
         report_procedure_name="sp_mamba_report_${reportId}_query"
         report_columns_procedure_name="sp_mamba_report_${reportId}_columns_query"
+        report_size_procedure_name="sp_mamba_report_${reportId}_size_query"
         report_columns_table_name="mamba_report_$reportId"
 
         sql_query=$(jq -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string")

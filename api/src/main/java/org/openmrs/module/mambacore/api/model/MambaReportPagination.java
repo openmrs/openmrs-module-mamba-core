@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.mambacore.api.parameter;
+package org.openmrs.module.mambacore.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

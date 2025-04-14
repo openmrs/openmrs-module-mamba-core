@@ -32,4 +32,11 @@ public interface MambaReportItemDao {
      */
     List<MambaReportItem> getMambaReport(MambaReportCriteria criteria);
 
+    /**
+     * Get the Total records (size) of this report
+     *
+     * @param criteria to follow
+     * @return total records
+     */
+    Integer getMambaReportSize(MambaReportCriteria criteria);
 }

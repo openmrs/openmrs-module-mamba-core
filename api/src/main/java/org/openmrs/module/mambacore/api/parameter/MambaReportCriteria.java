@@ -17,16 +17,19 @@ import java.util.List;
 
 public class MambaReportCriteria implements Serializable {
 
-    private static final long serialVersionUID = 6717202824335189575L;
+    private static final long serialVersionUID = 6727202844335189575L;
 
     @JsonProperty("report_id")
     private String reportId;
 
+    @JsonProperty("page_number")
+    private Integer pageNumber;
+
+    @JsonProperty("page_size")
+    private Integer pageSize;
+
     @JsonProperty("arguments")
     private List<MambaReportSearchField> searchFields = new ArrayList<>();
-
-    @JsonProperty("pagination")
-    private MambaReportPagination pagination = new MambaReportPagination();
 
     public MambaReportCriteria() {
         this(null);
@@ -52,11 +55,19 @@ public class MambaReportCriteria implements Serializable {
         this.searchFields = searchFields;
     }
 
-    public MambaReportPagination getPagination() {
-        return pagination;
+    public Integer getPageNumber() {
+        return pageNumber;
     }
 
-    public void setPagination(MambaReportPagination pagination) {
-        this.pagination = pagination;
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }
