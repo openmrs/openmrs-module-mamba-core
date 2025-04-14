@@ -28,6 +28,7 @@ BEGIN
 
                 SELECT CONCAT('sp_mamba_report_', @report_id, '_query') INTO @report_procedure_name;
                 SELECT CONCAT('sp_mamba_report_', @report_id, '_columns_query') INTO @report_columns_procedure_name;
+                SELECT CONCAT('sp_mamba_report_', @report_id, '_size_query') INTO @report_size_procedure_name;
                 SELECT CONCAT('mamba_report_', @report_id) INTO @table_name;
 
                 SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, CONCAT('$.report_sql.sql_query'))) INTO @sql_query;
@@ -37,12 +38,14 @@ BEGIN
                 INSERT INTO mamba_dim_report_definition(report_id,
                                                         report_procedure_name,
                                                         report_columns_procedure_name,
+                                                        report_size_procedure_name,
                                                         sql_query,
                                                         table_name,
                                                         report_name)
                 VALUES (@report_id,
                         @report_procedure_name,
                         @report_columns_procedure_name,
+                        @report_size_procedure_name,
                         @sql_query,
                         @table_name,
                         @report_name);

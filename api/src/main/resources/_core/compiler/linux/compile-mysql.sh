@@ -324,8 +324,8 @@ function read_config_report_definition_metadata() {
       echo "reports.json file not found, is null or is not a regular file. Will not read report_definition."
       json_string='{"report_definitions": []}'
 
-      echo "-- $BEGIN" > "$REPORT_DEFINITION_FILE"
-      echo "-- $END" >> "$REPORT_DEFINITION_FILE"
+      echo "-- \$BEGIN" > "$REPORT_DEFINITION_FILE"
+      echo "-- \$END" >> "$REPORT_DEFINITION_FILE"
       return
     fi
 
@@ -374,6 +374,25 @@ function read_config_report_definition_metadata() {
         # --- End Parameter Generation ---
 
         # --- Generate Main Report SP Definition ---
+        main_sp_body=""
+        main_sp_params=""
+
+        if [[ "$paginate_flag" == "true" ]]; then
+            # For paginated reports, add offset calculation and LIMIT/OFFSET clause
+            main_sp_params="$in_parameters_with_pagination"
+            main_sp_body="    
+            DECLARE offset_val INT;
+            SET offset_val = (page_number - 1) * page_size;
+            -- Original query modified with LIMIT/OFFSET using calculated variable
+            ${sql_query} LIMIT page_size OFFSET offset_val;"
+        else
+            # For non-paginated reports, use base query and non-pagination params
+            main_sp_params="$in_query_parameters"
+            main_sp_body="    
+            -- Original query (non-paginated)
+            $sql_query;"
+        fi
+
         create_report_procedure+="
 
 -- ---------------------------------------------------------------------------------------------
@@ -384,11 +403,11 @@ DROP PROCEDURE IF EXISTS $report_procedure_name;
 
 DELIMITER //
 
--- Uses parameters including pagination if enabled
-CREATE PROCEDURE $report_procedure_name($in_parameters_with_pagination)
+-- Parameters vary based on pagination flag
+CREATE PROCEDURE $report_procedure_name($main_sp_params)
 BEGIN
 
-$sql_query; -- Original query with potential LIMIT/OFFSET
+${main_sp_body}
 
 END //
 
@@ -398,6 +417,7 @@ DELIMITER ;
         # --- End Main Report SP ---
 
         # --- Generate Columns Report SP Definition ---
+        # Columns SP *always* uses LIMIT 0 internally, but accepts pagination params if needed for signature consistency
         create_report_procedure+="
 
 -- ---------------------------------------------------------------------------------------------
@@ -408,16 +428,16 @@ DROP PROCEDURE IF EXISTS $report_columns_procedure_name;
 
 DELIMITER //
 
--- Uses parameters including pagination if enabled
-CREATE PROCEDURE $report_columns_procedure_name($in_parameters_with_pagination)
+-- Accepts pagination params if main report is paginated (for signature consistency)
+CREATE PROCEDURE $report_columns_procedure_name($in_parameters_with_pagination) -- Uses the full param list including pagination if applicable
 BEGIN
 
 -- Create Table to store report column names with no rows
 DROP TABLE IF EXISTS $report_columns_table_name;
 
--- Use original query but force LIMIT 0 to get structure without data
+-- Use original query but *always* force LIMIT 0 to get structure without data
 CREATE TABLE $report_columns_table_name AS
-$sql_query
+${sql_query} -- Base query from JSON
 LIMIT 0;
 
 -- Select report column names from the temporary table structure
@@ -503,10 +523,10 @@ DELIMITER ;
         JSON_CONTENTS=$(cat "$FILENAME" | sed "s/'/''/g") # Read in the contents for the JSON file and escape single quotes
 
         REPORT_DEFINITION_CONTENT=$(cat <<EOF
--- $BEGIN
+-- \$BEGIN
 SET @report_definition_json = '$JSON_CONTENTS';
 CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
--- $END
+-- \$END
 EOF
 )
     fi

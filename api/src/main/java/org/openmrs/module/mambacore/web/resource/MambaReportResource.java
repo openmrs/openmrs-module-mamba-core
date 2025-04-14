@@ -99,9 +99,9 @@ public class MambaReportResource implements Searchable {
         Integer totalRecords = getService()
                 .getMambaReportSize(searchCriteria);
 
-        if (pageSize <= 0) {
-            throw new IllegalArgumentException("Page size must be greater than zero.");
-        }
+        System.out.println("Total records: " + totalRecords);
+        System.out.println("fetched records: " + mambaReportItems.size());
+
         Integer totalPages = (int) Math.ceil((double) totalRecords / pageSize);
 
         MambaReportPagination pagination = new MambaReportPagination();

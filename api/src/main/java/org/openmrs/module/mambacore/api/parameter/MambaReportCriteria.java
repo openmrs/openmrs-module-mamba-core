@@ -23,10 +23,10 @@ public class MambaReportCriteria implements Serializable {
     private String reportId;
 
     @JsonProperty("page_number")
-    private Integer pageNumber;
+    private Integer pageNumber = 1;
 
     @JsonProperty("page_size")
-    private Integer pageSize;
+    private Integer pageSize = 50;
 
     @JsonProperty("arguments")
     private List<MambaReportSearchField> searchFields = new ArrayList<>();

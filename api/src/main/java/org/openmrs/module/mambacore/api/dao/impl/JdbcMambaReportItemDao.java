@@ -130,6 +130,35 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
 
     @Override
     public Integer getMambaReportSize(MambaReportCriteria criteria) {
-        return 220000;//TODO:
+        String argumentsJson = "";
+        try {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            argumentsJson = objectMapper.writeValueAsString(criteria.getSearchFields());
+            log.debug("Query arguments {}", argumentsJson);
+
+        } catch (Exception exc) {
+            log.error("Failed to get MambaReport", exc);
+        }
+
+        DataSource dataSource = ConnectionPoolManager
+                .getInstance()
+                .getEtlDataSource();
+
+        try (Connection connection = dataSource.getConnection();
+             CallableStatement statement = connection.prepareCall("{CALL sp_mamba_generate_report_size_sp_wrapper(?, ?)}")) {
+
+            statement.setString("report_identifier", criteria.getReportId());
+            statement.setString("parameter_list", argumentsJson);
+
+            if (statement.execute()) {
+                ResultSet resultSet = statement.getResultSet();
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            log.error("Failed to get MambaReport", e);
+        }
+        return 0;
     }
 }
