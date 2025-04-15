@@ -9,9 +9,12 @@
  */
 package org.openmrs.module.mambacore.web.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mambacore.api.MambaReportService;
 import org.openmrs.module.mambacore.api.model.MambaReportItem;
+import org.openmrs.module.mambacore.api.model.MambaReportPagination;
 import org.openmrs.module.mambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.mambacore.api.parameter.MambaReportSearchField;
 import org.openmrs.module.mambacore.web.controller.MambaReportRestController;
@@ -46,6 +49,8 @@ public class MambaReportResource implements Searchable {
         context.setStartIndex(0);
 
         MambaReportCriteria searchCriteria = new MambaReportCriteria();
+        Integer pageSize = searchCriteria.getPageSize(); //defaults
+        Integer pageNumber = searchCriteria.getPageNumber(); //defaults
 
         Enumeration<String> parameterNames = context.getRequest().getParameterNames();
         while (parameterNames.hasMoreElements()) {
@@ -55,10 +60,21 @@ public class MambaReportResource implements Searchable {
 
             log.debug("search API hit with param: {} vale: {}", paramName, paramValue);
 
-            if (paramName.equals("report_id")) {
-                searchCriteria.setReportId(paramValue);
-            } else {
-                searchCriteria.getSearchFields().add(new MambaReportSearchField(paramName, paramValue));
+            switch (paramName) {
+                case "report_id":
+                    searchCriteria.setReportId(paramValue);
+                    break;
+                case "page_number":
+                    pageNumber = Integer.parseInt(paramValue);
+                    searchCriteria.setPageNumber(pageNumber);
+                    break;
+                case "page_size":
+                    pageSize = Integer.parseInt(paramValue);
+                    searchCriteria.setPageSize(pageSize);
+                    break;
+                default:
+                    searchCriteria.getSearchFields().add(new MambaReportSearchField(paramName, paramValue));
+                    break;
             }
         }
 
@@ -66,8 +82,37 @@ public class MambaReportResource implements Searchable {
             return new EmptySearchResult().toSimpleObject(null);
         }
 
-        List<MambaReportItem> mambaReportItems = getService().getMambaReportByCriteria(searchCriteria);
-        return new SimpleObject().add("results", mambaReportItems);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        //TODO: Delete after Testing
+        try {
+            String argumentsJson = objectMapper.writeValueAsString(searchCriteria);
+            log.debug("Mamba search criteria before passing it over: {}", argumentsJson);
+            System.out.println("Mamba search criteria before passing it over sysout: " + argumentsJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<MambaReportItem> mambaReportItems = getService()
+                .getMambaReportByCriteria(searchCriteria);
+
+        Integer totalRecords = getService()
+                .getMambaReportSize(searchCriteria);
+
+        System.out.println("Total records: " + totalRecords);
+        System.out.println("fetched records: " + mambaReportItems.size());
+
+        Integer totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
+        MambaReportPagination pagination = new MambaReportPagination();
+        pagination.setPageNumber(pageNumber);
+        pagination.setPageSize(pageSize);
+        pagination.setTotalRecords(totalRecords);
+        pagination.setTotalPages(totalPages);
+
+        return new SimpleObject()
+                .add("results", mambaReportItems)
+                .add("pagination", pagination);
     }
 
     @Override
