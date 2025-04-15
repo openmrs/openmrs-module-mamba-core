@@ -45,10 +45,11 @@ DEALLOCATE PREPARE stmt_temp_insert;
 
 -- Insert into the final table from the temp table, including concept data
 SET @sql_obs_group_insert = CONCAT('
-            INSERT INTO mamba_obs_group (obs_group_concept_id, obs_group_concept_name, obs_id)
+            INSERT INTO mamba_obs_group (obs_group_concept_id, obs_group_concept_name, obs_id,obs_group_id)
             SELECT DISTINCT o.obs_question_concept_id,
                             LEFT(c.auto_table_column_name, 12) AS name,
-                            o.obs_id
+                            o.obs_id,
+                            o.obs_group_id
             FROM mamba_temp_obs_group_ids t
                      INNER JOIN mamba_z_encounter_obs o ON t.obs_group_id = o.obs_group_id
                      INNER JOIN mamba_dim_concept c ON o.obs_question_concept_id = c.concept_id

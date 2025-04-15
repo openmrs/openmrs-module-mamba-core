@@ -22,7 +22,7 @@ FROM `mamba_concept_metadata` cm
       FROM `mamba_z_encounter_obs` eo
                INNER JOIN `mamba_obs_group` og
                           ON eo.`obs_id` = og.`obs_id`
-      WHERE `obs_group_id` IS NOT NULL
+      WHERE eo.`obs_group_id` IS NOT NULL
         AND og.`obs_group_concept_name` = `obs_group_concept_name`) eo
      ON cm.`concept_id` = eo.`obs_question_concept_id`
 WHERE `flat_table_name` = `flat_encounter_table_name`
@@ -35,7 +35,8 @@ IF @column_labels IS NOT NULL THEN
                 '`visit_id` INT NULL,',
                 '`client_id` INT NOT NULL,',
                 '`encounter_datetime` DATETIME NOT NULL,',
-                '`location_id` INT NULL, ', @column_labels,
+                '`location_id` INT NULL, '
+                '`obs_group_id` INT NOT NULL,', @column_labels,
 
                 ',INDEX `mamba_idx_encounter_id` (`encounter_id`),',
                 'INDEX `mamba_idx_visit_id` (`visit_id`),',
