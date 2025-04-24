@@ -1,4 +1,16 @@
 #!/bin/bash
+set -euo pipefail
+
+# ===========================
+# compile-base.sh
+# This script parses arguments and invokes engine-specific compilation scripts.
+#
+# Improvements:
+# - Strict error handling enabled
+# - Consistent quoting
+# - Help option added
+# - Unused functions documented
+# ===========================
 
 # Initialize variables
 database_engine=""
@@ -10,10 +22,36 @@ add_option() {
   args+=("$1" "$2")
 }
 
+# Display usage/help
+print_help() {
+  cat <<EOF
+Usage: $0 [options]
+
+Options:
+  -h <help>            Show this help message
+  -t <target>          Target directory
+  -n <engine>          Database engine (mysql|postgres|sqlserver|oracle)
+  -d <dir>             Directory
+  -a <arg>             Argument a
+  -v <arg>             Argument v
+  -s <arg>             Argument s
+  -k <arg>             Argument k
+  -o <arg>             Argument o
+  -b <0|1>             Recompile flag (0 = no, 1 = yes)
+  -c <arg>             Argument c
+  -l <arg>             Argument l
+  -p <arg>             Argument p
+  -u <arg>             Argument u
+EOF
+}
+
 # Parse arguments
 while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:u:" opt; do
   case "${opt}" in
-  h) add_option "-h" "${OPTARG}" ;;
+  h)
+    print_help
+    exit 0
+    ;;
   t)
     # Check if the directory path contains spaces
     if [[ "${OPTARG}" =~ [[:space:]] ]]; then
@@ -31,7 +69,7 @@ while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:u:" opt; do
       add_option "-n" "$database_engine"
       ;;
     *)
-      echo "Database Engine/Vendor: ${OPTARG}" "not yet supported. Please Contact OpenMRS support" >&2
+      echo "Database Engine/Vendor: ${OPTARG} not yet supported. Please Contact OpenMRS support" >&2
       exit 1
       ;;
     esac
@@ -51,7 +89,7 @@ while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:u:" opt; do
     elif [[ $recompile_scripts == "1" ]]; then
       echo "=================== Recompile flag -b is set to 1, engine will rebuild the scripts. Don't forget to change the Liquibase ChangeSet ID if deploying module"
     else
-      echo "=================== ERROR: The MambaETL Recompile flag '-b' in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>"
+      echo "=================== ERROR: The MambaETL Recompile flag '-b' in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>" >&2
       exit 1
     fi
     #add_option "-b" "${OPTARG}" We don't need to forward this argument
@@ -67,7 +105,7 @@ while getopts ":h:t:n:d:a:v:s:k:o:b:c:l:p:u:" opt; do
   esac
 done
 
- # Check if Re-compile flag is given
+# Check if Re-compile flag is given
 if [[ -z "$recompile_scripts" ]]; then
   echo "=================== ERROR: Missing Re-compile flag '-b'. The MambaETL Recompile flag -b in the parent pom.xml file (of this module) needs to be explicitly set to either 1 (re-compile scripts) or 0 (do nothing). e.g. add this argument to pom.xml  <argument>-b 1</argument>" >&2
   exit 1
@@ -90,21 +128,27 @@ case "$database_engine" in
 mysql)
   ./compile-mysql.sh "${args[@]}"
   ;;
-  #    postgres)
-  #        ./compile-postgres.sh "${args[@]}"
-  #        ;;
-  #    sqlserver)
-  #        ./compile-sqlserver.sh "${args[@]}"
-  #        ;;
-  #    oracle)
-  #        ./compile-oracle.sh "${args[@]}"
-  #        ;;
+# postgres)
+#   ./compile-postgres.sh "${args[@]}"
+#   ;;
+# sqlserver)
+#   ./compile-sqlserver.sh "${args[@]}"
+#   ;;
+# oracle)
+#   ./compile-oracle.sh "${args[@]}"
+#   ;;
 *)
-  echo "Database Engine/Vendor: $database_engine" " not yet supported. Please Contact OpenMRS support" >&2
+  echo "Engine $database_engine is not yet implemented." >&2
   exit 1
   ;;
 esac
 
+# ===========================
+# The following functions are currently unused but kept for future use or reference.
+# ===========================
+
+# readCoreMakeFile: [UNUSED]
+#   Reads the core make file for further processing. Not currently invoked in the script.
 function readCoreMakeFile() {
 
   # Search for the file in all subdirectories in the path: ${project.build.directory}/mamba-etl/_core/database/$db_engine
@@ -122,6 +166,8 @@ function readCoreMakeFile() {
   makefile=$sp_makefile_combined
 }
 
+# readAllMakeFiles: [UNUSED]
+#   Reads all make files for further processing. Not currently invoked in the script.
 function readAllMakeFiles() {
 
   # Search for all files with the specified filename (sp_makefile) in the path: ${project.build.directory}/mamba-etl/_etl
@@ -135,6 +181,8 @@ function readAllMakeFiles() {
   makefile=$sp_makefile_combined
 }
 
+# consolidateSPsCallerFile: [UNUSED]
+#   Consolidates stored procedure caller files. Not currently invoked in the script.
 function consolidateSPsCallerFile() {
 
   # Save the current directory
