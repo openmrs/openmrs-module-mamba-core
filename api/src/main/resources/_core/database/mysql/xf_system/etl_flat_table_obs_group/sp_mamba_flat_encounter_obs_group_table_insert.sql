@@ -1,7 +1,6 @@
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert;
 
 DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert;
 
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert(
     IN flat_encounter_table_name VARCHAR(60) CHARACTER SET UTF8MB4,
