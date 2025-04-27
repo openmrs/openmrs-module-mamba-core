@@ -17,10 +17,16 @@ import java.util.List;
 
 public class MambaReportCriteria implements Serializable {
 
-    private static final long serialVersionUID = 6717202824335189575L;
+    private static final long serialVersionUID = 6727202844335189575L;
 
     @JsonProperty("report_id")
     private String reportId;
+
+    @JsonProperty("page_number")
+    private Integer pageNumber = 1;
+
+    @JsonProperty("page_size")
+    private Integer pageSize = 50;
 
     @JsonProperty("arguments")
     private List<MambaReportSearchField> searchFields = new ArrayList<>();
@@ -47,5 +53,21 @@ public class MambaReportCriteria implements Serializable {
 
     public void setSearchFields(List<MambaReportSearchField> searchFields) {
         this.searchFields = searchFields;
+    }
+
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }

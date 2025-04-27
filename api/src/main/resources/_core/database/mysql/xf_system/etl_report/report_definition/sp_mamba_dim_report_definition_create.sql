@@ -6,6 +6,7 @@ CREATE TABLE mamba_dim_report_definition
     report_id                     VARCHAR(255) NOT NULL UNIQUE,
     report_procedure_name         VARCHAR(255) NOT NULL UNIQUE, -- should be derived from report_id??
     report_columns_procedure_name VARCHAR(255) NOT NULL UNIQUE,
+    report_size_procedure_name    VARCHAR(255) NULL UNIQUE,
     sql_query                     TEXT         NOT NULL,
     table_name                    VARCHAR(255) NOT NULL,        -- name of the table (will contain columns) of this query
     report_name                   VARCHAR(255) NULL,
