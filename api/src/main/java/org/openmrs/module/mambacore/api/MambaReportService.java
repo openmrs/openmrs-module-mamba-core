@@ -39,4 +39,8 @@ public interface MambaReportService extends OpenmrsService {
      */
     @Authorized({MambaReportsConstants.VIEW_MAMBA_REPORT})
     List<MambaReportItem> getMambaReportByCriteria(MambaReportCriteria criteria);
+
+
+    @Authorized({MambaReportsConstants.VIEW_MAMBA_REPORT})
+    Integer getMambaReportSize(MambaReportCriteria criteria);
 }

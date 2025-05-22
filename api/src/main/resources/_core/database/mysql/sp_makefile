@@ -62,6 +62,7 @@ stored-procedures/sp_mamba_locale_insert_helper.sql
 xf_system/etl_report/sp_mamba_extract_report_column_names.sql
 xf_system/etl_report/sp_mamba_extract_report_definition_metadata.sql
 xf_system/etl_report/sp_mamba_generate_report_wrapper.sql
+xf_system/etl_report/sp_mamba_generate_report_size_sp_wrapper.sql
 xf_system/etl_report/sp_mamba_get_report_column_names.sql
 
 #xf_system/etl_report/p_mamba_generate_report_columns.sql
