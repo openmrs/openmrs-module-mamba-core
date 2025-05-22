@@ -167,7 +167,7 @@ public class JdbcMambaReportItemDao implements MambaReportItemDao {
                 }
             }
         } catch (SQLException e) {
-            log.error("Failed to get MambaReport", e);
+            log.error("Failed to get MambaReport size there: ", e);
         }
         return 0;
     }
