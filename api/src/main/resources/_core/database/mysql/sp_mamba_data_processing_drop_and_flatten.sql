@@ -50,6 +50,10 @@ BEGIN
 
     CALL sp_mamba_dim_orders;
 
+    CALL sp_mamba_dim_conditions;
+
+    CALL sp_mamba_dim_encounter_diagnosis;
+
     CALL sp_mamba_z_encounter_obs;
 
     CALL sp_mamba_obs_group;
