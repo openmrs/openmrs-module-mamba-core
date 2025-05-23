@@ -1,3 +1,9 @@
 #!/bin/bash
+set -euo pipefail
 
-./compile-base.sh $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16}
+if [[ ! -x ./compile-base.sh ]]; then
+  echo "Error: compile-base.sh not found or not executable." >&2
+  exit 1
+fi
+
+./compile-base.sh "$@"
