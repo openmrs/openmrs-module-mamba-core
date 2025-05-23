@@ -1,26 +1,15 @@
 -- $BEGIN
 
--- This table will be used to index the columns that are used to determine if a record is new, changed, retired or voided
--- It will be used to speed up the incremental updates for each incremental Table indentified in the ETL process
-
 CREATE TABLE IF NOT EXISTS mamba_etl_incremental_columns_index_all
 (
-    incremental_table_pkey INT        NOT NULL UNIQUE PRIMARY KEY,
+    id                          INT                                 NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY COMMENT 'Primary Key',
+    mamba_etl_database_event_id INT                                 NOT NULL,
+    incremental_table_pkey      INT                                 NOT NULL,
+    database_operation          ENUM ('CREATE', 'UPDATE', 'DELETE') NOT NULL COMMENT 'Operation performed on the Database',
 
-    date_created           DATETIME   NOT NULL,
-    date_changed           DATETIME   NULL,
-    date_retired           DATETIME   NULL,
-    date_voided            DATETIME   NULL,
-
-    retired                TINYINT(1) NULL,
-    voided                 TINYINT(1) NULL,
-
-    INDEX mamba_idx_date_created (date_created),
-    INDEX mamba_idx_date_changed (date_changed),
-    INDEX mamba_idx_date_retired (date_retired),
-    INDEX mamba_idx_date_voided (date_voided),
-    INDEX mamba_idx_retired (retired),
-    INDEX mamba_idx_voided (voided)
+    INDEX mamba_idx_mamba_etl_database_event_id (mamba_etl_database_event_id),
+    INDEX mamba_idx_incremental_table_pkey (incremental_table_pkey),
+    INDEX mamba_idx_database_operation (database_operation)
 )
     CHARSET = UTF8MB4;
 

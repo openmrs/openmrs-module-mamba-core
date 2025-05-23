@@ -15,6 +15,7 @@ BEGIN
     DECLARE pkey_column VARCHAR(255);
     DECLARE join_clause VARCHAR(500) DEFAULT '';
 
+    -- Cursor to loop through the columns of the analysis db - mamba table
     DECLARE column_cursor CURSOR FOR
         SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
