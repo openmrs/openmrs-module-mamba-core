@@ -333,7 +333,11 @@ function read_config_report_definition_metadata() {
     fi
 
     # Get the total number of report_definitions
-    total_reports=$(jq '.report_definitions | length' <<< "$json_string")
+    total_reports=$(jq '.report_definitions | length' <<< "$json_string") || { echo "Error: Failed to parse .report_definitions from $FILENAME" >&2; exit 1; }
+    if ! [[ "$total_reports" =~ ^[0-9]+$ ]]; then
+        echo "Error: Invalid 'total_reports' count parsed from $FILENAME. Expected an integer." >&2
+        exit 1
+    fi
 
     # Clear the variable before the loop
     create_report_procedure=""
@@ -341,21 +345,25 @@ function read_config_report_definition_metadata() {
     # Iterate through each report_definition
     for ((i = 0; i < total_reports; i++)); do
 
-        reportId=$(jq -r ".report_definitions[$i].report_id" <<< "$json_string")
-        paginate_flag=$(jq ".report_definitions[$i].report_sql.paginate" <<< "$json_string") # Check if true
+        reportId=$(jq -e -r ".report_definitions[$i].report_id" <<< "$json_string") || { echo "Error: Failed to parse report_id at index $i from $FILENAME" >&2; exit 1; }
+        if [ -z "$reportId" ] || [ "$reportId" == "null" ]; then
+            echo "Error: report_id at index $i in $FILENAME is empty or null." >&2;
+            exit 1;
+        fi
+        paginate_flag=$(jq -e ".report_definitions[$i].report_sql.paginate" <<< "$json_string") || { echo "Error: Failed to parse paginate flag for report $reportId from $FILENAME" >&2; exit 1; } # Check if true
 
         report_procedure_name="sp_mamba_report_${reportId}_query"
         report_columns_procedure_name="sp_mamba_report_${reportId}_columns_query"
         report_size_procedure_name="sp_mamba_report_${reportId}_size_query" # Name for the count SP
         report_columns_table_name="mamba_report_$reportId"
 
-        sql_query=$(jq -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string")
+        sql_query=$(jq -e -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string") || { echo "Error: Failed to parse sql_query for report $reportId from $FILENAME" >&2; exit 1; }
         # echo "SQL Query: $sql_query"
 
         # --- Generate IN parameters strings ---
         # 1. Parameters EXCLUDING pagination (for count query)
         in_query_parameters=""
-        query_params_list=$(jq -c ".report_definitions[$i].report_sql.query_params[]? | select(length > 0) | {name, type}" <<< "$json_string") # Added ? for optional query_params
+        query_params_list=$(jq -e -c ".report_definitions[$i].report_sql.query_params[]? | select(length > 0) | {name, type}" <<< "$json_string") || { echo "Error: Failed to parse query_params for report $reportId from $FILENAME" >&2; exit 1; } # Added ? for optional query_params
         while IFS= read -r entry; do
             queryName=$(jq -r '.name' <<< "$entry")
             queryType=$(jq -r '.type' <<< "$entry")
@@ -536,83 +544,6 @@ EOF
     echo "$REPORT_DEFINITION_CONTENT" > "$REPORT_DEFINITION_FILE" #TODO: improve!!
 }
 
-function make_buildfile_liquibase_compatible(){
-
-  > "$cleaned_liquibase_file"
-
-  end_pattern=r"^[[:space:]]*(end|END)[[:space:]]*[\r\n]*[/|//][[:space:]]*"
-  delimiter_pattern=r"^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[\r\n]*[;|//][[:space:]]*"
-
-  while IFS= read -r line; do
-
-    if [[ "$line" =~ $end_pattern ]]; then
-      echo "END~" >> "$cleaned_liquibase_file"
-#      echo "~" >> "$cleaned_liquibase_file"
-      continue
-    fi
-
-    if [[ "$line" =~ $delimiter_pattern ]]; then
-      continue
-    fi
-
-    # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
-    if [[ $line == "CREATE PROCEDURE"* ]]; then
-      echo "~" >> "$cleaned_liquibase_file"
-    fi
-
-     # Add the character '/' on a new line before the statement 'CREATE FUNCTION...'
-    if [[ $line == "CREATE FUNCTION"* ]]; then
-      echo "~" >> "$cleaned_liquibase_file"
-    fi
-
-    # Write the modified line to the output file
-    echo "$line" >> "$cleaned_liquibase_file"
-
-  done < "$file_to_clean"
-
-  #after executing use analysis_db at strt of execution, we were getting a weir error in openmrs on unlocking liquibase changelock where it was looking for the Table inside analysis_db yet it is in the Openmrs transactional db
-  #so let's manually change back to use the openmrs database at the end
-  use_source_db="USE $source_database;"
-  echo "$use_source_db" >> "$cleaned_liquibase_file"
-
-}
-
-function make_buildfile_jdbc_compatible(){
-
-  > "$cleaned_jdbc_file"
-
-  end_pattern="^[[:space:]]*(end|END)[[:space:]]*[/|//][[:space:]]*"
-  delimiter_pattern="^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[;|//][[:space:]]*"
-
-  while IFS= read -r line; do
-
-    if [[ "$line" =~ $end_pattern ]]; then
-      echo "END;" >> "$cleaned_jdbc_file"
-      echo "~-~-" >> "$cleaned_jdbc_file"
-      continue
-    fi
-
-    if [[ "$line" =~ $delimiter_pattern ]]; then
-      continue
-    fi
-
-    # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
-    if [[ $line == "CREATE PROCEDURE"* ]]; then
-      echo "~-~-" >> "$cleaned_jdbc_file"
-    fi
-
-     # Add the character '/' on a new line before the statement 'CREATE FUNCTION...'
-    if [[ $line == "CREATE FUNCTION"* ]]; then
-       echo "~-~-" >> "$cleaned_jdbc_file"
-
-    fi
-
-    # Write the modified line to the output file
-    echo "$line" >> "$cleaned_jdbc_file"
-
-  done < "$file_to_clean"
-}
-
 function consolidateSPsCallerFile() {
 
   # Save the current directory
@@ -643,7 +574,7 @@ function consolidateSPsCallerFile() {
   local temp_folder_number=1
   for folder in $sp_make_folders; do
 
-    cd "$folder"
+    cd "$folder" || { echo "Error: Could not change directory to $folder" >&2; exit 1; }
 
     printf "\n" >> "$consolidatedFile"
 
@@ -662,7 +593,7 @@ function consolidateSPsCallerFile() {
       #echo "Folder name: $foldername"
 
       #Copy the file with its full path and folder structure to the temp folder
-      rsync --relative "$line" "$dbEngineBaseDir"/etl/$temp_folder_number/
+      rsync --relative "$line" "$dbEngineBaseDir"/etl/$temp_folder_number/ || { echo "Error: rsync failed for file: $line in folder: $folder" >&2; exit 1; }
 
       # copy the new file path to the consolidated file
       echo "etl/$temp_folder_number/$line" >>"$consolidatedFile"
@@ -670,7 +601,7 @@ function consolidateSPsCallerFile() {
     done
 
     temp_folder_number=$((temp_folder_number + 1))
-    cd "$currentDir"
+    cd "$currentDir" || { echo "Error: Could not change directory back to $currentDir" >&2; exit 1; }
   done
 
 }
@@ -790,6 +721,13 @@ while getopts ":h:t:n:d:a:v:s:k:o:c:l:p:u:" opt; do
     esac
 done
 shift "$((OPTIND-1))"
+
+if [ -n "$config_dir" ]; then
+    if [ ! -d "$config_dir" ]; then
+        echo "Error: Configuration directory not found at: $config_dir" >&2
+        exit 1
+    fi
+fi
 
 if [ ! -n "$stored_procedures" ] && [ ! -n "$views" ]
 then
