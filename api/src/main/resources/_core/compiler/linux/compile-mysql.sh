@@ -3,6 +3,14 @@
 set -e
 set -o pipefail
 
+TEMP_FILES=()
+function cleanup_temp_files {
+  if [ ${#TEMP_FILES[@]} -gt 0 ]; then
+    rm -f "${TEMP_FILES[@]}"
+  fi
+}
+trap cleanup_temp_files EXIT
+
 # Usage info
 function show_help() {
 cat << EOF
@@ -630,7 +638,9 @@ function remove_tildes_in_sql_build_file () {
     local build_file="$1"
 
     # Create a temporary file to write contents without the first two tildes
-    local temp_file_no_tildes=$(mktemp)
+    local temp_file_no_tildes
+    temp_file_no_tildes=$(mktemp)
+    TEMP_FILES+=("$temp_file_no_tildes")
 
     # Use sed to remove only the first two occurrences of the tilde character
     sed 's/~//' "$build_file" | sed 's/~//' > "$temp_file_no_tildes"
@@ -638,8 +648,8 @@ function remove_tildes_in_sql_build_file () {
     # Overwrite the original file with the content of the temporary file
     mv "$temp_file_no_tildes" "$build_file"
 
-    # Remove the temporary file
-    rm "$temp_file_no_tildes"
+    # The trap will handle removing the temporary file.
+    # rm "$temp_file_no_tildes" # No longer needed here
 }
 
 # copy mamba_main.sql to the build directory
