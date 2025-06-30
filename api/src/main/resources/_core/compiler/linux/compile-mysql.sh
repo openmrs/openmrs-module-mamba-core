@@ -1,5 +1,42 @@
 #!/bin/bash
 
+set -e
+set -o pipefail
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+DATABASE_BASE_DIR="$SCRIPT_DIR/../../database"
+ETL_BASE_DIR="$SCRIPT_DIR/../../../_etl" # Relative to .../compiler/linux/
+
+TEMP_FILES=()
+function cleanup_temp_files {
+  if [ ${#TEMP_FILES[@]} -gt 0 ]; then
+    rm -f "${TEMP_FILES[@]}"
+  fi
+}
+trap cleanup_temp_files EXIT
+
+# Function to check for command dependencies
+function check_dependencies() {
+    local missing_deps=()
+    for dep in "$@"; do
+        if ! command -v "$dep" &> /dev/null; then
+            missing_deps+=("$dep")
+        fi
+    done
+
+    if [ ${#missing_deps[@]} -gt 0 ]; then
+        echo "Error: Missing required command-line dependencies:" >&2
+        for dep in "${missing_deps[@]}"; do
+            echo "  - $dep" >&2
+        done
+        echo "Please install them and try again." >&2
+        exit 1
+    fi
+}
+
+# Call dependency check early
+check_dependencies "jq" "sed" "rsync" "find" "mkdir" "mktemp" "basename" "dirname" "cat" "grep" "wc" "printf" "readlink"
+
 # Usage info
 function show_help() {
 cat << EOF
@@ -90,7 +127,7 @@ CALL sp_mamba_flat_table_config_insert_helper_auto(); -- insert automatically ge
   # Replace above placeholders in SQL_CONTENTS with actual values
   SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'")
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_flat_table_config_insert.sql"
+  echo "$SQL_CONTENTS" > "$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_flat_table_config_insert.sql"
 
 }
 
@@ -132,7 +169,7 @@ CALL sp_mamba_flat_table_config_incremental_insert_helper_auto(); -- insert auto
   # Replace above placeholders in SQL_CONTENTS with actual values
   SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'")
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_flat_table_config_incremental_insert.sql"
+  echo "$SQL_CONTENTS" > "$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_flat_table_config_incremental_insert.sql"
 
 }
 
@@ -151,7 +188,7 @@ CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, '\''mamba_concept_
 -- \$END
 "
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_concept_metadata_insert.sql" #TODO: improve!!
+  echo "$SQL_CONTENTS" > "$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_concept_metadata_insert.sql" #TODO: improve!!
 }
 
 # Read in the JSON configuration metadata from mamba_flat_table_config table into the mamba_concept_metadata table (incrementally)
@@ -169,7 +206,7 @@ CALL sp_mamba_concept_metadata_insert_helper(@is_incremental, '\''mamba_concept_
 -- \$END
 "
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_concept_metadata_incremental_insert.sql" #TODO: improve!!
+  echo "$SQL_CONTENTS" > "$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_concept_metadata_incremental_insert.sql" #TODO: improve!!
 }
 
 # Read in the JSON configuration metadata for Table flattening
@@ -199,23 +236,24 @@ function read_config_metadata_for_incremental_comparison() {
 
   -- \$BEGIN
       "$'
-          SET @report_data = '%s';
-          SET @file_count = %d;
 
-          -- CALL sp_extract_configured_flat_table_file_into_dim_json_incremental(@report_data); -- insert manually added config JSON data from config dir
-          -- CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
-          -- CALL sp_mamba_dim_json_incremental_update();
+SET @report_data = '%s';
+SET @file_count = %d;
 
-          -- SET @report_data = fn_mamba_generate_report_array_from_automated_json_incremental();
-          CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_concept_metadata'\'');
-      '"
-  -- \$END
-  "
+-- CALL sp_extract_configured_flat_table_file_into_dim_json_incremental(@report_data); -- insert manually added config JSON data from config dir
+-- CALL sp_mamba_dim_json_incremental_insert(); -- insert automatically generated config JSON data from db
+-- CALL sp_mamba_dim_json_incremental_update();
+
+-- SET @report_data = fn_mamba_generate_report_array_from_automated_json_incremental();
+CALL sp_mamba_extract_report_metadata(@report_data, '\''mamba_concept_metadata'\'');
+'"
+-- \$END
+"
 
   # Replace above placeholders in SQL_CONTENTS with actual values
   SQL_CONTENTS=$(printf "$SQL_CONTENTS" "'$JSON_CONTENTS'" "$count")
 
-  echo "$SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_concept_metadata_incremental_insert.sql" #TODO: improve!!
+  echo "$SQL_CONTENTS" > "$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_dim_concept_metadata_incremental_insert.sql" #TODO: improve!!
 
 }
 
@@ -225,16 +263,17 @@ function read_locale_setting() {
   LOCALE_SP_SQL_CONTENTS="
 -- \$BEGIN
   "$'
-  SET @concepts_locale = '%s';
-  CALL sp_mamba_locale_insert_helper(@concepts_locale);
-  '"
+
+SET @concepts_locale = '%s';
+CALL sp_mamba_locale_insert_helper(@concepts_locale);
+'"
 -- \$END
 "
 
   # Replace above placeholders in SQL_CONTENTS with actual values
   LOCALE_SP_SQL_CONTENTS=$(printf "$LOCALE_SP_SQL_CONTENTS" "'$concepts_locale'")
 
-  echo "$LOCALE_SP_SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_dim_locale_insert.sql"
+  echo "$LOCALE_SP_SQL_CONTENTS" > "$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_dim_locale_insert.sql"
 }
 
 #Not using this function, Using a different approach - only left here for code reference purposes
@@ -244,18 +283,19 @@ function read_etl_user_settings() {
 
 -- \$BEGIN
   "$'
-  SET @concepts_locale = '%s';
-  SET @table_partition = '%d';
-  SET @incremental_switch = '%d';
-  CALL sp_mamba_etl_user_settings_insert_helper(@concepts_locale, @table_partition, @incremental_switch);
-  '"
+
+SET @concepts_locale = '%s';
+SET @table_partition = '%d';
+SET @incremental_switch = '%d';
+CALL sp_mamba_etl_user_settings_insert_helper(@concepts_locale, @table_partition, @incremental_switch);
+'"
 -- \$END
 "
 
   # Replace above placeholders in USER_SETTINGS_SP_SQL_CONTENTS with the actual values
   USER_SETTINGS_SP_SQL_CONTENTS=$(printf "$USER_SETTINGS_SP_SQL_CONTENTS" "'$concepts_locale'" "$table_partition_number" "$incremental_mode_switch")
 
-  echo "$USER_SETTINGS_SP_SQL_CONTENTS" > "../../database/$db_engine/config/sp_mamba_etl_user_settings_insert.sql"
+  echo "$USER_SETTINGS_SP_SQL_CONTENTS" > "$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_etl_user_settings_insert.sql"
 }
 
 # Read the starter scripts for the MambaETL
@@ -314,7 +354,7 @@ CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_event
 function read_config_report_definition_metadata() {
 
     FILENAME="$config_dir/reports.json";
-    REPORT_DEFINITION_FILE="../../database/$db_engine/config/sp_mamba_dim_report_definition_insert.sql"
+    REPORT_DEFINITION_FILE="$DATABASE_BASE_DIR/$db_engine/config/sp_mamba_dim_report_definition_insert.sql"
 
     # Check if reports.json file exists
     if [ -s "$FILENAME" ] && [ -f "$FILENAME" ]; then
@@ -330,7 +370,11 @@ function read_config_report_definition_metadata() {
     fi
 
     # Get the total number of report_definitions
-    total_reports=$(jq '.report_definitions | length' <<< "$json_string")
+    total_reports=$(jq '.report_definitions | length' <<< "$json_string") || { echo "Error: Failed to parse .report_definitions from $FILENAME" >&2; exit 1; }
+    if ! [[ "$total_reports" =~ ^[0-9]+$ ]]; then
+        echo "Error: Invalid 'total_reports' count parsed from $FILENAME. Expected an integer." >&2
+        exit 1
+    fi
 
     # Clear the variable before the loop
     create_report_procedure=""
@@ -338,21 +382,25 @@ function read_config_report_definition_metadata() {
     # Iterate through each report_definition
     for ((i = 0; i < total_reports; i++)); do
 
-        reportId=$(jq -r ".report_definitions[$i].report_id" <<< "$json_string")
-        paginate_flag=$(jq ".report_definitions[$i].report_sql.paginate" <<< "$json_string") # Check if true
+        reportId=$(jq -e -r ".report_definitions[$i].report_id" <<< "$json_string") || { echo "Error: Failed to parse report_id at index $i from $FILENAME" >&2; exit 1; }
+        if [ -z "$reportId" ] || [ "$reportId" == "null" ]; then
+            echo "Error: report_id at index $i in $FILENAME is empty or null." >&2;
+            exit 1;
+        fi
+        paginate_flag=$(jq -e ".report_definitions[$i].report_sql.paginate" <<< "$json_string") || { echo "Error: Failed to parse paginate flag for report $reportId from $FILENAME" >&2; exit 1; } # Check if true
 
         report_procedure_name="sp_mamba_report_${reportId}_query"
         report_columns_procedure_name="sp_mamba_report_${reportId}_columns_query"
         report_size_procedure_name="sp_mamba_report_${reportId}_size_query" # Name for the count SP
         report_columns_table_name="mamba_report_$reportId"
 
-        sql_query=$(jq -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string")
+        sql_query=$(jq -e -r ".report_definitions[$i].report_sql.sql_query" <<< "$json_string") || { echo "Error: Failed to parse sql_query for report $reportId from $FILENAME" >&2; exit 1; }
         # echo "SQL Query: $sql_query"
 
         # --- Generate IN parameters strings ---
         # 1. Parameters EXCLUDING pagination (for count query)
         in_query_parameters=""
-        query_params_list=$(jq -c ".report_definitions[$i].report_sql.query_params[]? | select(length > 0) | {name, type}" <<< "$json_string") # Added ? for optional query_params
+        query_params_list=$(jq -e -c ".report_definitions[$i].report_sql.query_params[]? | select(length > 0) | {name, type}" <<< "$json_string") || { echo "Error: Failed to parse query_params for report $reportId from $FILENAME" >&2; exit 1; } # Added ? for optional query_params
         while IFS= read -r entry; do
             queryName=$(jq -r '.name' <<< "$entry")
             queryType=$(jq -r '.type' <<< "$entry")
@@ -412,7 +460,6 @@ ${main_sp_body}
 END //
 
 DELIMITER ;
-
 "
         # --- End Main Report SP ---
 
@@ -534,114 +581,37 @@ EOF
     echo "$REPORT_DEFINITION_CONTENT" > "$REPORT_DEFINITION_FILE" #TODO: improve!!
 }
 
-function make_buildfile_liquibase_compatible(){
-
-  > "$cleaned_liquibase_file"
-
-  end_pattern=r"^[[:space:]]*(end|END)[[:space:]]*[\r\n]*[/|//][[:space:]]*"
-  delimiter_pattern=r"^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[\r\n]*[;|//][[:space:]]*"
-
-  while IFS= read -r line; do
-
-    if [[ "$line" =~ $end_pattern ]]; then
-      echo "END~" >> "$cleaned_liquibase_file"
-#      echo "~" >> "$cleaned_liquibase_file"
-      continue
-    fi
-
-    if [[ "$line" =~ $delimiter_pattern ]]; then
-      continue
-    fi
-
-    # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
-    if [[ $line == "CREATE PROCEDURE"* ]]; then
-      echo "~" >> "$cleaned_liquibase_file"
-    fi
-
-     # Add the character '/' on a new line before the statement 'CREATE FUNCTION...'
-    if [[ $line == "CREATE FUNCTION"* ]]; then
-      echo "~" >> "$cleaned_liquibase_file"
-    fi
-
-    # Write the modified line to the output file
-    echo "$line" >> "$cleaned_liquibase_file"
-
-  done < "$file_to_clean"
-
-  #after executing use analysis_db at strt of execution, we were getting a weir error in openmrs on unlocking liquibase changelock where it was looking for the Table inside analysis_db yet it is in the Openmrs transactional db
-  #so let's manually change back to use the openmrs database at the end
-  use_source_db="USE $source_database;"
-  echo "$use_source_db" >> "$cleaned_liquibase_file"
-
-}
-
-function make_buildfile_jdbc_compatible(){
-
-  > "$cleaned_jdbc_file"
-
-  end_pattern="^[[:space:]]*(end|END)[[:space:]]*[/|//][[:space:]]*"
-  delimiter_pattern="^[[:space:]]*(delimiter|DELIMITER)[[:space:]]*[;|//][[:space:]]*"
-
-  while IFS= read -r line; do
-
-    if [[ "$line" =~ $end_pattern ]]; then
-      echo "END;" >> "$cleaned_jdbc_file"
-      echo "~-~-" >> "$cleaned_jdbc_file"
-      continue
-    fi
-
-    if [[ "$line" =~ $delimiter_pattern ]]; then
-      continue
-    fi
-
-    # Add the character '/' on a new line before the statement 'CREATE PROCEDURE...'
-    if [[ $line == "CREATE PROCEDURE"* ]]; then
-      echo "~-~-" >> "$cleaned_jdbc_file"
-    fi
-
-     # Add the character '/' on a new line before the statement 'CREATE FUNCTION...'
-    if [[ $line == "CREATE FUNCTION"* ]]; then
-       echo "~-~-" >> "$cleaned_jdbc_file"
-
-    fi
-
-    # Write the modified line to the output file
-    echo "$line" >> "$cleaned_jdbc_file"
-
-  done < "$file_to_clean"
-}
-
 function consolidateSPsCallerFile() {
 
   # Save the current directory
   local currentDir=$(pwd)
 
   # Get the base dir for the db engine we are working with
-  local dbEngineBaseDir=$(readlink -f "../../database/$db_engine")
+  local dbEngineBaseDir=$(readlink -f "$DATABASE_BASE_DIR/$db_engine")
 
   # Search for core's p_data_processing.sql file in all subdirectories in the path: ${project.build.directory}/mamba-etl/_core/database/$db_engine
-  #  local consolidatedFile=$(find "../../database/$db_engine" -name sp_mamba_data_processing_drop_and_flatten.sql -type f -print -quit)
+  #  local consolidatedFile=$(find "$DATABASE_BASE_DIR/$db_engine" -name sp_mamba_data_processing_drop_and_flatten.sql -type f -print -quit)
   local consolidatedFile=$(find "$dbEngineBaseDir" -name sp_makefile -type f -print -quit)
 
   # Search for all files with the specified filename in the path: ${project.build.directory}/mamba-etl/_etl
   # Then get its directory name/path, so we can find a file named sp_mamba_data_processing_drop_and_flatten.sql which is in the same dir
-  local sp_make_folders=$(find "../../../_etl" -name sp_makefile -type f -exec dirname {} \; | sort -u)
+  local sp_make_folders=$(find "$ETL_BASE_DIR" -name sp_makefile -type f -exec dirname {} \; | sort -u)
 
   local newLine="\n"
   local formatHash="#############################################################################"
 
   printf "\n" >> "$consolidatedFile"
   printf "\n" >> "$consolidatedFile"
-  echo $formatHash >> "$consolidatedFile"
+  echo "$formatHash" >> "$consolidatedFile"
   printf "############################### ETL Scripts #################################" >> "$consolidatedFile"
   printf "\n" >> "$consolidatedFile"
-  echo $formatHash >> "$consolidatedFile"
+  echo "$formatHash" >> "$consolidatedFile"
 
   # Loop through each folder, cd to that folder
   local temp_folder_number=1
   for folder in $sp_make_folders; do
 
-    cd "$folder"
+    cd "$folder" || { echo "Error: Could not change directory to $folder" >&2; exit 1; }
 
     printf "\n" >> "$consolidatedFile"
 
@@ -660,7 +630,7 @@ function consolidateSPsCallerFile() {
       #echo "Folder name: $foldername"
 
       #Copy the file with its full path and folder structure to the temp folder
-      rsync --relative "$line" "$dbEngineBaseDir"/etl/$temp_folder_number/
+      rsync --relative "$line" "$dbEngineBaseDir"/etl/$temp_folder_number/ || { echo "Error: rsync failed for file: $line in folder: $folder" >&2; exit 1; }
 
       # copy the new file path to the consolidated file
       echo "etl/$temp_folder_number/$line" >>"$consolidatedFile"
@@ -668,7 +638,7 @@ function consolidateSPsCallerFile() {
     done
 
     temp_folder_number=$((temp_folder_number + 1))
-    cd "$currentDir"
+    cd "$currentDir" || { echo "Error: Could not change directory back to $currentDir" >&2; exit 1; }
   done
 
 }
@@ -697,7 +667,9 @@ function remove_tildes_in_sql_build_file () {
     local build_file="$1"
 
     # Create a temporary file to write contents without the first two tildes
-    local temp_file_no_tildes=$(mktemp)
+    local temp_file_no_tildes
+    temp_file_no_tildes=$(mktemp)
+    TEMP_FILES+=("$temp_file_no_tildes")
 
     # Use sed to remove only the first two occurrences of the tilde character
     sed 's/~//' "$build_file" | sed 's/~//' > "$temp_file_no_tildes"
@@ -705,14 +677,14 @@ function remove_tildes_in_sql_build_file () {
     # Overwrite the original file with the content of the temporary file
     mv "$temp_file_no_tildes" "$build_file"
 
-    # Remove the temporary file
-    rm "$temp_file_no_tildes"
+    # The trap will handle removing the temporary file.
+    # rm "$temp_file_no_tildes" # No longer needed here
 }
 
 # copy mamba_main.sql to the build directory
 function copy_mamba_main_sql_to_build_dir() {
 
-    SOURCE_FILE="../../database/$db_engine/mamba_main.sql"
+    SOURCE_FILE="$DATABASE_BASE_DIR/$db_engine/mamba_main.sql"
 
     # Extract the file name from the source path
     FILE_NAME=$(basename "$SOURCE_FILE")
@@ -722,14 +694,14 @@ function copy_mamba_main_sql_to_build_dir() {
     if cp "$SOURCE_FILE" "$DESTINATION_FILE"; then
         echo "mamba main sql file copied successfully to $DESTINATION_FILE."
     else
-        echo "BUILD_DIR: $BUILD_DIR"
+        echo "BUILD_DIR: $BUILD_DIR" >&2
         echo "Failed to copy $SOURCE_FILE to $DESTINATION_FILE" >&2
         return 1
     fi
 }
 
 
-BUILD_DIR=""
+BUILD_DIR="" # Will be set after db_engine is known
 sp_out_file="create_stored_procedures.sql"
 vw_out_file="create_views.sql"
 makefile=""
@@ -760,6 +732,9 @@ while getopts ":h:t:n:d:a:v:s:k:o:c:l:p:u:" opt; do
         t)  config_dir="$OPTARG"
             ;;
         n)  db_engine="$OPTARG"
+            # Set BUILD_DIR once db_engine is known
+            BUILD_DIR="$SCRIPT_DIR/../../build/$db_engine"
+            create_directory_if_absent "$BUILD_DIR" # Ensure build dir exists early
             ;;
         d)  source_database="$OPTARG"
             ;;
@@ -788,6 +763,13 @@ while getopts ":h:t:n:d:a:v:s:k:o:c:l:p:u:" opt; do
     esac
 done
 shift "$((OPTIND-1))"
+
+if [ -n "$config_dir" ]; then
+    if [ ! -d "$config_dir" ]; then
+        echo "Error: Configuration directory not found at: $config_dir" >&2
+        exit 1
+    fi
+fi
 
 if [ ! -n "$stored_procedures" ] && [ ! -n "$views" ]
 then
@@ -920,8 +902,8 @@ then
               sp_body=`cat $WORKING_DIR/$file_path`
               sp_create_statement="
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  $sp_name  ----------------------------
--- ---------------------------------------------------------------------------------------------
+-- $sp_name
+--
 
 $sp_body
 
@@ -929,13 +911,14 @@ $sp_body
         else
             sp_create_statement="
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  $sp_name  ----------------------------
--- ---------------------------------------------------------------------------------------------
+-- $sp_name
+--
 
 DROP PROCEDURE IF EXISTS $sp_name;
 
 DELIMITER //
 
+-- Parameters vary based on pagination flag
 CREATE PROCEDURE $sp_name()
 BEGIN
 
