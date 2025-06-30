@@ -28,6 +28,9 @@ BEGIN
     -- create ETL schedule log table
     CALL sp_mamba_etl_schedule_table_create();
 
+    -- create ETL database event table
+    CALL sp_mamba_etl_database_event_create();
+
 END //
 
 DELIMITER ;
