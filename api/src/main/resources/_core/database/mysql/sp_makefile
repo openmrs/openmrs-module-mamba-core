@@ -21,6 +21,7 @@ functions/fn_mamba_remove_all_whitespace.sql
 functions/fn_mamba_remove_quotes.sql
 functions/fn_mamba_remove_special_characters.sql
 functions/fn_mamba_collapse_spaces.sql
+functions/fn_mamba_is_mysql8_or_higher.sql
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
