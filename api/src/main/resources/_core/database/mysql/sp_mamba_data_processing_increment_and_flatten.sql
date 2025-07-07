@@ -44,6 +44,10 @@ BEGIN
 
     CALL sp_mamba_dim_orders_incremental;
 
+    CALL sp_mamba_dim_conditions_incremental;
+
+    CALL sp_mamba_dim_encounter_diagnosis_incremental;
+
     -- incremental inserts into the mamba_z_encounter_obs table only
     CALL sp_mamba_z_encounter_obs_incremental;
 
