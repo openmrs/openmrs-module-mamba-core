@@ -3,7 +3,7 @@
 -- Update the Concept datatypes, concept_name and concept_id based on given locale
 UPDATE mamba_concept_metadata md
     INNER JOIN mamba_dim_concept c
-    ON md.concept_uuid = c.uuid
+    ON md.concept_uuid COLLATE utf8mb4_general_ci = c.uuid COLLATE utf8mb4_general_ci
 SET md.concept_datatype = c.datatype,
     md.concept_id       = c.concept_id,
     md.concept_name     = c.name
