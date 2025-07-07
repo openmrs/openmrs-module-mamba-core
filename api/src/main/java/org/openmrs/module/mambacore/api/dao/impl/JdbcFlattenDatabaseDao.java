@@ -1,7 +1,15 @@
 package org.openmrs.module.mambacore.api.dao.impl;
 
+
+import io.debezium.config.Configuration;
 import org.openmrs.module.mambacore.api.dao.FlattenDatabaseDao;
 import org.openmrs.module.mambacore.db.ConnectionPoolManager;
+import org.openmrs.module.mambacore.debezium.DbChangeConsumer;
+import org.openmrs.module.mambacore.debezium.DbChangeServiceImpl;
+import org.openmrs.module.mambacore.debezium.DbChangeToEventMapper;
+import org.openmrs.module.mambacore.debezium.DbEventConsumerImpl;
+import org.openmrs.module.mambacore.debezium.DebeziumConfigBuilder;
+import org.openmrs.module.mambacore.debezium.EventConsumer;
 import org.openmrs.module.mambacore.util.MambaETLProperties;
 import org.openmrs.module.mambacore.util.StringReplacerUtil;
 import org.slf4j.Logger;
@@ -29,13 +37,36 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     private static final String MYSQL_COMMENT_REGEX = "--.*(?=\\n)";
     private static final String DELIMITER = "~-~-";
 
+    public JdbcFlattenDatabaseDao() {
+    }
+
+    /**
+     * Deploy MambaETL stored procedures
+     */
     @Override
     public void deployMambaEtl() {
 
+        log.info("Deploying MambaETL...");
         MambaETLProperties props = MambaETLProperties.getInstance();
-        log.info("Deploying MambaETL, scheduled @interval: " + props.getInterval() + " seconds...");
         executeSqlScript(props);
-        log.info("Done deploying MambaETL...");
+        log.info("MambaETL deployed (with interval: " + props.getInterval() + "s )...");
+    }
+
+    /**
+     * Stream in database changes using Debezium
+     */
+    @Override
+    public void streamInDatabaseChanges() {
+
+        EventConsumer eventConsumer = new DbEventConsumerImpl();
+        DbChangeToEventMapper eventMapper = new DbChangeToEventMapper();
+        Configuration debeziumConfig = DebeziumConfigBuilder.getInstance().build();
+
+        DbChangeConsumer dbChangeConsumer = new DbChangeConsumer(eventConsumer, eventMapper);
+        DbChangeServiceImpl dbChangeService = new DbChangeServiceImpl(debeziumConfig);
+
+        dbChangeService.addDbChangeListener(dbChangeConsumer);
+        dbChangeService.start();
     }
 
     private void executeSqlScript(MambaETLProperties props) {

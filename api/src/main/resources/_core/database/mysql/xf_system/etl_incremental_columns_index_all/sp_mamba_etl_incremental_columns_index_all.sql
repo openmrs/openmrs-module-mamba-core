@@ -10,6 +10,7 @@ BEGIN
     CALL sp_mamba_etl_incremental_columns_index_all_create();
     CALL sp_mamba_etl_incremental_columns_index_all_truncate();
     CALL sp_mamba_etl_incremental_columns_index_all_insert(target_table_name);
+    CALL sp_mamba_etl_database_event_delete();
 
 END //
 
