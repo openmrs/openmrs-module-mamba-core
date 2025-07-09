@@ -72,7 +72,7 @@ BEGIN
         SET next_schedule_time = FROM_UNIXTIME(next_schedule_seconds);
 
         -- Run ETL immediately if schedule was missed (give allowance of 1 second)
-        IF end_time_seconds > next_schedule_seconds THEN
+        IF end_time_seconds > next_schedule_seconds + start_in_seconds THEN
             SET missed_schedule_seconds = end_time_seconds - next_schedule_seconds;
             SET next_schedule_time = FROM_UNIXTIME(end_time_seconds + 1);
         END IF;
