@@ -61,6 +61,13 @@ BEGIN
                                 ORDER BY id DESC
                                 LIMIT 1);
 
+        SET start_in_seconds = (
+            SELECT start_in_seconds
+            FROM _mamba_etl_user_settings
+            ORDER BY id DESC
+            LIMIT 1
+    );
+
         SET next_schedule_seconds = start_time_seconds + interval_seconds + etl_execution_delay_seconds;
         SET next_schedule_time = FROM_UNIXTIME(next_schedule_seconds);
 
