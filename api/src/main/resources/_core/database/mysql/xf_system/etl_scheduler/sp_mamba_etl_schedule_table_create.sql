@@ -16,6 +16,7 @@ BEGIN
         completion_status          ENUM ('SUCCESS', 'ERROR'),
         transaction_status         ENUM ('RUNNING', 'COMPLETED'),
         success_or_error_message   MEDIUMTEXT,
+        start_in_seconds           INT               DEFAULT 0,
 
         INDEX mamba_idx_start_time (start_time),
         INDEX mamba_idx_end_time (end_time),

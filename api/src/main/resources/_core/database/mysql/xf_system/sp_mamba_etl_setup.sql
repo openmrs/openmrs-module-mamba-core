@@ -9,7 +9,8 @@ CREATE PROCEDURE sp_mamba_etl_setup(
     IN table_partition_number INT,
     IN incremental_mode_switch TINYINT(1),
     IN automatic_flattening_mode_switch TINYINT(1),
-    IN etl_interval_seconds INT
+    IN etl_interval_seconds INT,
+    IN start_in_seconds INT
 )
 BEGIN
 
@@ -23,7 +24,8 @@ BEGIN
                                     table_partition_number,
                                     incremental_mode_switch,
                                     automatic_flattening_mode_switch,
-                                    etl_interval_seconds);
+                                    etl_interval_seconds,
+                                    start_in_seconds);
 
     -- create ETL schedule log table
     CALL sp_mamba_etl_schedule_table_create();
