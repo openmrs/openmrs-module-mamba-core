@@ -1,7 +1,7 @@
 -- Flatten all Encounters given in Config folder
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert_all;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert_all()
 BEGIN
@@ -39,13 +39,13 @@ BEGIN
                                         SET firstobs_name = obs_name;
                                     END IF;
 
-                                    CALL sp_mamba_flat_encounter_obs_group_table_insert(tbl_name,obs_name);
+                                    CALL sp_mamba_flat_encounter_obs_group_table_insert(tbl_name,obs_name,NULL);
                                     SET i = i + 1;
 
                                 UNTIL doneobs_name
                             END REPEAT;
 
-                            CALL sp_mamba_flat_encounter_obs_group_table_insert(tbl_name,firstobs_name);
+                            CALL sp_mamba_flat_encounter_obs_group_table_insert(tbl_name,firstobs_name,NULL);
                         END block2;
                     CLOSE cursor_obs_group_tables;
             END IF;

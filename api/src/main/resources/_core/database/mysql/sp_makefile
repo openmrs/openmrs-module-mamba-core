@@ -20,6 +20,7 @@ functions/fn_mamba_json_value_by_key.sql
 functions/fn_mamba_remove_all_whitespace.sql
 functions/fn_mamba_remove_quotes.sql
 functions/fn_mamba_remove_special_characters.sql
+functions/fn_mamba_collapse_spaces.sql
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
@@ -29,6 +30,8 @@ xf_system/sp_mamba_system_drop_all_tables.sql
 xf_system/etl_scheduler/sp_mamba_etl_scheduler_wrapper.sql
 xf_system/etl_scheduler/sp_mamba_etl_schedule_table_create.sql
 xf_system/etl_scheduler/sp_mamba_etl_schedule.sql
+xf_system/etl_scheduler/sp_mamba_etl_schedule_trim_log_event.sql
+xf_system/etl_scheduler/sp_mamba_etl_un_stuck_scheduler.sql
 
 xf_system/sp_mamba_etl_setup.sql
 
@@ -36,6 +39,9 @@ xf_system/etl_flat_table/sp_mamba_flat_encounter_table_create.sql
 xf_system/etl_flat_table/sp_mamba_flat_encounter_table_create_all.sql
 xf_system/etl_flat_table/sp_mamba_flat_encounter_table_insert.sql
 xf_system/etl_flat_table/sp_mamba_flat_encounter_table_insert_all.sql
+
+xf_system/etl_flat_table/sp_mamba_flat_encounter_table_question_concepts_insert.sql
+xf_system/etl_flat_table/sp_mamba_flat_encounter_table_answer_concepts_insert.sql
 
 xf_system/etl_flat_table/incremental/sp_mamba_flat_table_incremental_create_all.sql
 xf_system/etl_flat_table/incremental/sp_mamba_flat_table_incremental_insert_all.sql
@@ -56,6 +62,7 @@ stored-procedures/sp_mamba_locale_insert_helper.sql
 xf_system/etl_report/sp_mamba_extract_report_column_names.sql
 xf_system/etl_report/sp_mamba_extract_report_definition_metadata.sql
 xf_system/etl_report/sp_mamba_generate_report_wrapper.sql
+xf_system/etl_report/sp_mamba_generate_report_size_sp_wrapper.sql
 xf_system/etl_report/sp_mamba_get_report_column_names.sql
 
 #xf_system/etl_report/p_mamba_generate_report_columns.sql

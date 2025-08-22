@@ -1,7 +1,7 @@
 -- Flatten all Encounters given in Config folder
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_create_all;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_create_all()
 BEGIN

@@ -20,15 +20,29 @@ SELECT c.concept_id,
            WHEN TRIM(cn.name) IS NULL OR TRIM(cn.name) = '' THEN CONCAT('UNKNOWN_CONCEPT_NAME', '_', c.concept_id)
            WHEN c.retired = 1 THEN CONCAT(TRIM(cn.name), '_', 'RETIRED')
            ELSE TRIM(cn.name)
-           END                                                         AS computed_name,
-       TRIM(LOWER(LEFT(REPLACE(REPLACE(fn_mamba_remove_special_characters(
-                                               CASE
-                                                   WHEN TRIM(cn.name) IS NULL OR TRIM(cn.name) = ''
-                                                       THEN CONCAT('UNKNOWN_CONCEPT_NAME', '_', c.concept_id)
-                                                   WHEN c.retired = 1 THEN CONCAT(TRIM(cn.name), '_', 'RETIRED')
-                                                   ELSE TRIM(cn.name)
-                                                   END
-                                       ), ' ', '_'), '__', '_'), 60))) AS tbl_column_name
+           END     AS computed_name,
+       TRIM(LOWER(
+               LEFT(
+                       REPLACE(
+                               REPLACE(
+                                       fn_mamba_remove_special_characters(
+                                           -- First collapse multiple spaces into one
+                                               fn_mamba_collapse_spaces(
+                                                       TRIM(
+                                                               CASE
+                                                                   WHEN TRIM(cn.name) IS NULL OR TRIM(cn.name) = ''
+                                                                       THEN CONCAT('UNKNOWN_CONCEPT_NAME', '_', c.concept_id)
+                                                                   WHEN c.retired = 1
+                                                                       THEN CONCAT(TRIM(cn.name), '_', 'RETIRED')
+                                                                   ELSE TRIM(cn.name)
+                                                                   END
+                                                       )
+                                               )
+                                       ),
+                                       ' ', '_'), -- Replace single spaces with underscores
+                               '__', '_'), -- Replace double underscores with a single underscore
+                       60 -- Limit to 60 characters
+               ))) AS tbl_column_name
 FROM mamba_dim_concept c
          LEFT JOIN mamba_dim_concept_name cn ON c.concept_id = cn.concept_id;
 

@@ -36,4 +36,9 @@ public class MambaReportServiceImpl extends BaseOpenmrsService implements MambaR
     public List<MambaReportItem> getMambaReportByCriteria(MambaReportCriteria criteria) {
         return dao.getMambaReport(criteria);
     }
+
+    @Override
+    public Integer getMambaReportSize(MambaReportCriteria criteria) {
+        return dao.getMambaReportSize(criteria);
+    }
 }
