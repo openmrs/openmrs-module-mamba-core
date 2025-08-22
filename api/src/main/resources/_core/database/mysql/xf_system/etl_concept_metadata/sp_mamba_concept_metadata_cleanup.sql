@@ -4,6 +4,6 @@
 DELETE
 FROM mamba_concept_metadata
 WHERE concept_uuid = 'AUTO-GENERATE'
-  AND column_label = 'AUTO-GENERATE';
+ AND column_label = 'AUTO-GENERATE';
 
 -- $END

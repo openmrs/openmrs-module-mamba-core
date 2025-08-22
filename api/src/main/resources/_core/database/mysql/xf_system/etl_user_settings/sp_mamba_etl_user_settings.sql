@@ -3,27 +3,27 @@ DROP PROCEDURE IF EXISTS sp_mamba_etl_user_settings;
 DELIMITER //
 
 CREATE PROCEDURE sp_mamba_etl_user_settings(
-    IN openmrs_database VARCHAR(256) CHARACTER SET UTF8MB4,
-    IN etl_database VARCHAR(256) CHARACTER SET UTF8MB4,
-    IN concepts_locale CHAR(4) CHARACTER SET UTF8MB4,
-    IN table_partition_number INT,
-    IN incremental_mode_switch TINYINT(1),
-    IN automatic_flattening_mode_switch TINYINT(1),
-    IN etl_interval_seconds INT
+ IN openmrs_database VARCHAR(256) ,
+ IN etl_database VARCHAR(256) ,
+ IN concepts_locale CHAR(4) ,
+ IN table_partition_number INT,
+ IN incremental_mode_switch TINYINT(1),
+ IN automatic_flattening_mode_switch TINYINT(1),
+ IN etl_interval_seconds INT
 )
 BEGIN
 
-    -- DECLARE openmrs_db VARCHAR(256)  DEFAULT IFNULL(openmrs_database, 'openmrs');
+ -- DECLARE openmrs_db VARCHAR(256) DEFAULT IFNULL(openmrs_database, 'openmrs');
 
-    CALL sp_mamba_etl_user_settings_drop();
-    CALL sp_mamba_etl_user_settings_create();
-    CALL sp_mamba_etl_user_settings_insert(openmrs_database,
-                                           etl_database,
-                                           concepts_locale,
-                                           table_partition_number,
-                                           incremental_mode_switch,
-                                           automatic_flattening_mode_switch,
-                                           etl_interval_seconds);
+ CALL sp_mamba_etl_user_settings_drop();
+ CALL sp_mamba_etl_user_settings_create();
+ CALL sp_mamba_etl_user_settings_insert(openmrs_database,
+ etl_database,
+ concepts_locale,
+ table_partition_number,
+ incremental_mode_switch,
+ automatic_flattening_mode_switch,
+ etl_interval_seconds);
 END //
 
 DELIMITER ;

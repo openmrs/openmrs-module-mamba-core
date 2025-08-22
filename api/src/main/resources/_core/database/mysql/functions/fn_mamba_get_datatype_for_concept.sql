@@ -3,36 +3,36 @@ DROP FUNCTION IF EXISTS fn_mamba_get_datatype_for_concept;
 DELIMITER //
 
 CREATE FUNCTION fn_mamba_get_datatype_for_concept(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
-    DETERMINISTIC
+ DETERMINISTIC
 BEGIN
-    DECLARE mysqlDatatype VARCHAR(20);
+ DECLARE mysqlDatatype VARCHAR(20);
 
 
-    IF conceptDatatype = 'Text' THEN
-        SET mysqlDatatype = 'TEXT';
+ IF conceptDatatype = 'Text' THEN
+ SET mysqlDatatype = 'TEXT';
 
-    ELSEIF conceptDatatype = 'Coded'
-        OR conceptDatatype = 'N/A' THEN
-        SET mysqlDatatype = 'VARCHAR(250)';
+ ELSEIF conceptDatatype = 'Coded'
+ OR conceptDatatype = 'N/A' THEN
+ SET mysqlDatatype = 'VARCHAR(250)';
 
-    ELSEIF conceptDatatype = 'Boolean' THEN
-        SET mysqlDatatype = 'BOOLEAN';
+ ELSEIF conceptDatatype = 'Boolean' THEN
+ SET mysqlDatatype = 'BOOLEAN';
 
-    ELSEIF conceptDatatype = 'Date' THEN
-        SET mysqlDatatype = 'DATE';
+ ELSEIF conceptDatatype = 'Date' THEN
+ SET mysqlDatatype = 'DATE';
 
-    ELSEIF conceptDatatype = 'Datetime' THEN
-        SET mysqlDatatype = 'DATETIME';
+ ELSEIF conceptDatatype = 'Datetime' THEN
+ SET mysqlDatatype = 'DATETIME';
 
-    ELSEIF conceptDatatype = 'Numeric' THEN
-        SET mysqlDatatype = 'DOUBLE';
+ ELSEIF conceptDatatype = 'Numeric' THEN
+ SET mysqlDatatype = 'DOUBLE';
 
-    ELSE
-        SET mysqlDatatype = 'TEXT';
+ ELSE
+ SET mysqlDatatype = 'TEXT';
 
-    END IF;
+ END IF;
 
-    RETURN mysqlDatatype;
+ RETURN mysqlDatatype;
 END //
 
 DELIMITER ;

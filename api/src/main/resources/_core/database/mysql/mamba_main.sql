@@ -9,6 +9,6 @@ CALL sp_mamba_etl_setup(?, ?, ?, ?, ?,?,?);
 -- pass them from the runtime properties file
 
 CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_event
-    ON SCHEDULE EVERY ? SECOND
-        STARTS CURRENT_TIMESTAMP
-    DO CALL sp_mamba_etl_schedule();
+ ON SCHEDULE EVERY ? SECOND
+ STARTS CURRENT_TIMESTAMP
+ DO CALL sp_mamba_etl_schedule();

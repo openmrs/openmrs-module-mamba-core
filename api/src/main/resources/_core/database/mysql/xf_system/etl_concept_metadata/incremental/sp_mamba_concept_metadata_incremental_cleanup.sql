@@ -5,7 +5,7 @@
 DELETE
 FROM mamba_concept_metadata
 WHERE incremental_record = 1
-  AND concept_uuid = 'AUTO-GENERATE'
-  AND column_label = 'AUTO-GENERATE';
+ AND concept_uuid = 'AUTO-GENERATE'
+ AND column_label = 'AUTO-GENERATE';
 
 -- $END
