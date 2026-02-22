@@ -31,7 +31,7 @@ BEGIN
  o.encounter_id,
  MAX(o.visit_id) AS visit_id,
  o.person_id,
- o.encounter_datetime,
+ MAX(o.encounter_datetime) AS encounter_datetime,
  MAX(o.location_id) AS location_id,
  ', p_column_labels, '
  FROM mamba_z_encounter_obs o
@@ -52,7 +52,7 @@ BEGIN
  AND tcm.obs_value_column IS NOT NULL
  AND o.obs_group_id IS NULL
  AND o.voided = 0
- GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
+ GROUP BY o.encounter_id, o.person_id
  ORDER BY o.encounter_id ASC
  ON DUPLICATE KEY UPDATE ', update_columns);
 
