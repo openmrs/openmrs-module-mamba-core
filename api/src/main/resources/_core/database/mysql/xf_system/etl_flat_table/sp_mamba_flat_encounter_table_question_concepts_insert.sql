@@ -24,7 +24,7 @@ BEGIN
      'SELECT
      o.encounter_id,
      MAX(o.visit_id) AS visit_id,
-     o.person_id,
+     MAX(o.person_id) AS person_id,
      MAX(o.encounter_datetime) AS encounter_datetime,
      MAX(o.location_id) AS location_id,
      ', p_column_labels, '
@@ -36,7 +36,7 @@ BEGIN
      AND tcm.obs_value_column IS NOT NULL
      AND o.obs_group_id IS NULL
      AND o.voided = 0
-     GROUP BY o.encounter_id, o.person_id
+     GROUP BY o.encounter_id
      ORDER BY o.encounter_id ASC');
 
      SET @sql = sql_stmt;
@@ -59,7 +59,7 @@ BEGIN
          'SELECT
          o.encounter_id,
          MAX(o.visit_id) AS visit_id,
-         o.person_id,
+         MAX(o.person_id) AS person_id,
          MAX(o.encounter_datetime) AS encounter_datetime,
          MAX(o.location_id) AS location_id,
          ', p_column_labels, '
@@ -72,7 +72,7 @@ BEGIN
            AND tcm.obs_value_column IS NOT NULL
            AND o.obs_group_id IS NULL
            AND o.voided = 0
-         GROUP BY o.encounter_id, o.person_id
+         GROUP BY o.encounter_id
          ORDER BY o.encounter_id ASC');
 
          SET @sql = sql_stmt;

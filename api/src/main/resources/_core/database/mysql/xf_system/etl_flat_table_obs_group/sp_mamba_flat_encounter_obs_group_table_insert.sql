@@ -89,14 +89,14 @@ BEGIN
          -- Incremental insert
          SET @insert_stmt = CONCAT(
          'INSERT INTO `', @tbl_obs_group_name, '` ',
-         'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`, ',
+         'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, MAX(eo.`person_id`) AS `person_id`, MAX(eo.`encounter_datetime`) AS `encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`, ',
          @column_labels, ' ',
          'FROM `mamba_z_encounter_obs` eo ',
          'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_question_uuid` ',
          'WHERE eo.`obs_group_id` IS NOT NULL ',
          'AND eo.`voided` = 0 ',
          'AND eo.`encounter_id` = ', @enc_id, ' ',
-         'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` '
+         'GROUP BY eo.`encounter_id`, eo.`obs_group_id` '
          );
 
          PREPARE inserttbl FROM @insert_stmt;
@@ -112,14 +112,14 @@ BEGIN
 
          SET @insert_stmt = CONCAT(
          'INSERT INTO `', @tbl_obs_group_name, '` ',
-         'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` , ',
+         'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, MAX(eo.`person_id`) AS `person_id`, MAX(eo.`encounter_datetime`) AS `encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` , ',
          @column_labels, ' ',
          'FROM `mamba_z_encounter_obs` eo ',
          'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_value_coded_uuid` ',
          'WHERE eo.`obs_group_id` IS NOT NULL ',
          'AND eo.`voided` = 0 ',
          'AND eo.`encounter_id` = ', @enc_id, ' ',
-         'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` ',
+         'GROUP BY eo.`encounter_id`, eo.`obs_group_id` ',
          'ON DUPLICATE KEY UPDATE ', @update_stmt
          );
 
@@ -140,7 +140,7 @@ BEGIN
              -- Questions batch insert
              SET @insert_stmt = CONCAT(
              'INSERT INTO `', @tbl_obs_group_name, '` ',
-             'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`, ',
+             'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, MAX(eo.`person_id`) AS `person_id`, MAX(eo.`encounter_datetime`) AS `encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`, ',
              @column_labels, ' ',
              'FROM `mamba_z_encounter_obs` eo ',
              'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_question_uuid` ',
@@ -148,7 +148,7 @@ BEGIN
              'AND eo.`voided` = 0 ',
              'AND eo.`encounter_id` >= ', current_id, ' ',
              'AND eo.`encounter_id` < ', current_id + batch_size, ' ',
-             'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` '
+             'GROUP BY eo.`encounter_id`, eo.`obs_group_id` '
              );
 
              PREPARE inserttbl FROM @insert_stmt;
@@ -165,7 +165,7 @@ BEGIN
 
              SET @insert_stmt = CONCAT(
              'INSERT INTO `', @tbl_obs_group_name, '` ',
-             'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` , ',
+             'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, MAX(eo.`person_id`) AS `person_id`, MAX(eo.`encounter_datetime`) AS `encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` , ',
              @column_labels, ' ',
              'FROM `mamba_z_encounter_obs` eo ',
              'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_value_coded_uuid` ',
@@ -173,7 +173,7 @@ BEGIN
              'AND eo.`voided` = 0 ',
              'AND eo.`encounter_id` >= ', current_id, ' ',
              'AND eo.`encounter_id` < ', current_id + batch_size, ' ',
-             'GROUP BY eo.`encounter_id`, eo.`person_id`, eo.`encounter_datetime`, eo.`obs_group_id` ',
+             'GROUP BY eo.`encounter_id`, eo.`obs_group_id` ',
              'ON DUPLICATE KEY UPDATE ', @update_stmt
              );
 

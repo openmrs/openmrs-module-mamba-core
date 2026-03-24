@@ -10,7 +10,6 @@ BEGIN
 
 SET session group_concat_max_len = 20000;
 SET @column_labels := NULL;
- -- We wrap this in LEFT(..., 64) to ensure we never exceed MySQL's 64-character table name limit
  SET @tbl_obs_group_name = LEFT(CONCAT(LEFT(`flat_encounter_table_name`, 50), '_', `obs_group_concept_name`), 64);
 
  SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @tbl_obs_group_name, '`');
