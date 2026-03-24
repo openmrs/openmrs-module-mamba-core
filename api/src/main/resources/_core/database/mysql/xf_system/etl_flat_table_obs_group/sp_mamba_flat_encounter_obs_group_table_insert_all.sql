@@ -1,57 +1,35 @@
--- Flatten all Encounters given in Config folder
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert_all;
 
 DELIMITER //
 
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert_all()
 BEGIN
+    DECLARE tbl_name VARCHAR(60);
+    DECLARE obs_name VARCHAR(255);
+    DECLARE done INT DEFAULT FALSE;
 
- DECLARE tbl_name VARCHAR(60) ;
- DECLARE obs_name CHAR(50) ;
+    -- Use a single JOINed cursor to avoid O(N*M) nested loops.
+    -- This only iterates over combinations that actually exist in metadata.
+    DECLARE cursor_combinations CURSOR FOR
+    SELECT DISTINCT cm.flat_table_name, og.obs_group_concept_name
+    FROM mamba_concept_metadata cm
+    INNER JOIN mamba_z_encounter_obs eo ON cm.concept_uuid = eo.obs_question_uuid
+    INNER JOIN mamba_obs_group og ON eo.obs_id = og.obs_id;
 
- DECLARE done INT DEFAULT 0;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
- DECLARE cursor_flat_tables CURSOR FOR
- SELECT DISTINCT(flat_table_name) FROM mamba_concept_metadata;
+    OPEN cursor_combinations;
+    
+    combinations_loop: LOOP
+        FETCH cursor_combinations INTO tbl_name, obs_name;
+        IF done THEN
+            LEAVE combinations_loop;
+        END IF;
 
- DECLARE cursor_obs_group_tables CURSOR FOR
- SELECT DISTINCT(obs_group_concept_name) FROM mamba_obs_group;
+        CALL sp_mamba_flat_encounter_obs_group_table_insert(tbl_name, obs_name, NULL);
+    END LOOP;
 
- -- DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
- DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
- OPEN cursor_flat_tables;
-
- REPEAT
- FETCH cursor_flat_tables INTO tbl_name;
- IF NOT done THEN
- OPEN cursor_obs_group_tables;
- block2: BEGIN
- DECLARE doneobs_name INT DEFAULT 0;
- DECLARE firstobs_name varchar(255) DEFAULT '';
- DECLARE i int DEFAULT 1;
- DECLARE CONTINUE HANDLER FOR NOT FOUND SET doneobs_name = 1;
-
- REPEAT
- FETCH cursor_obs_group_tables INTO obs_name;
-
- IF i = 1 THEN
- SET firstobs_name = obs_name;
- END IF;
-
- CALL sp_mamba_flat_encounter_obs_group_table_insert(tbl_name,obs_name,NULL);
- SET i = i + 1;
-
- UNTIL doneobs_name
- END REPEAT;
-
- CALL sp_mamba_flat_encounter_obs_group_table_insert(tbl_name,firstobs_name,NULL);
- END block2;
- CLOSE cursor_obs_group_tables;
- END IF;
- UNTIL done
- END REPEAT;
- CLOSE cursor_flat_tables;
+    CLOSE cursor_combinations;
 
 END //
 
