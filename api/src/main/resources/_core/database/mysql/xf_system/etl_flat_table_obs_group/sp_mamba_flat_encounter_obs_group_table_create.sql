@@ -10,7 +10,8 @@ BEGIN
 
 SET session group_concat_max_len = 20000;
 SET @column_labels := NULL;
- SET @tbl_obs_group_name = CONCAT(LEFT(`flat_encounter_table_name`, 50), '_', `obs_group_concept_name`); -- TODO: 50 + 12 to make 62
+ -- We wrap this in LEFT(..., 64) to ensure we never exceed MySQL's 64-character table name limit
+ SET @tbl_obs_group_name = LEFT(CONCAT(LEFT(`flat_encounter_table_name`, 50), '_', `obs_group_concept_name`), 64);
 
  SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @tbl_obs_group_name, '`');
 
@@ -35,8 +36,8 @@ IF @column_labels IS NOT NULL THEN
  '`visit_id` INT NULL,',
  '`client_id` INT NOT NULL,',
  '`encounter_datetime` DATETIME NOT NULL,',
- '`location_id` INT NULL, '
- '`obs_group_id` INT NOT NULL,', @column_labels,
+ '`location_id` INT NULL, ',
+ '`obs_group_id` INT NOT NULL PRIMARY KEY,', @column_labels,
 
  ',INDEX `mamba_idx_encounter_id` (`encounter_id`),',
  'INDEX `mamba_idx_visit_id` (`visit_id`),',
