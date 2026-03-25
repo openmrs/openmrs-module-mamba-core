@@ -8,6 +8,15 @@ BEGIN
     DECLARE batch_last_obs_id INT DEFAULT 0;
     DECLARE max_obs_id INT;
 
+    -- Optimize: Create a temporary table for distinct concept metadata to avoid repeating the subquery in the loop
+    DROP TEMPORARY TABLE IF EXISTS mamba_temp_concept_metadata;
+    CREATE TEMPORARY TABLE mamba_temp_concept_metadata AS
+    SELECT DISTINCT concept_id, concept_uuid 
+    FROM mamba_concept_metadata;
+    
+    -- Index the temporary table for fast joins
+    CREATE INDEX idx_temp_concept_id ON mamba_temp_concept_metadata(concept_id);
+
     -- Get the maximum obs_id from the source table to determine the loop end
     SELECT MAX(obs_id) INTO max_obs_id FROM mamba_source_db.obs;
 
@@ -71,16 +80,16 @@ BEGIN
             o.void_reason
         FROM mamba_source_db.obs o
         INNER JOIN mamba_dim_encounter e ON o.encounter_id = e.encounter_id
-        INNER JOIN (
-            SELECT DISTINCT concept_id, concept_uuid 
-            FROM mamba_concept_metadata
-        ) md ON o.concept_id = md.concept_id
+        INNER JOIN mamba_temp_concept_metadata md ON o.concept_id = md.concept_id
         WHERE o.obs_id > batch_last_obs_id 
           AND o.obs_id <= (batch_last_obs_id + batch_size)
           AND o.encounter_id IS NOT NULL;
 
         SET batch_last_obs_id = batch_last_obs_id + batch_size;
     END WHILE;
+
+    -- Clean up the temporary table
+    DROP TEMPORARY TABLE IF EXISTS mamba_temp_concept_metadata;
 
 END //
 
