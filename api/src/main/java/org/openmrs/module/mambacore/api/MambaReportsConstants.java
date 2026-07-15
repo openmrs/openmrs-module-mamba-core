@@ -4,7 +4,7 @@
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  * <p>
- * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark of the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.mambacore.api;
@@ -12,4 +12,9 @@ package org.openmrs.module.mambacore.api;
 public class MambaReportsConstants {
 	
 	public final static String VIEW_MAMBA_REPORT = "View MambaReport";
+	
+	/**
+	 * REST namespace for Mamba report endpoints
+	 */
+	public final static String MAMBA_REPORT_REST_NAMESPACE = "/mamba";
 }

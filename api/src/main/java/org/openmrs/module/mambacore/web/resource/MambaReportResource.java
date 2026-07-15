@@ -17,7 +17,7 @@ import org.openmrs.module.mambacore.api.model.MambaReportItem;
 import org.openmrs.module.mambacore.api.model.MambaReportPagination;
 import org.openmrs.module.mambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.mambacore.api.parameter.MambaReportSearchField;
-import org.openmrs.module.mambacore.web.controller.MambaReportRestController;
+import org.openmrs.module.mambacore.api.MambaReportsConstants;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Enumeration;
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE + "/report",
+@Resource(name = RestConstants.VERSION_1 + MambaReportsConstants.MAMBA_REPORT_REST_NAMESPACE + "/report",
         supportedClass = MambaReportItem.class,
         supportedOpenmrsVersions = {"2.0 - 9.*"})
 public class MambaReportResource implements Searchable {
