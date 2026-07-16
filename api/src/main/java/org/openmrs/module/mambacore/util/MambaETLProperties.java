@@ -1,7 +1,10 @@
 package org.openmrs.module.mambacore.util;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.util.OpenmrsUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 public class MambaETLProperties {
@@ -34,6 +37,15 @@ public class MambaETLProperties {
 	
 	private final int connectionMaxTotal = 20;
 	
+	// External ETL configuration properties
+	private final String etlDirectory;
+	
+	private boolean useExternalEtl;
+	
+	private String etlDirectoryPath;
+	
+	private final int etlDiscoveryDepth;
+	
 	private MambaETLProperties() {
 		
 		Properties properties = Context.getRuntimeProperties();
@@ -54,6 +66,44 @@ public class MambaETLProperties {
 		this.incremental = getIntProperty(properties, "mambaetl.analysis.incremental_mode", 1);
 		this.automated = getIntProperty(properties, "mambaetl.analysis.automated_flattening", 0);
 		this.interval = getIntProperty(properties, "mambaetl.analysis.etl_interval", 300);
+		
+		// External ETL configuration
+		this.etlDiscoveryDepth = getIntProperty(properties, "mambaetl.analysis.etl_discovery_depth", 5);
+		this.etlDirectory = getProperty(properties, "mambaetl.analysis.etl_directory", "");
+		
+		// Determine if we should use external ETL directory
+		// External mode is enabled when etlDirectory is configured
+		this.useExternalEtl = !this.etlDirectory.isEmpty();
+		
+		// Resolve directory path (supports relative to appdata or absolute)
+		if (this.useExternalEtl) {
+			File dir = new File(this.etlDirectory);
+			if (!dir.isAbsolute()) {
+				// Relative to application data directory + configuration/
+				try {
+					File appDataDir = new File(OpenmrsUtil.getApplicationDataDirectory());
+					File configDir = new File(appDataDir, "configuration");
+					this.etlDirectoryPath = new File(configDir, this.etlDirectory).getAbsolutePath();
+				}
+				catch (Exception e) {
+					// If application data directory cannot be determined, disable external mode
+					this.useExternalEtl = false;
+					this.etlDirectoryPath = "";
+				}
+			} else {
+				// Sanitize path to prevent traversal outside intended directory
+				try {
+					this.etlDirectoryPath = dir.getCanonicalPath();
+				}
+				catch (IOException e) {
+					// If path cannot be canonicalized, disable external mode
+					this.useExternalEtl = false;
+					this.etlDirectoryPath = "";
+				}
+			}
+		} else {
+			this.etlDirectoryPath = "";
+		}
 	}
 	
 	public static synchronized MambaETLProperties getInstance() {
@@ -113,6 +163,22 @@ public class MambaETLProperties {
 	
 	public int getConnectionMaxTotal() {
 		return connectionMaxTotal;
+	}
+	
+	public String getEtlDirectory() {
+		return etlDirectory;
+	}
+	
+	public boolean isUseExternalEtl() {
+		return useExternalEtl;
+	}
+	
+	public String getEtlDirectoryPath() {
+		return etlDirectoryPath;
+	}
+	
+	public int getEtlDiscoveryDepth() {
+		return etlDiscoveryDepth;
 	}
 	
 	private String getProperty(Properties properties, String key, String defaultValue) {
