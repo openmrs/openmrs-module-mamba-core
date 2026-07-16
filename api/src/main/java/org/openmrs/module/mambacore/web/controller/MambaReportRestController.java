@@ -14,7 +14,17 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * REST controller for Mamba report endpoints.
+ * <p>
+ * This controller is currently empty. REST endpoints are implemented
+ * by {@link org.openmrs.module.mambacore.web.resource.MambaReportResource}
+ * which is registered via the OpenMRS REST Web Services module.
+ * </p>
+ * @see org.openmrs.module.mambacore.web.resource.MambaReportResource
+ */
 @Controller
 @RequestMapping("/rest/" + RestConstants.VERSION_1 + MambaReportsConstants.MAMBA_REPORT_REST_NAMESPACE)
 public class MambaReportRestController {
+	// Add custom Spring MVC endpoints here if needed in the future
 }
