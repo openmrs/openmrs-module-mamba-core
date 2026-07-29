@@ -131,14 +131,28 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.12.4</version>
+                <version>${mockitoVersion}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-inline</artifactId>
-                <version>3.12.4</version>
+                <version>${mockitoVersion}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byteBuddyVersion}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-agent</artifactId>
+                <version>${byteBuddyVersion}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -210,12 +224,36 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
+        <!-- Default mockito version for Java 8 -->
+        <mockitoVersion>3.12.4</mockitoVersion>
+        <!-- Default byte-buddy version for Java 8 -->
+        <byteBuddyVersion>1.12.18</byteBuddyVersion>
         <openmrsPlatformVersion>2.8.0</openmrsPlatformVersion>
         <webservicesRestVersion>3.0.0</webservicesRestVersion>
         <apache.commons.dbcp>2.11.0</apache.commons.dbcp>
         <jacksonCoreVersion>2.15.3</jacksonCoreVersion>
 
     </properties>
+
+    <profiles>
+        <!--
+            Profile for Java 17+ compatibility.
+            mockito-core:3.12.4 with Java 17 causes:
+            "Cannot mock this class: interface javax.sql.DataSource ... configured to create inlined mocks."
+            mockito-core:5.6.0 does not support Java 8.
+            This profile activates on JDK 17+ and uses newer versions of mockito and byte-buddy.
+        -->
+        <profile>
+            <id>java17-plus</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <properties>
+                <mockitoVersion>5.6.0</mockitoVersion>
+                <byteBuddyVersion>1.17.6</byteBuddyVersion>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <pluginManagement>

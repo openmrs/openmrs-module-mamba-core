@@ -4,7 +4,7 @@
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  * <p>
- * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark of the OpenMRS
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.mambacore.web.controller;
@@ -16,7 +16,8 @@ import org.openmrs.module.mambacore.api.model.MambaReportItem;
 import org.openmrs.module.mambacore.api.model.MambaReportPagination;
 import org.openmrs.module.mambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.mambacore.api.parameter.MambaReportSearchField;
-import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,14 +39,16 @@ import java.util.Map;
  * REST module classes like SimpleObject, @Resource, etc.
  * <p>
  * Endpoints:
- * - GET /ws/rest/v1/mamba/report?report_id={id}&page_number={n}&page_size={size}
+ * - GET {REST_API_PATH}/report?report_id={id}&page_number={n}&page_size={size}
  * <p>
  * This implementation works across different OpenMRS REST Web Services versions
  * since it doesn't depend on the REST module's internal classes.
  */
 @Controller
-@RequestMapping("/rest/" + RestConstants.VERSION_1 + MambaReportsConstants.MAMBA_REPORT_REST_NAMESPACE + "/report")
+@RequestMapping(MambaReportsConstants.REST_API_PATH + "/report")
 public class MambaReportRestController {
+
+    private static final Logger log = LoggerFactory.getLogger(MambaReportRestController.class);
 
     private static final String DEFAULT_PAGE_SIZE = "50";
     private static final String DEFAULT_PAGE_NUMBER = "1";
@@ -82,15 +85,15 @@ public class MambaReportRestController {
         try {
             // Validate required parameters
             if (searchCriteria.getReportId() == null || searchCriteria.getReportId().trim().isEmpty()) {
-                return buildErrorResponse("report_id is required");
+                throw new IllegalArgumentException("report_id is required");
             }
 
             // Validate pagination parameters
-            if (pageNumber < 1) {
-                return buildErrorResponse("page_number must be >= 1");
+            if (pageNumber != null && pageNumber < 1) {
+                throw new IllegalArgumentException("page_number must be >= 1");
             }
-            if (pageSize <= 0) {
-                return buildErrorResponse("page_size must be > 0");
+            if (pageSize != null && pageSize <= 0) {
+                throw new IllegalArgumentException("page_size must be > 0");
             }
 
             // Fetch results
@@ -106,8 +109,14 @@ public class MambaReportRestController {
             response.put("pagination", pagination);
             return response;
 
+        } catch (IllegalArgumentException e) {
+            // Client errors - return 400 Bad Request
+            log.warn("Invalid request parameters: {}", e.getMessage());
+            return buildErrorResponse(e.getMessage());
         } catch (Exception e) {
-            return buildErrorResponse("Error processing request: " + e.getMessage());
+            // Server errors - log full exception and return generic error
+            log.error("Error processing mamba report request", e);
+            return buildErrorResponse("An internal error occurred while processing the request");
         }
     }
 
