@@ -302,7 +302,7 @@ CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_event
 -- to avoid the table growing too big
 
  CREATE EVENT IF NOT EXISTS _mamba_etl_scheduler_trim_log_event
-    ON SCHEDULE EVERY 3 HOUR
+    ON SCHEDULE EVERY 2 HOUR
         STARTS CURRENT_TIMESTAMP
     DO CALL sp_mamba_etl_schedule_trim_log_event();
 
