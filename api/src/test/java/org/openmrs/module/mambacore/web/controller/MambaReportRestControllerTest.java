@@ -20,6 +20,8 @@ import org.openmrs.module.mambacore.api.MambaReportService;
 import org.openmrs.module.mambacore.api.model.MambaReportItem;
 import org.openmrs.module.mambacore.api.model.MambaReportPagination;
 import org.openmrs.module.mambacore.api.parameter.MambaReportCriteria;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.ArrayList;
@@ -70,13 +72,15 @@ public class MambaReportRestControllerTest {
         when(mockService.getMambaReportSize(any(MambaReportCriteria.class))).thenReturn(1);
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 1, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        Assert.assertFalse("Results should not be empty", response.get("results").equals(new ArrayList<>()));
-        Assert.assertEquals("Should have 1 result", 1, ((List<?>) response.get("results")).size());
-        Assert.assertNotNull("Pagination should not be null", response.get("pagination"));
+        Assert.assertEquals("Should return 200 OK", HttpStatus.OK, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        Assert.assertFalse("Results should not be empty", body.get("results").equals(new ArrayList<>()));
+        Assert.assertEquals("Should have 1 result", 1, ((List<?>) body.get("results")).size());
+        Assert.assertNotNull("Pagination should not be null", body.get("pagination"));
 
         verify(mockService, times(1)).getMambaReportByCriteria(any(MambaReportCriteria.class));
         verify(mockService, times(1)).getMambaReportSize(any(MambaReportCriteria.class));
@@ -88,12 +92,14 @@ public class MambaReportRestControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, null, 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, null, 1, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        Assert.assertTrue("Should have error key", response.containsKey("error"));
-        Assert.assertTrue("Error message should mention report_id", response.get("error").toString().contains("report_id"));
+        Assert.assertEquals("Should return 400 Bad Request", HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        Assert.assertTrue("Should have error key", body.containsKey("error"));
+        Assert.assertTrue("Error message should mention report_id", body.get("error").toString().contains("report_id"));
 
         // Service should not be called
         verify(mockService, times(0)).getMambaReportByCriteria(any(MambaReportCriteria.class));
@@ -105,12 +111,14 @@ public class MambaReportRestControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "   ", 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "   ", 1, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        Assert.assertTrue("Should have error key", response.containsKey("error"));
-        Assert.assertTrue("Error message should mention report_id", response.get("error").toString().contains("report_id"));
+        Assert.assertEquals("Should return 400 Bad Request", HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        Assert.assertTrue("Should have error key", body.containsKey("error"));
+        Assert.assertTrue("Error message should mention report_id", body.get("error").toString().contains("report_id"));
     }
 
     @Test
@@ -120,12 +128,14 @@ public class MambaReportRestControllerTest {
         request.setParameter("report_id", "test_report");
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 0, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 0, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        Assert.assertTrue("Should have error key", response.containsKey("error"));
-        Assert.assertTrue("Error message should mention page_number", response.get("error").toString().contains("page_number"));
+        Assert.assertEquals("Should return 400 Bad Request", HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        Assert.assertTrue("Should have error key", body.containsKey("error"));
+        Assert.assertTrue("Error message should mention page_number", body.get("error").toString().contains("page_number"));
     }
 
     @Test
@@ -135,12 +145,14 @@ public class MambaReportRestControllerTest {
         request.setParameter("report_id", "test_report");
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 1, 0);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 1, 0);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        Assert.assertTrue("Should have error key", response.containsKey("error"));
-        Assert.assertTrue("Error message should mention page_size", response.get("error").toString().contains("page_size"));
+        Assert.assertEquals("Should return 400 Bad Request", HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        Assert.assertTrue("Should have error key", body.containsKey("error"));
+        Assert.assertTrue("Error message should mention page_size", body.get("error").toString().contains("page_size"));
     }
 
     @Test
@@ -154,11 +166,13 @@ public class MambaReportRestControllerTest {
         when(mockService.getMambaReportSize(any(MambaReportCriteria.class))).thenReturn(0);
 
         // When - calling with null pagination values to test defaults
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", null, null);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", null, null);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        MambaReportPagination pagination = (MambaReportPagination) response.get("pagination");
+        Assert.assertEquals("Should return 200 OK", HttpStatus.OK, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        MambaReportPagination pagination = (MambaReportPagination) body.get("pagination");
         Assert.assertNotNull("Pagination should not be null", pagination);
         Assert.assertEquals("Default page number should be 1", Integer.valueOf(1), pagination.getPageNumber());
         Assert.assertEquals("Default page size should be 50", Integer.valueOf(50), pagination.getPageSize());
@@ -175,11 +189,13 @@ public class MambaReportRestControllerTest {
         when(mockService.getMambaReportSize(any(MambaReportCriteria.class))).thenReturn(125);
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 1, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        MambaReportPagination pagination = (MambaReportPagination) response.get("pagination");
+        Assert.assertEquals("Should return 200 OK", HttpStatus.OK, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        MambaReportPagination pagination = (MambaReportPagination) body.get("pagination");
         Assert.assertNotNull("Pagination should not be null", pagination);
         Assert.assertEquals("Total records should be 125", Integer.valueOf(125), pagination.getTotalRecords());
         Assert.assertEquals("Total pages should be 3 (125/50 rounded up)", Integer.valueOf(3), pagination.getTotalPages());
@@ -219,13 +235,15 @@ public class MambaReportRestControllerTest {
                 .thenThrow(new RuntimeException("Database connection failed"));
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 1, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        Assert.assertTrue("Should have error key", response.containsKey("error"));
+        Assert.assertEquals("Should return 500 Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        Assert.assertTrue("Should have error key", body.containsKey("error"));
         // Should return generic error message, not the raw exception
-        String errorMessage = (String) response.get("error");
+        String errorMessage = (String) body.get("error");
         Assert.assertTrue("Error should be generic message", errorMessage.contains("internal error"));
         Assert.assertFalse("Error should not expose exception details", errorMessage.contains("Database"));
     }
@@ -240,13 +258,15 @@ public class MambaReportRestControllerTest {
                 .thenThrow(new IllegalArgumentException("Invalid report ID format"));
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "invalid_report", 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "invalid_report", 1, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        Assert.assertTrue("Should have error key", response.containsKey("error"));
+        Assert.assertEquals("Should return 400 Bad Request", HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        Assert.assertTrue("Should have error key", body.containsKey("error"));
         // IllegalArgumentException messages should be passed through
-        String errorMessage = (String) response.get("error");
+        String errorMessage = (String) body.get("error");
         Assert.assertTrue("Error should contain the specific message", errorMessage.contains("Invalid report ID format"));
     }
 
@@ -261,13 +281,15 @@ public class MambaReportRestControllerTest {
         when(mockService.getMambaReportSize(any(MambaReportCriteria.class))).thenReturn(0);
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 1, 50);
 
         // Then
-        Assert.assertNotNull("Response should not be null", response);
-        List<?> results = (List<?>) response.get("results");
+        Assert.assertEquals("Should return 200 OK", HttpStatus.OK, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        Assert.assertNotNull("Response body should not be null", body);
+        List<?> results = (List<?>) body.get("results");
         Assert.assertTrue("Results should be empty", results.isEmpty());
-        MambaReportPagination pagination = (MambaReportPagination) response.get("pagination");
+        MambaReportPagination pagination = (MambaReportPagination) body.get("pagination");
         Assert.assertEquals("Total records should be 0", Integer.valueOf(0), pagination.getTotalRecords());
         Assert.assertEquals("Total pages should be 0", Integer.valueOf(0), pagination.getTotalPages());
     }
@@ -283,10 +305,12 @@ public class MambaReportRestControllerTest {
         when(mockService.getMambaReportSize(any(MambaReportCriteria.class))).thenReturn(100); // exactly 2 pages
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 1, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 1, 50);
 
         // Then
-        MambaReportPagination pagination = (MambaReportPagination) response.get("pagination");
+        Assert.assertEquals("Should return 200 OK", HttpStatus.OK, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        MambaReportPagination pagination = (MambaReportPagination) body.get("pagination");
         Assert.assertEquals("Total pages should be 2 (100/50)", Integer.valueOf(2), pagination.getTotalPages());
     }
 
@@ -301,10 +325,12 @@ public class MambaReportRestControllerTest {
         when(mockService.getMambaReportSize(any(MambaReportCriteria.class))).thenReturn(125);
 
         // When
-        Map<String, Object> response = controller.getMambaReport(request, "test_report", 2, 50);
+        ResponseEntity<Map<String, Object>> response = controller.getMambaReport(request, "test_report", 2, 50);
 
         // Then
-        MambaReportPagination pagination = (MambaReportPagination) response.get("pagination");
+        Assert.assertEquals("Should return 200 OK", HttpStatus.OK, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        MambaReportPagination pagination = (MambaReportPagination) body.get("pagination");
         Assert.assertEquals("Page number should be 2", Integer.valueOf(2), pagination.getPageNumber());
     }
 }

@@ -138,7 +138,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-inline</artifactId>
-                <version>${mockitoVersion}</version>
+                <version>3.12.4</version>
                 <scope>test</scope>
             </dependency>
 
@@ -238,10 +238,13 @@
     <profiles>
         <!--
             Profile for Java 17+ compatibility.
-            mockito-core:3.12.4 with Java 17 causes:
+            mockito-core:3.12.4 with Java 17/21 causes:
             "Cannot mock this class: interface javax.sql.DataSource ... configured to create inlined mocks."
             mockito-core:5.6.0 does not support Java 8.
             This profile activates on JDK 17+ and uses newer versions of mockito and byte-buddy.
+            Note: mockito-inline is included in mockito-core 5+, so we exclude the separate dependency.
+
+            Automatically activates on Java 17+. To manually activate: mvn -Pjava17-plus
         -->
         <profile>
             <id>java17-plus</id>
@@ -251,7 +254,26 @@
             <properties>
                 <mockitoVersion>5.6.0</mockitoVersion>
                 <byteBuddyVersion>1.17.6</byteBuddyVersion>
+                <version.java>17</version.java>
+                <maven.compiler.java.release>17</maven.compiler.java.release>
+                <maven.compiler.source>17</maven.compiler.source>
+                <maven.compiler.target>17</maven.compiler.target>
             </properties>
+            <dependencies>
+                <!-- Exclude the Java 8 mockito-inline dependency on Java 17+ since mockito-core 5+ includes inline -->
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-inline</artifactId>
+                    <version>3.12.4</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>*</groupId>
+                            <artifactId>*</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
 

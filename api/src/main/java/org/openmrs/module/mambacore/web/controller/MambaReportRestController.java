@@ -18,11 +18,12 @@ import org.openmrs.module.mambacore.api.parameter.MambaReportCriteria;
 import org.openmrs.module.mambacore.api.parameter.MambaReportSearchField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -73,8 +74,7 @@ public class MambaReportRestController {
      * @return Map containing results and pagination (automatically converted to JSON)
      */
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
-    public Map<String, Object> getMambaReport(
+    public ResponseEntity<Map<String, Object>> getMambaReport(
             HttpServletRequest request,
             @RequestParam(value = "report_id", required = false) String reportId,
             @RequestParam(value = "page_number", required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
@@ -107,16 +107,17 @@ public class MambaReportRestController {
             Map<String, Object> response = new HashMap<String, Object>();
             response.put("results", mambaReportItems);
             response.put("pagination", pagination);
-            return response;
+            return ResponseEntity.ok(response);
 
         } catch (IllegalArgumentException e) {
             // Client errors - return 400 Bad Request
             log.warn("Invalid request parameters: {}", e.getMessage());
-            return buildErrorResponse(e.getMessage());
+            return ResponseEntity.badRequest().body(buildErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            // Server errors - log full exception and return generic error
+            // Server errors - log full exception and return 500 Internal Server Error
             log.error("Error processing mamba report request", e);
-            return buildErrorResponse("An internal error occurred while processing the request");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(buildErrorResponse("An internal error occurred while processing the request"));
         }
     }
 
