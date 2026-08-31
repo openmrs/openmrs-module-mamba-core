@@ -17,10 +17,4 @@ public class MambaReportsConstants {
 	 * REST namespace for Mamba report endpoints
 	 */
 	public final static String MAMBA_REPORT_REST_NAMESPACE = "/mamba";
-	
-	/**
-	 * Full REST API path for Mamba report endpoints
-	 */
-	public final static String REST_API_PATH = "/rest/" + org.openmrs.module.webservices.rest.web.RestConstants.VERSION_1
-	        + MAMBA_REPORT_REST_NAMESPACE;
 }
