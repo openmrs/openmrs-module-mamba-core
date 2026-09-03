@@ -2,12 +2,19 @@ package org.openmrs.module.mambacore.util;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class MambaETLProperties {
+	
+	private static final Logger log = LoggerFactory.getLogger(MambaETLProperties.class);
 	
 	private static MambaETLProperties instance;
 	
@@ -71,38 +78,77 @@ public class MambaETLProperties {
 		this.etlDiscoveryDepth = getIntProperty(properties, "mambaetl.analysis.etl_discovery_depth", 5);
 		this.etlDirectory = getProperty(properties, "mambaetl.analysis.etl_directory", "");
 		
-		// Determine if we should use external ETL directory
-		// External mode is enabled when etlDirectory is configured
-		this.useExternalEtl = !this.etlDirectory.isEmpty();
+		// External mode is enabled only when etlDirectory is configured AND the path resolves safely
+		this.useExternalEtl = false;
+		this.etlDirectoryPath = "";
 		
-		// Resolve directory path (supports relative to appdata or absolute)
-		if (this.useExternalEtl) {
-			File dir = new File(this.etlDirectory);
-			if (!dir.isAbsolute()) {
-				// Relative to application data directory + configuration/
-				try {
-					File appDataDir = new File(OpenmrsUtil.getApplicationDataDirectory());
-					File configDir = new File(appDataDir, "configuration");
-					this.etlDirectoryPath = new File(configDir, this.etlDirectory).getAbsolutePath();
-				}
-				catch (Exception e) {
-					// If application data directory cannot be determined, disable external mode
-					this.useExternalEtl = false;
-					this.etlDirectoryPath = "";
-				}
-			} else {
-				// Sanitize path to prevent traversal outside intended directory
-				try {
-					this.etlDirectoryPath = dir.getCanonicalPath();
-				}
-				catch (IOException e) {
-					// If path cannot be canonicalized, disable external mode
-					this.useExternalEtl = false;
-					this.etlDirectoryPath = "";
-				}
+		if (!this.etlDirectory.isEmpty()) {
+			String appDataDirectory = null;
+			try {
+				appDataDirectory = OpenmrsUtil.getApplicationDataDirectory();
 			}
-		} else {
-			this.etlDirectoryPath = "";
+			catch (Exception e) {
+				log.warn("Unable to determine the OpenMRS application data directory; relative external ETL "
+				        + "directories cannot be resolved", e);
+			}
+			
+			String resolvedDirectory = resolveEtlDirectory(this.etlDirectory, appDataDirectory);
+			if (resolvedDirectory == null) {
+				log.warn("External ETL directory '{}' could not be resolved to a usable directory; external "
+				        + "ETL mode is disabled and the bundled ETL script will be used", this.etlDirectory);
+			} else {
+				this.etlDirectoryPath = resolvedDirectory;
+				this.useExternalEtl = true;
+			}
+		}
+	}
+	
+	/**
+	 * Resolves the configured external ETL directory to an absolute path.
+	 * <p>
+	 * Relative values are resolved below the {@code configuration} directory in
+	 * {@code appDataDirectory} and must stay inside that directory: any {@code ..} that escapes it
+	 * fails resolution. Absolute values are used directly, canonicalized so that symlinks or
+	 * {@code ..} segments cannot disguise their real location. The target directory does not have
+	 * to exist yet. This method never logs and never throws: any failure is reported by returning
+	 * null.
+	 * 
+	 * @param configuredDirectory value of {@code mambaetl.analysis.etl_directory}
+	 * @param appDataDirectory OpenMRS application data directory (ignored for absolute values)
+	 * @return canonical absolute path, or null when the value cannot be resolved safely
+	 */
+	static String resolveEtlDirectory(String configuredDirectory, String appDataDirectory) {
+		if (configuredDirectory == null || configuredDirectory.trim().isEmpty()) {
+			return null;
+		}
+
+		try {
+			Path configuredPath = Paths.get(configuredDirectory);
+
+			if (configuredPath.isAbsolute()) {
+				// Absolute directories are used directly (documented behavior), canonicalized for a
+				// stable, comparable form
+				return new File(configuredDirectory).getCanonicalPath();
+			}
+
+			if (appDataDirectory == null || appDataDirectory.trim().isEmpty()) {
+				return null;
+			}
+
+			File configurationDirectory = new File(new File(appDataDirectory), "configuration");
+			Path configurationRoot = Paths.get(configurationDirectory.getCanonicalPath());
+			Path candidate = Paths.get(new File(configurationDirectory, configuredDirectory).getCanonicalPath());
+
+			// Path.startsWith compares path components, not string prefixes, so a sibling directory such
+			// as ".../configuration-backup" is correctly treated as outside ".../configuration"
+			if (!candidate.startsWith(configurationRoot)) {
+				return null;
+			}
+
+			return candidate.toString();
+		}
+		catch (IOException | InvalidPathException e) {
+			return null;
 		}
 	}
 	
