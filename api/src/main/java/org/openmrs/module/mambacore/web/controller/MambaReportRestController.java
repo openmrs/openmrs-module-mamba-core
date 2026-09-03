@@ -9,22 +9,27 @@
  */
 package org.openmrs.module.mambacore.web.controller;
 
+import org.openmrs.module.mambacore.api.MambaReportsConstants;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Maps the mamba namespace onto the REST module's resource dispatch so that
+ * {@link org.openmrs.module.mambacore.web.resource.MambaReportResource} is served
+ * under /ws/rest/v1/mamba, inheriting the REST module's authentication and
+ * authorization exception handling.
+ */
 @Controller
-@RequestMapping("/rest/" + RestConstants.VERSION_1 + MambaReportRestController.MAMBA_REPORT_REST_NAMESPACE)
+@RequestMapping("/rest/" + RestConstants.VERSION_1 + MambaReportsConstants.MAMBA_REPORT_REST_NAMESPACE)
 public class MambaReportRestController extends MainResourceController {
-	
-	public static final String MAMBA_REPORT_REST_NAMESPACE = "/mamba";
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController#getNamespace()
-	 */
-	@Override
-	public String getNamespace() {
-		return RestConstants.VERSION_1 + MAMBA_REPORT_REST_NAMESPACE;
-	}
+
+    /**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController#getNamespace()
+     */
+    @Override
+    public String getNamespace() {
+        return RestConstants.VERSION_1 + MambaReportsConstants.MAMBA_REPORT_REST_NAMESPACE;
+    }
 }

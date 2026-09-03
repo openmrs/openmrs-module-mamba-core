@@ -12,4 +12,9 @@ package org.openmrs.module.mambacore.api;
 public class MambaReportsConstants {
 	
 	public final static String VIEW_MAMBA_REPORT = "View MambaReport";
+	
+	/**
+	 * REST namespace for Mamba report endpoints
+	 */
+	public final static String MAMBA_REPORT_REST_NAMESPACE = "/mamba";
 }
