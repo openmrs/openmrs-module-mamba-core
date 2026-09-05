@@ -106,34 +106,24 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         // execution to it.
         ensureEtlDatabaseExists(props);
 
-        // Deploy each SQL file; a failed file does not abort the remaining ones
-        int successCount = 0;
-        int failureCount = 0;
-        List<Path> failedFiles = new ArrayList<>();
+        // Deploy each SQL file; the deployment stops at the first file that fails, so no further
+        // scripts run against a partially deployed ETL database and the error surfaces with the
+        // file that caused it.
         for (Path sqlFile : sqlFiles) {
             log.info("Deploying ETL script: {}", sqlFile.getFileName());
             try (InputStream stream = Files.newInputStream(sqlFile)) {
                 executeSqlScript(stream, props, true);
-                successCount++;
-            } catch (IOException e) {
-                failureCount++;
-                failedFiles.add(sqlFile);
-                log.error("Error processing SQL file: {}", sqlFile, e);
-            } catch (RuntimeException e) {
-                failureCount++;
-                failedFiles.add(sqlFile);
-                log.error("Error executing SQL script: {}", sqlFile, e);
+            } catch (IOException | RuntimeException e) {
+                // Rethrow as RuntimeException on purpose: deployMambaEtl falls back to the bundled
+                // script on IOException, which must not happen once external files have already been
+                // applied. Only discovery-level failures (missing/empty/unreadable directory) may
+                // trigger that fallback.
+                throw new RuntimeException("External ETL deployment stopped: failed to deploy "
+                    + sqlFile, e);
             }
         }
 
-        if (failureCount > 0) {
-            log.error("External ETL deployment finished with {} success(es) and {} failure(s). Failed files: {}",
-                successCount, failureCount, failedFiles);
-            throw new RuntimeException("External ETL deployment failed: " + failureCount + " of "
-                + sqlFiles.size() + " files failed");
-        }
-
-        log.info("External ETL deployment completed successfully: {} file(s) applied", successCount);
+        log.info("External ETL deployment completed successfully: {} file(s) applied", sqlFiles.size());
     }
 
     private List<Path> discoverSqlFiles(String directoryPath, MambaETLProperties props) throws IOException {
