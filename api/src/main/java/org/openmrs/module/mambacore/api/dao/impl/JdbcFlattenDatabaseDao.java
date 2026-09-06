@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +42,9 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
     private static final String DATABASE_EXISTS_QUERY =
         "SELECT 1 FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ?";
+
+    // A raw MySQL client "DELIMITER x" directive at the start of a line; execution cannot handle these
+    private static final Pattern DELIMITER_DIRECTIVE_PATTERN = Pattern.compile("(?im)^[ \\t]*DELIMITER[ \\t]+\\S");
 
     @Override
     public void deployMambaEtl() {
@@ -166,6 +170,133 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     }
 
     /**
+     * Checks that a script uses the '~-~-' statement separator that execution depends on: statements are
+     * split on it, and only compiler output (see _core/compiler/linux/compile-mysql.sh) reliably contains
+     * it. A raw MySQL client script with DELIMITER blocks or several ;-terminated statements would
+     * otherwise be executed as one unparseable statement. Scripts with a single plain statement need no
+     * separator and are accepted.
+     *
+     * @return null when the script can be executed as-is, otherwise an error message explaining the
+     *         '~-~-' requirement
+     */
+    static String checkScriptCompatibility(String sqlScript) {
+        if (sqlScript.contains(DELIMITER)) {
+            return null;
+        }
+
+        boolean hasDelimiterDirective = DELIMITER_DIRECTIVE_PATTERN.matcher(sqlScript).find();
+        int statementCount = countStatements(sqlScript);
+        if (!hasDelimiterDirective && statementCount <= 1) {
+            return null;
+        }
+
+        String reason = hasDelimiterDirective
+            ? "it contains raw MySQL DELIMITER directives"
+            : "it contains " + statementCount + " ;-terminated statements";
+        return "Script cannot be executed as-is: " + reason + ", but no '~-~-' statement separators. "
+            + "External ETL scripts must be compiled with api/src/main/resources/_core/compiler/linux/"
+            + "compile-mysql.sh (which converts DELIMITER blocks and inserts '~-~-'), or authored as "
+            + "single statements separated by '~-~-'.";
+
+    }
+
+    /**
+     * Counts the ;-terminated statements in a script, honouring quoted strings, quoted identifiers and
+     * MySQL comments, so that semicolons or comment markers inside literals are not counted.
+     */
+    static int countStatements(String sqlScript) {
+        int statementCount = 0;
+        boolean statementHasContent = false;
+        boolean inSingleQuote = false;
+        boolean inDoubleQuote = false;
+        boolean inBackticks = false;
+        boolean inLineComment = false;
+        boolean inBlockComment = false;
+
+        for (int i = 0; i < sqlScript.length(); i++) {
+            char current = sqlScript.charAt(i);
+            char next = i + 1 < sqlScript.length() ? sqlScript.charAt(i + 1) : '\0';
+
+            if (inLineComment) {
+                if (current == '\n') {
+                    inLineComment = false;
+                }
+                continue;
+            }
+            if (inBlockComment) {
+                if (current == '*' && next == '/') {
+                    inBlockComment = false;
+                    i++;
+                }
+                continue;
+            }
+            if (inSingleQuote || inDoubleQuote || inBackticks) {
+                statementHasContent = true;
+                char quote = inSingleQuote ? '\'' : (inDoubleQuote ? '"' : '`');
+                if (current == '\\') {
+                    i++; // skip the escaped character
+                } else if (current == quote) {
+                    if (next == quote) {
+                        i++; // doubled quote escape: '', "", ``
+                    } else {
+                        inSingleQuote = false;
+                        inDoubleQuote = false;
+                        inBackticks = false;
+                    }
+                }
+                continue;
+            }
+
+            // top level
+            if (current == '-' && next == '-') {
+                char after = i + 2 < sqlScript.length() ? sqlScript.charAt(i + 2) : '\n';
+                if (after == ' ' || after == '\t' || after == '\n' || after == '\r') {
+                    inLineComment = true;
+                    i++;
+                    continue;
+                }
+            }
+            if (current == '#') {
+                inLineComment = true;
+                continue;
+            }
+            if (current == '/' && next == '*') {
+                inBlockComment = true;
+                i++;
+                continue;
+            }
+            if (current == '\'') {
+                inSingleQuote = true;
+                continue;
+            }
+            if (current == '"') {
+                inDoubleQuote = true;
+                continue;
+            }
+            if (current == '`') {
+                inBackticks = true;
+                continue;
+            }
+            if (current == ';') {
+                if (statementHasContent) {
+                    statementCount++;
+                    statementHasContent = false;
+                }
+                continue;
+            }
+            if (!Character.isWhitespace(current)) {
+                statementHasContent = true;
+            }
+        }
+
+        // a trailing statement without terminating semicolon still counts (single-statement scripts)
+        if (statementHasContent) {
+            statementCount++;
+        }
+        return statementCount;
+    }
+
+    /**
      * Creates the ETL database when it does not exist yet, using the default charset and collation of the
      * source (OpenMRS) database, mirroring the prologue that compile-mysql.sh prepends to the bundled
      * script. Only called for external ETL directories: the bundled script carries its own prologue, which
@@ -250,6 +381,14 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
                 // c6112b1 for exactly that reason). The database server parses comments correctly.
                 String sqlScript = reader.lines()
                         .collect(Collectors.joining("\n"));
+
+                // Fail before touching the database when the script is not in the dialect execution
+                // supports: a raw MySQL client script would otherwise reach the server as one
+                // unparseable statement (MySQL error 1064 pointing at "DELIMITER //")
+                String compatibilityError = checkScriptCompatibility(sqlScript);
+                if (compatibilityError != null) {
+                    throw new RuntimeException(compatibilityError);
+                }
 
                 DataSource dataSource = ConnectionPoolManager
                         .getInstance()
@@ -347,7 +486,8 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         }
     }
 
-    private void executeStatements(Connection connection, String sqlScript, MambaETLProperties props) throws SQLException {
+    // package-private so that tests can run a realistic script through the statement-splitting path
+    void executeStatements(Connection connection, String sqlScript, MambaETLProperties props) throws SQLException {
 
         String[] sqlStatements = sqlScript.split(DELIMITER);
 
