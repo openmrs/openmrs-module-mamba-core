@@ -54,14 +54,11 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
         try {
             if (props.isUseExternalEtl()) {
-                // External mode: Auto-discover and deploy all SQL files in the external directory
                 try {
                     deployFromExternalDirectory(props);
                 } catch (IOException e) {
-                    log.error("Failed to deploy ETL from external directory: {}", props.getEtlDirectoryPath(), e);
-                    // Fall back to internal mode on external failure
-                    log.warn("Falling back to internal mode due to external directory failure");
-                    deployFromClasspath(props);
+                    throw new RuntimeException("Failed to deploy ETL from external directory: "
+                        + props.getEtlDirectoryPath(), e);
                 }
             } else {
                 // Internal mode: Use the default classpath resource
@@ -99,11 +96,16 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         List<Path> sqlFiles = discoverSqlFiles(etlDirectoryPath, props);
 
         if (sqlFiles.isEmpty()) {
-            log.warn("No SQL files found in external directory: {}, falling back to internal mode", etlDirectoryPath);
+            log.warn("No SQL files found in external ETL directory: {}", etlDirectoryPath);
             throw new IOException("No SQL files found in external ETL directory: " + etlDirectoryPath);
         }
 
         log.info("Found {} SQL file(s) in external directory", sqlFiles.size());
+
+        // Pre-flight: read and dialect-check every discovered file before any database work, so a
+        // defect that needs no database to spot is a clean no-op instead of leaving a created or
+        // partially populated ETL database behind.
+        preflightScripts(sqlFiles);
 
         // External files carry no "CREATE DATABASE / USE" prologue, unlike the bundled script. Create the
         // ETL database once, with the source database's charset and collation, then pin every script
@@ -118,10 +120,8 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
             try (InputStream stream = Files.newInputStream(sqlFile)) {
                 executeSqlScript(stream, props, true);
             } catch (IOException | RuntimeException e) {
-                // Rethrow as RuntimeException on purpose: deployMambaEtl falls back to the bundled
-                // script on IOException, which must not happen once external files have already been
-                // applied. Only discovery-level failures (missing/empty/unreadable directory) may
-                // trigger that fallback.
+                // Rethrow as one unchecked failure: there is no fallback to the bundled script in
+                // external mode, and the error must name the file that stopped the deployment.
                 throw new RuntimeException("External ETL deployment stopped: failed to deploy "
                     + sqlFile, e);
             }
@@ -136,8 +136,8 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
 
     /**
      * Discovers SQL files below {@code directoryPath}, deterministically sorted, up to {@code maxDepth}
-     * levels deep. A missing or non-directory path yields an empty list; genuine IO failures are thrown so
-     * that the caller can fall back to the bundled script.
+     * levels deep. A missing or non-directory path yields an empty list, which the caller rejects as a
+     * deployment failure; genuine IO failures are thrown so that the deployment fails fast.
      *
      * @param maxDepth maximum directory depth to visit, clamped to a minimum of 1 (depth 0 can never match
      *                 a file, and negative values make {@link Files#walk} throw)
@@ -170,34 +170,60 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
     }
 
     /**
-     * Checks that a script uses the '~-~-' statement separator that execution depends on: statements are
-     * split on it, and only compiler output (see _core/compiler/linux/compile-mysql.sh) reliably contains
-     * it. A raw MySQL client script with DELIMITER blocks or several ;-terminated statements would
-     * otherwise be executed as one unparseable statement. Scripts with a single plain statement need no
-     * separator and are accepted.
+     * Reads and dialect-checks every discovered file before any database work starts, so that a
+     * defect that needs no database to spot is a clean no-op. Each script is still checked again
+     * inside {@link #executeSqlScript(InputStream, MambaETLProperties, boolean)} at execution time,
+     * after placeholder substitution, as a final gate.
+     */
+    static void preflightScripts(List<Path> sqlFiles) {
+        for (Path sqlFile : sqlFiles) {
+            String sqlScript;
+            try {
+                sqlScript = new String(Files.readAllBytes(sqlFile), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new RuntimeException("External ETL deployment stopped: failed to read " + sqlFile, e);
+            }
+            String compatibilityError = checkScriptCompatibility(sqlScript);
+            if (compatibilityError != null) {
+                throw new RuntimeException("External ETL deployment stopped: " + sqlFile + ": "
+                    + compatibilityError);
+            }
+        }
+    }
+
+    /**
+     * Checks that a script is in the dialect execution supports. Raw MySQL client DELIMITER directives
+     * are rejected first, even when the script already contains the '~-~-' separator: the compiler (see
+     * _core/compiler/linux/compile-mysql.sh) only rewrites 'DELIMITER //' and 'DELIMITER ;', so a
+     * directive that survives compilation would otherwise be sent to the server inside an otherwise
+     * valid script and fail there. Otherwise the script must either use the '~-~-' statement separator
+     * that execution splits on, or consist of a single plain statement, since a raw script with
+     * DELIMITER blocks or several ;-terminated statements would be executed as one unparseable
+     * statement.
      *
      * @return null when the script can be executed as-is, otherwise an error message explaining the
-     *         '~-~-' requirement
+     *         problem
      */
     static String checkScriptCompatibility(String sqlScript) {
+        boolean hasDelimiterDirective = DELIMITER_DIRECTIVE_PATTERN.matcher(sqlScript).find();
+        if (hasDelimiterDirective) {
+            return "Script cannot be executed as-is: it contains raw MySQL DELIMITER directives, which "
+                + "execution cannot handle. External ETL scripts must be compiled with "
+                + "api/src/main/resources/_core/compiler/linux/compile-mysql.sh; note that it only "
+                + "rewrites 'DELIMITER //' and 'DELIMITER ;', so procedure bodies must use '//'.";
+        }
         if (sqlScript.contains(DELIMITER)) {
             return null;
         }
-
-        boolean hasDelimiterDirective = DELIMITER_DIRECTIVE_PATTERN.matcher(sqlScript).find();
         int statementCount = countStatements(sqlScript);
-        if (!hasDelimiterDirective && statementCount <= 1) {
+        if (statementCount <= 1) {
             return null;
         }
-
-        String reason = hasDelimiterDirective
-            ? "it contains raw MySQL DELIMITER directives"
-            : "it contains " + statementCount + " ;-terminated statements";
-        return "Script cannot be executed as-is: " + reason + ", but no '~-~-' statement separators. "
-            + "External ETL scripts must be compiled with api/src/main/resources/_core/compiler/linux/"
-            + "compile-mysql.sh (which converts DELIMITER blocks and inserts '~-~-'), or authored as "
-            + "single statements separated by '~-~-'.";
-
+        return "Script cannot be executed as-is: it contains " + statementCount + " ;-terminated "
+            + "statements, but no '~-~-' statement separators. External ETL scripts must be compiled "
+            + "with api/src/main/resources/_core/compiler/linux/compile-mysql.sh (which converts "
+            + "DELIMITER blocks and inserts '~-~-'), or authored as single statements separated by "
+            + "'~-~-'.";
     }
 
     /**
