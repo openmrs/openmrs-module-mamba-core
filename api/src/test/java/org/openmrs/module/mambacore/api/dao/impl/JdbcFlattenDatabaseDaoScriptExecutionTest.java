@@ -81,6 +81,27 @@ public class JdbcFlattenDatabaseDaoScriptExecutionTest {
     }
 
     @Test
+    public void checkScriptCompatibility_shouldRejectDelimiterDirectiveEvenWhenSeparatorsPresent() {
+        // what make_buildfile_jdbc_compatible leaves behind for a $$-delimited procedure: the
+        // separator is present, but the directive the compiler does not rewrite survives, and the
+        // directive check must still fire before the separator shortcut accepts the script
+        String script = "SET @x = 1\n"
+            + "~-~- \n"
+            + "DELIMITER $$\n"
+            + "CREATE PROCEDURE sp_x()\n"
+            + "BEGIN\n"
+            + " SELECT 1;\n"
+            + "END$$\n";
+
+        String error = JdbcFlattenDatabaseDao.checkScriptCompatibility(script);
+
+        assertNotNull(error);
+        assertTrue(error.contains("DELIMITER"));
+        assertTrue(error.contains("compile-mysql.sh"));
+        assertTrue(error.contains("must use '//'"));
+    }
+
+    @Test
     public void checkScriptCompatibility_shouldRejectMultipleStatementsScript() {
         String error = JdbcFlattenDatabaseDao.checkScriptCompatibility(
             "CREATE TABLE t (id INT);\nINSERT INTO t VALUES ('a;b');");

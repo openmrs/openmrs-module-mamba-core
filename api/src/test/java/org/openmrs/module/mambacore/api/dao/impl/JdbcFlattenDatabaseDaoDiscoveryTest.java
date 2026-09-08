@@ -5,13 +5,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -136,6 +139,35 @@ public class JdbcFlattenDatabaseDaoDiscoveryTest {
 
         assertNotNull(sqlFiles);
         assertTrue(sqlFiles.isEmpty());
+    }
+
+    @Test
+    public void preflightScripts_shouldAcceptValidScripts() throws IOException {
+        Path good = createFile("10_good.sql");
+        Files.write(good, "CREATE TABLE t (id INT);\n~-~- \nCREATE TABLE u (id INT);\n"
+            .getBytes(StandardCharsets.UTF_8));
+
+        JdbcFlattenDatabaseDao.preflightScripts(Arrays.asList(good));
+    }
+
+    @Test
+    public void preflightScripts_shouldRejectInvalidScriptBeforeAnyDatabaseWork() throws IOException {
+        Path good = createFile("10_good.sql");
+        Files.write(good, "CREATE TABLE t (id INT);".getBytes(StandardCharsets.UTF_8));
+        Path bad = createFile("20_bad.sql");
+        Files.write(bad, ("CREATE TABLE u (id INT);\n"
+            + "DELIMITER //\n"
+            + "CREATE PROCEDURE p() BEGIN SELECT 1; END//\n"
+            + "DELIMITER ;\n").getBytes(StandardCharsets.UTF_8));
+
+        try {
+            JdbcFlattenDatabaseDao.preflightScripts(Arrays.asList(good, bad));
+            fail("Expected pre-flight to reject the raw DELIMITER script");
+        } catch (RuntimeException e) {
+            // the error must name the offending file so the implementer can fix it
+            assertTrue(e.getMessage(), e.getMessage().contains(bad.getFileName().toString()));
+            assertTrue(e.getMessage(), e.getMessage().contains("DELIMITER"));
+        }
     }
 
     private Path createFile(String relativePath) throws IOException {
