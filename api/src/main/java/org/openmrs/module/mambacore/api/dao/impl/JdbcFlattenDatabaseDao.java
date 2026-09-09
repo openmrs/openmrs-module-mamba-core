@@ -218,9 +218,12 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         boolean hasDelimiterDirective = DELIMITER_DIRECTIVE_PATTERN.matcher(sqlScript).find();
         if (hasDelimiterDirective) {
             return "Script cannot be executed as-is: it contains raw MySQL DELIMITER directives, which "
-                + "execution cannot handle. External ETL scripts must be compiled with "
-                + "api/src/main/resources/_core/compiler/linux/compile-mysql.sh; note that it only "
-                + "rewrites 'DELIMITER //' and 'DELIMITER ;', so procedure bodies must use '//'.";
+                + "execution cannot handle. Only the compiler's JDBC output can be executed here: "
+                + "compile with api/src/main/resources/_core/compiler/linux/compile-mysql.sh and "
+                + "deploy the jdbc_-prefixed file it writes into its build directory; the "
+                + "mysql-client and Liquibase outputs written beside it cannot be executed. Note "
+                + "that the compiler only rewrites 'DELIMITER //' and 'DELIMITER ;', so procedure "
+                + "bodies must use '//'.";
         }
         if (sqlScript.contains(DELIMITER)) {
             return null;
@@ -230,9 +233,11 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
             return null;
         }
         return "Script cannot be executed as-is: it contains " + statementCount + " ;-terminated "
-            + "statements, but no '~-~-' statement separators. External ETL scripts must be compiled "
-            + "with api/src/main/resources/_core/compiler/linux/compile-mysql.sh (which converts "
-            + "DELIMITER blocks and inserts '~-~-'), or authored as single statements separated by "
+            + "statements, but no '~-~-' statement separators. Only the compiler's JDBC output can "
+            + "be executed here: compile with api/src/main/resources/_core/compiler/linux/"
+            + "compile-mysql.sh and deploy the jdbc_-prefixed file it writes into its build "
+            + "directory; the mysql-client and Liquibase outputs written beside it cannot be "
+            + "executed. Alternatively, author the script as single statements separated by "
             + "'~-~-'.";
     }
 

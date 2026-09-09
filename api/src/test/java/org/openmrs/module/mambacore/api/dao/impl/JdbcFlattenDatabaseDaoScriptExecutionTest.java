@@ -78,6 +78,10 @@ public class JdbcFlattenDatabaseDaoScriptExecutionTest {
         assertNotNull(error);
         assertTrue(error.contains("compile-mysql.sh"));
         assertTrue(error.contains("DELIMITER"));
+        // the remediation must point at the compiler's executable output, not the build directory:
+        // compile-mysql.sh also writes mysql-client and Liquibase files that this check rejects
+        assertTrue(error.contains("jdbc_-prefixed"));
+        assertTrue(error.contains("build directory"));
     }
 
     @Test
@@ -109,6 +113,7 @@ public class JdbcFlattenDatabaseDaoScriptExecutionTest {
         assertNotNull(error);
         assertTrue(error.contains("compile-mysql.sh"));
         assertTrue(error.contains("2 ;-terminated statements"));
+        assertTrue(error.contains("jdbc_-prefixed"));
     }
 
     @Test
