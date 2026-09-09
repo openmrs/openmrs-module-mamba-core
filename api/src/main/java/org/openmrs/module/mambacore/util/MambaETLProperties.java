@@ -51,6 +51,10 @@ public class MambaETLProperties {
 	
 	private String etlDirectoryPath;
 	
+	// True when etlDirectory was configured but resolveEtlDirectory rejected it: external mode stays
+	// off, and ETL deployment must refuse to run rather than apply the bundled script
+	private boolean etlDirectoryResolutionFailed;
+	
 	private final int etlDiscoveryDepth;
 	
 	private MambaETLProperties() {
@@ -78,7 +82,9 @@ public class MambaETLProperties {
 		this.etlDiscoveryDepth = getIntProperty(properties, "mambaetl.analysis.etl_discovery_depth", 5);
 		this.etlDirectory = getProperty(properties, "mambaetl.analysis.etl_directory", "");
 		
-		// External mode is enabled only when etlDirectory is configured AND the path resolves safely
+		// External mode is enabled only when etlDirectory is configured AND the path resolves safely;
+		// a configured-but-unresolvable value additionally marks etlDirectoryResolutionFailed so that
+		// deployment refuses to apply the bundled script
 		this.useExternalEtl = false;
 		this.etlDirectoryPath = "";
 		
@@ -94,8 +100,10 @@ public class MambaETLProperties {
 			
 			String resolvedDirectory = resolveEtlDirectory(this.etlDirectory, appDataDirectory);
 			if (resolvedDirectory == null) {
+				this.etlDirectoryResolutionFailed = true;
 				log.warn("External ETL directory '{}' could not be resolved to a usable directory; external "
-				        + "ETL mode is disabled and the bundled ETL script will be used", this.etlDirectory);
+				        + "ETL mode is disabled and ETL deployment will fail instead of applying the bundled " + "script",
+				    this.etlDirectory);
 			} else {
 				this.etlDirectoryPath = resolvedDirectory;
 				this.useExternalEtl = true;
@@ -221,6 +229,17 @@ public class MambaETLProperties {
 	
 	public String getEtlDirectoryPath() {
 		return etlDirectoryPath;
+	}
+	
+	/**
+	 * True when {@code mambaetl.analysis.etl_directory} was configured but the value could not be
+	 * resolved to a usable directory (the specific reason is logged when this class is
+	 * constructed). External mode stays off in this state, and the ETL deployment must refuse to
+	 * run rather than apply the bundled script, which is the downstream module's build-time content
+	 * instead of the runtime directory the property points at.
+	 */
+	public boolean isEtlDirectoryResolutionFailed() {
+		return etlDirectoryResolutionFailed;
 	}
 	
 	public int getEtlDiscoveryDepth() {

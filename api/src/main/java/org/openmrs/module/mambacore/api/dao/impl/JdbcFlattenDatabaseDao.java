@@ -60,6 +60,16 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
                     throw new RuntimeException("Failed to deploy ETL from external directory: "
                         + props.getEtlDirectoryPath(), e);
                 }
+            } else if (props.isEtlDirectoryResolutionFailed()) {
+                // mambaetl.analysis.etl_directory was set but could not be resolved to a usable
+                // directory (the specific reason is logged when MambaETLProperties is constructed).
+                // Refuse rather than fall through to the bundled script: that resource is the
+                // downstream module's build-time compile of the ETL, not the runtime directory the
+                // property points at, so deploying it would fill the analysis database with the
+                // wrong content and leave it there once the property is fixed.
+                throw new RuntimeException("mambaetl.analysis.etl_directory is configured as '"
+                    + props.getEtlDirectory() + "' but could not be resolved to a usable directory; "
+                    + "no ETL was deployed. Fix the path or remove the property, then restart.");
             } else {
                 // Internal mode: Use the default classpath resource
                 deployFromClasspath(props);
