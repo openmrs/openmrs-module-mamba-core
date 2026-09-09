@@ -33,6 +33,19 @@ After you have added the MambaETL core module dependencies and configurations to
 Please refer to the reference/quick-start or template module called [openmrs-module-mamba-etl](https://github.com/UCSF-IGHS/openmrs-module-mamba-etl) when setting up MambaETL. 
 
 
+## **Deploying ETL scripts from an external directory**
+
+By default, MambaETL deploys the ETL scripts bundled into this module. Setting `mambaetl.analysis.etl_directory` in the runtime properties switches to an external directory of `.sql` files, which replaces the bundled ETL entirely: when the property is set, the bundled ETL is never applied.
+
+**Point the property at the compiler's JDBC output - the `jdbc_`-prefixed file written into the `build/` directory - not at the build directory itself.** `api/src/main/resources/_core/compiler/linux/compile-mysql.sh` writes four files into `build/`, and only the `jdbc_`-prefixed one is in the dialect the ETL executes; the mysql-client and Liquibase outputs written beside it cannot be executed.
+
+Other properties and behaviour:
+
+* Relative directory values resolve below the `configuration` directory in the OpenMRS application data directory and must stay inside it (`..` segments or symlinks escaping it are rejected). Absolute values are used as given.
+* `mambaetl.analysis.etl_discovery_depth` controls how deep subdirectories are scanned for `.sql` files (default 5, minimum 1).
+* External mode fails fast: if the directory is missing, empty, unreadable, contains a script in an unsupported dialect, or the configured value cannot be resolved, deployment stops and nothing is written to the analysis database - the bundled ETL is never silently substituted.
+
+
 ## **To contribute and build this module**
 
 
