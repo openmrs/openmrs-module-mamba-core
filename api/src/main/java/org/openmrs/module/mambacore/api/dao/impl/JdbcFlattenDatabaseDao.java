@@ -117,9 +117,10 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         // partially populated ETL database behind.
         preflightScripts(sqlFiles);
 
-        // External files carry no "CREATE DATABASE / USE" prologue, unlike the bundled script. Create the
-        // ETL database once, with the source database's charset and collation, then pin every script
-        // execution to it.
+        // External files may or may not carry a "CREATE DATABASE / USE" prologue: compiled jdbc_ files
+        // open with the compiler's create_target_db/use_target_db blocks, hand-authored ones may carry
+        // nothing, and the bundled script's prologue is never there to rely on. Create the ETL database
+        // once, with the source database's charset and collation, then pin every script execution to it.
         ensureEtlDatabaseExists(props);
 
         // Deploy each SQL file; the deployment stops at the first file that fails, so no further
@@ -219,9 +220,10 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         if (hasDelimiterDirective) {
             return "Script cannot be executed as-is: it contains raw MySQL DELIMITER directives, which "
                 + "execution cannot handle. Only the compiler's JDBC output can be executed here: "
-                + "compile with api/src/main/resources/_core/compiler/linux/compile-mysql.sh and "
-                + "deploy the jdbc_-prefixed file it writes into its build directory; the "
-                + "mysql-client and Liquibase outputs written beside it cannot be executed. Note "
+                + "compile with api/src/main/resources/_core/compiler/linux/compile-mysql.sh, copy "
+                + "the jdbc_-prefixed file from its build directory into a directory of its own, and "
+                + "point mambaetl.analysis.etl_directory at that directory; the mysql-client and "
+                + "Liquibase outputs written beside it cannot be executed. Note "
                 + "that the compiler only rewrites 'DELIMITER //' and 'DELIMITER ;', so procedure "
                 + "bodies must use '//'.";
         }
@@ -235,9 +237,10 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         return "Script cannot be executed as-is: it contains " + statementCount + " ;-terminated "
             + "statements, but no '~-~-' statement separators. Only the compiler's JDBC output can "
             + "be executed here: compile with api/src/main/resources/_core/compiler/linux/"
-            + "compile-mysql.sh and deploy the jdbc_-prefixed file it writes into its build "
-            + "directory; the mysql-client and Liquibase outputs written beside it cannot be "
-            + "executed. Alternatively, author the script as single statements separated by "
+            + "compile-mysql.sh, copy the jdbc_-prefixed file from its build directory into a "
+            + "directory of its own, and point mambaetl.analysis.etl_directory at that directory; "
+            + "the mysql-client and Liquibase outputs written beside it cannot be executed. "
+            + "Alternatively, author the script as single statements separated by "
             + "'~-~-'.";
     }
 
@@ -438,35 +441,26 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
                 try (Connection connection = dataSource.getConnection()) {
                     // Disable auto-commit to manage transaction explicitly
                     boolean originalAutoCommit;
-                    String originalCatalog = null;
-                    boolean catalogPinned = false;
                     try {
                         originalAutoCommit = connection.getAutoCommit();
                         connection.setAutoCommit(false);
-
-                        if (pinCatalogToEtlDatabase) {
-                            // External SQL files have no "USE" of their own, so pin this connection to the
-                            // ETL database for the duration of the script. "USE" does not implicitly
-                            // commit, so this is safe inside the explicit transaction. DBCP2 does not
-                            // reset the catalog when a connection is returned, hence the restore in the
-                            // finally block below.
-                            originalCatalog = connection.getCatalog();
-                            connection.setCatalog(props.getEtlDatababase());
-                            if (!props.getEtlDatababase().equalsIgnoreCase(connection.getCatalog())) {
-                                throw new SQLException("Failed to switch connection to database '"
-                                    + props.getEtlDatababase() + "', current database is '"
-                                    + connection.getCatalog() + "'");
-                            }
-                            catalogPinned = true;
-                        }
                     } catch (SQLException e) {
-                        log.error("Failed to configure connection transaction/catalog", e);
+                        log.error("Failed to configure connection transaction", e);
                         throw new RuntimeException("Failed to configure connection for SQL execution", e);
                     }
 
                     SQLException executionError = null;
                     try {
-                        executeStatements(connection, sqlScript, props);
+                        if (pinCatalogToEtlDatabase) {
+                            // The pin and the restore live in the called method: external SQL files may
+                            // or may not carry a "USE" of their own, so the pin is what keeps their
+                            // statements out of the source database, and the restore returns the pooled
+                            // connection to its original catalog afterwards.
+                            executeStatementsPinnedToEtlDatabase(connection, props.getEtlDatababase(),
+                                sqlScript, props);
+                        } else {
+                            executeStatements(connection, sqlScript, props);
+                        }
                         connection.commit();
                         log.info("SQL script executed successfully");
                     } catch (SQLException e) {
@@ -484,22 +478,6 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
                         throw new RuntimeException("SQL execution failed: DDL statements already applied cannot "
                             + "be rolled back, re-run the ETL deployment to resume", executionError);
                     } finally {
-                        // Restore the catalog first: it is the one piece of connection state the pool does
-                        // not reset when the connection is returned.
-                        if (catalogPinned) {
-                            try {
-                                if (originalCatalog != null) {
-                                    connection.setCatalog(originalCatalog);
-                                } else {
-                                    log.warn("Original catalog of the pooled connection was null; returning it "
-                                        + "while still attached to '{}'", props.getEtlDatababase());
-                                }
-                            } catch (SQLException e) {
-                                log.error("Failed to restore original catalog '{}' on the pooled connection; "
-                                    + "subsequent borrowers will start on '{}'", originalCatalog,
-                                    props.getEtlDatababase(), e);
-                            }
-                        }
                         // Restore auto-commit, don't let exceptions here suppress the original error
                         try {
                             connection.setAutoCommit(originalAutoCommit);
@@ -524,6 +502,42 @@ public class JdbcFlattenDatabaseDao implements FlattenDatabaseDao {
         } catch (IOException e) {
             log.error("IOException while reading script", e);
             throw new RuntimeException("Failed to execute SQL script", e);
+        }
+    }
+
+    /**
+     * Runs the statements with the connection pinned to the ETL database, restoring the original
+     * catalog afterwards. External SQL files may or may not carry a "USE" of their own (compiled
+     * jdbc_ files open with the compiler's use_target_db block, hand-authored ones may carry none),
+     * so the pin is what keeps their statements out of the source database; a "USE" inside the
+     * script does not implicitly commit, so pinning inside the explicit transaction is safe. DBCP2
+     * does not reset the catalog when a connection is returned to the pool, hence the restore, and
+     * it runs even when a statement fails at the server. Package-private so tests can run a mocked
+     * connection through the pin, execute and restore sequence.
+     */
+    void executeStatementsPinnedToEtlDatabase(Connection connection, String etlDatabase, String sqlScript,
+            MambaETLProperties props) throws SQLException {
+
+        String originalCatalog = connection.getCatalog();
+        connection.setCatalog(etlDatabase);
+        try {
+            if (!etlDatabase.equalsIgnoreCase(connection.getCatalog())) {
+                throw new SQLException("Failed to switch connection to database '" + etlDatabase
+                    + "', current database is '" + connection.getCatalog() + "'");
+            }
+            executeStatements(connection, sqlScript, props);
+        } finally {
+            if (originalCatalog != null) {
+                try {
+                    connection.setCatalog(originalCatalog);
+                } catch (SQLException e) {
+                    log.error("Failed to restore original catalog '{}' on the pooled connection; "
+                        + "subsequent borrowers will start on '{}'", originalCatalog, etlDatabase, e);
+                }
+            } else {
+                log.warn("Original catalog of the pooled connection was null; returning it while still "
+                    + "attached to '{}'", etlDatabase);
+            }
         }
     }
 

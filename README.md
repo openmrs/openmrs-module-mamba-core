@@ -37,7 +37,7 @@ Please refer to the reference/quick-start or template module called [openmrs-mod
 
 By default, MambaETL deploys the ETL scripts bundled into this module. Setting `mambaetl.analysis.etl_directory` in the runtime properties switches to an external directory of `.sql` files, which replaces the bundled ETL entirely: when the property is set, the bundled ETL is never applied.
 
-**Point the property at the compiler's JDBC output - the `jdbc_`-prefixed file written into the `build/` directory - not at the build directory itself.** `api/src/main/resources/_core/compiler/linux/compile-mysql.sh` writes four files into `build/`, and only the `jdbc_`-prefixed one is in the dialect the ETL executes; the mysql-client and Liquibase outputs written beside it cannot be executed.
+**Copy the compiler's JDBC output - the `jdbc_`-prefixed file written into the `build/` directory - into a directory of its own, and point the property at that directory.** `api/src/main/resources/_core/compiler/linux/compile-mysql.sh` writes four files into `build/`, and only the `jdbc_`-prefixed one is in the dialect the ETL executes, so pointing at `build/` itself is rejected as well: the mysql-client and Liquibase outputs written beside it cannot be executed.
 
 Other properties and behaviour:
 

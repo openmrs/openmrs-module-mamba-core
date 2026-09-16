@@ -1,12 +1,15 @@
 package org.openmrs.module.mambacore.api.dao.impl;
 
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -79,9 +82,12 @@ public class JdbcFlattenDatabaseDaoScriptExecutionTest {
         assertTrue(error.contains("compile-mysql.sh"));
         assertTrue(error.contains("DELIMITER"));
         // the remediation must point at the compiler's executable output, not the build directory:
-        // compile-mysql.sh also writes mysql-client and Liquibase files that this check rejects
+        // compile-mysql.sh also writes mysql-client and Liquibase files that this check rejects, and
+        // the property takes a directory, not a file
         assertTrue(error.contains("jdbc_-prefixed"));
         assertTrue(error.contains("build directory"));
+        assertTrue(error.contains("directory of its own"));
+        assertTrue(error.contains("etl_directory"));
     }
 
     @Test
@@ -114,6 +120,77 @@ public class JdbcFlattenDatabaseDaoScriptExecutionTest {
         assertTrue(error.contains("compile-mysql.sh"));
         assertTrue(error.contains("2 ;-terminated statements"));
         assertTrue(error.contains("jdbc_-prefixed"));
+    }
+
+    @Test
+    public void executeStatementsPinnedToEtlDatabase_shouldPinBeforeExecuteAndRestoreAfterCleanRun() throws Exception {
+        PreparedStatement statement = Mockito.mock(PreparedStatement.class);
+        Connection connection = connectionTrackingCatalog("openmrs_db", statement);
+
+        new JdbcFlattenDatabaseDao().executeStatementsPinnedToEtlDatabase(connection, "analysis_db",
+            "CREATE TABLE t (id INT)", null);
+
+        InOrder inOrder = Mockito.inOrder(connection);
+        inOrder.verify(connection).setCatalog("analysis_db");
+        inOrder.verify(connection).prepareStatement(anyString());
+        inOrder.verify(connection).setCatalog("openmrs_db");
+    }
+
+    @Test
+    public void executeStatementsPinnedToEtlDatabase_shouldRestoreCatalogAfterServerError() throws Exception {
+        PreparedStatement statement = Mockito.mock(PreparedStatement.class);
+        when(statement.execute()).thenThrow(new SQLException("server side failure"));
+        Connection connection = connectionTrackingCatalog("openmrs_db", statement);
+
+        try {
+            new JdbcFlattenDatabaseDao().executeStatementsPinnedToEtlDatabase(connection, "analysis_db",
+                "CREATE TABLE t (id INT)", null);
+            fail("Expected the server side SQLException to propagate");
+        } catch (SQLException expected) {
+            // the pin must still be undone on the failure path
+        }
+
+        InOrder inOrder = Mockito.inOrder(connection);
+        inOrder.verify(connection).setCatalog("analysis_db");
+        inOrder.verify(connection).setCatalog("openmrs_db");
+    }
+
+    @Test
+    public void executeStatementsPinnedToEtlDatabase_shouldRefuseWhenCatalogSwitchDoesNotTakeEffect() throws Exception {
+        // a connection whose setCatalog silently does nothing, i.e. the driver did not switch
+        Connection connection = Mockito.mock(Connection.class);
+        when(connection.getCatalog()).thenReturn("openmrs_db");
+        PreparedStatement statement = Mockito.mock(PreparedStatement.class);
+        when(connection.nativeSQL(anyString())).thenAnswer(invocation -> (String) invocation.getArguments()[0]);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        try {
+            new JdbcFlattenDatabaseDao().executeStatementsPinnedToEtlDatabase(connection, "analysis_db",
+                "CREATE TABLE t (id INT)", null);
+            fail("Expected a SQLException when the catalog switch does not take effect");
+        } catch (SQLException expected) {
+            assertTrue(expected.getMessage().contains("analysis_db"));
+        }
+
+        Mockito.verify(connection, Mockito.never()).prepareStatement(anyString());
+    }
+
+    /**
+     * A connection whose getCatalog()/setCatalog() behave like a real driver: getCatalog() reports
+     * whatever setCatalog last set, so the pin guard in
+     * {@link JdbcFlattenDatabaseDao#executeStatementsPinnedToEtlDatabase} sees the switch take effect.
+     */
+    private Connection connectionTrackingCatalog(String originalCatalog, PreparedStatement statement) throws Exception {
+        Connection connection = Mockito.mock(Connection.class);
+        final String[] currentCatalog = { originalCatalog };
+        when(connection.getCatalog()).thenAnswer(invocation -> currentCatalog[0]);
+        Mockito.doAnswer(invocation -> {
+            currentCatalog[0] = (String) invocation.getArguments()[0];
+            return null;
+        }).when(connection).setCatalog(anyString());
+        when(connection.nativeSQL(anyString())).thenAnswer(invocation -> (String) invocation.getArguments()[0]);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        return connection;
     }
 
     @Test
