@@ -9,7 +9,9 @@ on:
 
 jobs:
   build:
-    uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/build-backend-module.yml@main
+    # mamba-core is a library (api-only, no omod), so use the generic Maven
+    # build workflow; build-backend-module.yml hardcodes `-pl omod` and fails.
+    uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/build-maven.yml@main
     secrets:
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
       MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
